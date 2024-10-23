@@ -1,13 +1,13 @@
 import numpy as np
 
 from matrix import FloatMatrix, Matrix
-from vectorDot import VectorDot
 
 
-def Multiply(
+def MatrixAdd(
     matrixA: Matrix | FloatMatrix | np.ndarray,
     matrixB: Matrix | FloatMatrix | np.ndarray,
 ) -> FloatMatrix:
+    """Adds two matrices"""
 
     if isinstance(matrixA, np.ndarray):
 
@@ -33,27 +33,20 @@ def Multiply(
 
         matrixB_ = FloatMatrix(matrixB)
 
-    if matrixA_.numCols != matrixB_.numRows:
+    if matrixA_.shape != matrixB_.shape:
 
         raise Exception(
-            f"Invalid shape for input matrices. Matrix A Columns: \
-                {matrixA_.numCols} != Matrix B Rows: {matrixB_.numRows}"
+            f"Shapes of input matrices are not identical.\n\
+            Shape A: {matrixA_.numRows} x {matrixA_.numCols}\n\
+                Shape B: {matrixB_.numRows} x {matrixB_.numCols}"
         )
 
-    resultMatrix = FloatMatrix(
-        matrixA_.numRows,
-        matrixB_.numCols,
-    )
+    resultMatrix = FloatMatrix(matrixA_.numRows, matrixA_.numCols)
 
-    for row in range(resultMatrix.numRows):
+    for row in range(matrixA_.numRows):
 
-        for col in range(resultMatrix.numCols):
+        for col in range(matrixA_.numCols):
 
-            newElem = VectorDot(
-                matrixA=FloatMatrix(matrixA_[row, :]),
-                matrixB=FloatMatrix(matrixB_[:, col]),
-            )
-
-            resultMatrix[row][col] = newElem
+            resultMatrix[row][col] = matrixA_[row][col] + matrixB_[row][col]
 
     return resultMatrix
