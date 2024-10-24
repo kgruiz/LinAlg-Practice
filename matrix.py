@@ -177,12 +177,10 @@ class FloatMatrix:
                 - (FloatMatrix object): Create a new matrix as a copy of an existing FloatMatrix.
                 - (rows, cols, min, max): Create a matrix with specified value range.
         """
-        if len(args) == 2:
+        if len(args) == 2 and all(isinstance(arg, int) for arg in args):
 
             rows, cols = args
-            self.matrix = np.random.uniform(0, 100, (rows, cols))
-            self.matrix.dtype = float
-
+            self.matrix = np.random.uniform(0, 100, (rows, cols)).astype(float)
             self.numRows = rows
             self.numCols = cols
 
@@ -191,29 +189,26 @@ class FloatMatrix:
             if isinstance(args[0], np.ndarray):
 
                 if len(args[0].shape) == 1:
-
+                    # If it's a 1D array, reshape it to a column matrix
                     self.matrix = np.reshape(
                         args[0], newshape=(args[0].shape[0], 1)
-                    ).copy()
-                    self.matrix.dtype = float
-
+                    ).astype(float)
                 else:
-
-                    self.matrix = args[0].copy()
-                    self.matrix.dtype = float
+                    # Copying the matrix and ensuring dtype is float
+                    self.matrix = args[0].astype(float).copy()
 
                 self.numRows = self.matrix.shape[0]
                 self.numCols = self.matrix.shape[1]
 
-            elif isinstance(args[0], Matrix):
-                # Copy constructor from Matrix
-                self.matrix = args[0].matrix.astype(float).copy()
-                self.numRows = args[0].numRows
-                self.numCols = args[0].numCols
-
             elif isinstance(args[0], FloatMatrix):
                 # Copy constructor from FloatMatrix
                 self.matrix = args[0].matrix.copy()
+                self.numRows = args[0].numRows
+                self.numCols = args[0].numCols
+
+            elif isinstance(args[0], Matrix):
+                # Copy constructor from Matrix (assuming Matrix has a matrix attribute)
+                self.matrix = args[0].matrix.astype(float).copy()
                 self.numRows = args[0].numRows
                 self.numCols = args[0].numCols
 
@@ -227,15 +222,11 @@ class FloatMatrix:
             self.numRows = numRows
             self.numCols = numCols
 
-            self.matrix = np.zeros((numRows, numCols), dtype=float)
+            # Initialize the matrix with random values between minVal and maxVal
+            self.matrix = np.random.uniform(minVal, maxVal, (numRows, numCols)).astype(
+                float
+            )
 
-            for row in range(numRows):
-
-                for col in range(numCols):
-
-                    self.matrix[row][col] = random.random() * random.randint(
-                        minVal, maxVal
-                    )
         else:
 
             raise ValueError(

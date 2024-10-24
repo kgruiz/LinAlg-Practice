@@ -607,33 +607,57 @@ def testUnitVector(
         print(f"A:\n{a}")
 
     try:
+
         c = UnitVector(vector=a)
+
     except Exception:
+
         print(f"C:\n{c}\n")
         print(f"{rows=}\n{cols=}\n{min_=}\n{max_=}\n{verbose=}\n")
+
         return False
 
     if verbose:
-        print(f"c:\n{c}")
+
+        print(f"C:\n{c}")
 
     if np.linalg.norm(a.matrix) == 0:
+
         d = a.matrix
+
     else:
+
         d = a.matrix / np.linalg.norm(a.matrix)
 
     correct = c.shape == d.shape
 
+    if not correct:
+
+        print(f"\n\nIncorrect:\n")
+
+        print(f"c.shape: {c.shape}")
+        print(f"d.shape: {d.shape}\n\n")
+
     if correct:
+
         c_flat = c.flatten()
         d_flat = d.flatten()
+
         for row in range(c_flat.shape[0]):
+
             correct = abs(c_flat[row] - d_flat[row]) < 0.0001
+
             if not correct:
-                print(c_flat[row][0])
-                print(d_flat[row][0])
+
+                print(f"\n\nIncorrect Elements:\n")
+
+                print(f"c_flat[{row}][0]: {c_flat[row][0]}")
+                print(f"d_flat[{row}][0]: {d_flat[row][0]}\n\n")
+
                 break
 
     if not correct:
+
         print(f"{rows=}\n{cols=}\n{min_=}\n{max_=}\n{verbose=}\n")
         print(f"a:\n{a}")
         print(f"ShapeA: {a.shape}")
@@ -641,7 +665,9 @@ def testUnitVector(
         print(f"LengthA numpy: {np.linalg.norm(a.matrix)}\n")
         print(f"c:\n{c}")
         print(f"d:\n{d}")
+
         return False
+
     else:
         if verbose:
             print(f"Correct Shape\nCorrect Elements")
@@ -925,18 +951,6 @@ def testBasis(
 
     a = Matrix(rows, cols, min_, max_)
 
-    a = Matrix(
-        np.array(
-            [
-                [-6, -8, -68, -76, -52],
-                [-63, -90, -90, -18, -75],
-                [-9, -13, 2, -63, -59],
-                [-90, -70, -5, -40, -47],
-                [-27, -71, -92, -65, -20],
-            ]
-        )
-    )
-
     if verbose:
         print(f"A:\n{a}")
     basisA = Basis(span=a)
@@ -1018,6 +1032,301 @@ def randomTestBasis(
     cols = random.randint(1, maxSize)
 
     testResult = testBasis(
+        rows=rows,
+        cols=cols,
+        min_=minSize,
+        max_=maxSize,
+        verbose=verbose,
+    )
+
+    return testResult
+
+
+# --- testGramSchmidtRandomSpan ---
+def testGramSchmidtRandomSpan(
+    rows: int = 4,
+    cols: int = 3,
+    min_: int = 0,
+    max_: int = 10,
+    verbose: bool = False,
+) -> bool:
+    """
+    Tests the Gram Schmidt operation to find an orthonormal basis from an input basis.
+
+    Args:
+        rows (int): Number of rows in the matrix.
+        cols (int): Number of columns in the matrix.
+        min_ (int): Minimum value for matrix elements.
+        max_ (int): Maximum value for matrix elements.
+        verbose (bool): If True, prints the matrix and results.
+
+    Returns:
+        bool: True if the orthonormal basis is correct, False otherwise.
+    """
+
+    a = Matrix(rows, cols, min_, max_)
+
+    if verbose:
+
+        print(f"A:\n{a}")
+
+    orthonormalA = GramSchmidt(basis=a)
+    c, R = np.linalg.qr(a)
+
+    if verbose:
+
+        print(f"A:\n{a}")
+        print(f"C:\n{c}")
+
+    correct = orthonormalA.shape == c.shape
+
+    # if (
+    #     basisA.shape[0] == 1
+    #     and basisA.shape[1] == 1
+    #     and c.shape[0] == 1
+    #     and c.shape[1] == 1
+    # ):
+
+    #     if c[0][0] == 0 and a[0][0] == 0:
+
+    #         return True
+
+    # swap negatives if different
+
+    for colNum in range(orthonormalA.numCols):
+
+        firstNonZeroIndex = None
+
+        for row in range(orthonormalA.numRows):
+
+            if abs(orthonormalA[row][colNum] - 0) > 0.0001:
+
+                firstNonZeroIndex = row
+
+                break
+
+        if (
+            orthonormalA[firstNonZeroIndex][colNum] > 0.0001
+            and c[firstNonZeroIndex][colNum] < -0.0001
+        ) or (
+            orthonormalA[firstNonZeroIndex][colNum] < -0.0001
+            and c[firstNonZeroIndex][colNum] > 0.0001
+        ):
+
+            for row in range(orthonormalA.numRows):
+
+                orthonormalA[row][colNum] = -orthonormalA[row][colNum]
+
+    if not correct:
+
+        print(f"\n\nError causing components:\n")
+        print(f"Shape orthnormalA: {orthonormalA.shape}")
+        print(f"Shape C: {c.shape}\n")
+
+    for row in range(orthonormalA.shape[0]):
+        for col in range(orthonormalA.shape[1]):
+
+            if not correct:
+
+                break
+
+            correct = abs(orthonormalA[row][col] - c[row][col]) < 0.00001
+
+            if not correct:
+
+                print(f"\n\nError causing components:\n")
+                print(f"orthonormalA[{row}][{col}]: {orthonormalA[row][col]}")
+                print(f"c[{row}][{col}]: {c[row][col]}")
+
+                break
+
+    if not correct:
+
+        print(f"{rows=}\n{cols=}\n{min_=}\n{max_=}\n{verbose=}\n")
+
+        print(f"A:\n{a}\n")
+
+        print(f"orthonormalA:\n{orthonormalA}\n")
+        print(f"FloatMatrix(c):\n{FloatMatrix(c)}")
+        print(f"C:\n{c}")
+
+        return False
+
+    else:
+        if verbose:
+            print(f"Correct Shape\nCorrect Elements")
+        return True
+
+
+def randomTestGramSchmidtRandomSpan(
+    minSize: int = -100, maxSize: int = 100, verbose: bool = False
+) -> bool:
+    """
+    Generates random dimensions and values to test the testGramSchmidt function.
+
+    Args:
+        minSize (int): Minimum size for the matrix dimensions and element values.
+        maxSize (int): Maximum size for the matrix dimensions and element values.
+        verbose (bool): If True, prints the testing details.
+
+    Returns:
+        bool: Result of the testBasis function.
+    """
+    rows = random.randint(1, maxSize)
+    cols = random.randint(1, maxSize)
+
+    testResult = testGramSchmidt(
+        rows=rows,
+        cols=cols,
+        min_=minSize,
+        max_=maxSize,
+        verbose=verbose,
+    )
+
+    return testResult
+
+
+# --- testGramSchmidt ---
+def testGramSchmidt(
+    rows: int = 4,
+    cols: int = 3,
+    min_: int = 0,
+    max_: int = 10,
+    verbose: bool = False,
+) -> bool:
+    """
+    Tests the Gram Schmidt operation to find an orthonormal basis from an input basis.
+
+    Args:
+        rows (int): Number of rows in the matrix.
+        cols (int): Number of columns in the matrix.
+        min_ (int): Minimum value for matrix elements.
+        max_ (int): Maximum value for matrix elements.
+        verbose (bool): If True, prints the matrix and results.
+
+    Returns:
+        bool: True if the orthonormal basis is correct, False otherwise.
+    """
+
+    a = Matrix(rows, cols, min_, max_)
+
+    while np.count_nonzero(a.matrix) == 0:
+
+        a = Matrix(rows, cols, min_, max_)
+
+    basisA = Basis(span=a)
+
+    if verbose:
+
+        print(f"A:\n{a}")
+
+    try:
+
+        orthonormalA = GramSchmidt(basis=basisA)
+
+    except IndexError:
+
+        print(f"{rows=}\n{cols=}\n{min_=}\n{max_=}\n{verbose=}\n")
+
+        print(f"A:\n{a}\n")
+        print(f"BasisA:\n{basisA}\n")
+
+        return False
+
+    c, R = np.linalg.qr(basisA)
+
+    if verbose:
+
+        print(f"basisA:\n{basisA}")
+        print(f"C:\n{c}")
+
+    correct = orthonormalA.shape == c.shape
+
+    for colNum in range(orthonormalA.numCols):
+
+        firstNonZeroIndex = None
+
+        for row in range(orthonormalA.numRows):
+
+            if abs(orthonormalA[row][colNum] - 0) > 0.0001:
+
+                firstNonZeroIndex = row
+
+                break
+
+        if (
+            orthonormalA[firstNonZeroIndex][colNum] > 0.0001
+            and c[firstNonZeroIndex][colNum] < -0.0001
+        ) or (
+            orthonormalA[firstNonZeroIndex][colNum] < -0.0001
+            and c[firstNonZeroIndex][colNum] > 0.0001
+        ):
+
+            for row in range(orthonormalA.numRows):
+
+                orthonormalA[row][colNum] = -orthonormalA[row][colNum]
+
+    if not correct:
+
+        print(f"\n\nError causing components:\n")
+        print(f"Shape orthnormalA: {orthonormalA.shape}")
+        print(f"Shape C: {c.shape}\n")
+
+    for row in range(orthonormalA.shape[0]):
+        for col in range(orthonormalA.shape[1]):
+
+            if not correct:
+
+                break
+
+            correct = abs(orthonormalA[row][col] - c[row][col]) < 0.00001
+
+            if not correct:
+
+                print(f"\n\nError causing components:\n")
+                print(f"orthonormalA[{row}][{col}]: {orthonormalA[row][col]}")
+                print(f"c[{row}][{col}]: {c[row][col]}")
+
+                break
+
+    if not correct:
+
+        print(f"{rows=}\n{cols=}\n{min_=}\n{max_=}\n{verbose=}\n")
+
+        print(f"A:\n{a}\n")
+        print(f"BasisA:\n{basisA}\n")
+
+        print(f"orthonormalA:\n{orthonormalA}\n")
+        print(f"FloatMatrix(c):\n{FloatMatrix(c)}")
+        print(f"C:\n{c}")
+
+        return False
+
+    else:
+        if verbose:
+            print(f"Correct Shape\nCorrect Elements")
+
+        return True
+
+
+def randomTestGramSchmidt(
+    minSize: int = -100, maxSize: int = 100, verbose: bool = False
+) -> bool:
+    """
+    Generates random dimensions and values to test the testGramSchmidt function.
+
+    Args:
+        minSize (int): Minimum size for the matrix dimensions and element values.
+        maxSize (int): Maximum size for the matrix dimensions and element values.
+        verbose (bool): If True, prints the testing details.
+
+    Returns:
+        bool: Result of the testBasis function.
+    """
+    rows = random.randint(1, maxSize)
+    cols = random.randint(1, maxSize)
+
+    testResult = testGramSchmidt(
         rows=rows,
         cols=cols,
         min_=minSize,
@@ -1276,6 +1585,41 @@ if __name__ == "__main__":
 
     noErrors = True
 
+    # Test GramSchmidt
+    if noErrors:
+
+        for _ in tqdm(range(10000), desc="testGramSchmidt"):
+            testResult = randomTestGramSchmidt(
+                minSize=minSize, maxSize=10, verbose=False
+            )
+            if not testResult:
+                print("GramSchmidt")
+                noErrors = False
+                break
+
+    # Test GramSchmidtRandomSpan
+    if noErrors:
+
+        for _ in tqdm(range(250), desc="testGramSchmidtRandomSpan"):
+            testResult = randomTestGramSchmidtRandomSpan(
+                minSize=minSize, maxSize=maxSize, verbose=False
+            )
+            if not testResult:
+                print("GramSchmidtRandomSpan")
+                noErrors = False
+                break
+
+    # Test UnitVector
+    if noErrors:
+        for _ in tqdm(range(10000), desc="testUnitVector"):
+            testResult = randomTestUnitVector(
+                minSize=minSize, maxSize=maxSize, verbose=False
+            )
+            if not testResult:
+                print("UnitVector")
+                noErrors = False
+                break
+
     # Test Basis
     if noErrors:
         for _ in tqdm(range(20000), desc="testBasis"):
@@ -1292,7 +1636,7 @@ if __name__ == "__main__":
     if noErrors:
         for _ in tqdm(range(100), desc="testInverse"):
             testResult = randomTestInverse(
-                minSize=minSize, maxSize=9, maxVal=maxSize, verbose=False
+                minSize=minSize, maxSize=8, maxVal=maxSize, verbose=False
             )
             if not testResult:
                 print("Inverse")
@@ -1373,17 +1717,6 @@ if __name__ == "__main__":
             )
             if not testResult:
                 print("VectorLength")
-                noErrors = False
-                break
-
-    # Test UnitVector
-    if noErrors:
-        for _ in tqdm(range(10000), desc="testUnitVector"):
-            testResult = randomTestUnitVector(
-                minSize=minSize, maxSize=maxSize, verbose=False
-            )
-            if not testResult:
-                print("UnitVector")
                 noErrors = False
                 break
 

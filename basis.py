@@ -37,8 +37,6 @@ def Basis(span: Matrix | FloatMatrix | np.ndarray) -> FloatMatrix | Matrix:
 
     pivotCols = []
 
-    print(f"spanRREF:\n{spanRREF}")
-
     for colNum in range(spanRREF.numCols):
 
         col = FloatMatrix(spanRREF[:, colNum])

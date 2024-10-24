@@ -19,10 +19,6 @@ def RREF(
 
         matrix_ = FloatMatrix(matrix)
 
-    print(f"\n\nIN RREF")
-
-    print(matrix_)
-
     def scaleRows(matrix: FloatMatrix) -> FloatMatrix:
 
         matrix_ = matrix
@@ -35,7 +31,7 @@ def RREF(
 
                 firstNonZero = None
 
-                if elem != 0:
+                if abs(elem - 0) > 0.0000001:
 
                     firstNonZero = elem
 
@@ -57,7 +53,7 @@ def RREF(
 
         for rowNum_, row in enumerate(matrix_):
 
-            if rowNum_ != rowNum_:
+            if rowNum_ != rowNum:
 
                 continue
 
@@ -67,7 +63,7 @@ def RREF(
 
                 firstNonZero = None
 
-                if elem != 0:
+                if abs(elem - 0) > 0.0000001:
 
                     firstNonZero = elem
 
@@ -125,15 +121,13 @@ def RREF(
 
         scaleRow(matrix=matrix_, rowNum=pivotRowNum)
 
-        print(matrix_)
-
         pivotRow = matrix_[pivotRowNum, :]
 
         for i, elem in enumerate(pivotRow):
 
             firstNonZeroIndex = None
 
-            if elem != 0:
+            if abs(elem - 0) > 0.0000001:
 
                 assert elem == 1
 
@@ -172,16 +166,10 @@ def RREF(
 
         pivotRowNum += 1
 
-        print(matrix_)
-
     matrix_ = scaleRows(matrix=matrix_)
 
     matrix_ = cleanNegZeros(matrix=matrix_)
 
     matrix_ = orderRows(matrix=matrix_)
-
-    print(matrix_)
-
-    print(f"END OF RREF\n\n")
 
     return matrix_

@@ -31,7 +31,7 @@ def UnitVector(vector: Matrix | FloatMatrix | np.ndarray) -> FloatMatrix:
 
     vectorLength = Length(vector=vector_)
 
-    originalShape = vector_.shape
+    originalShape = vector.shape
 
     vector_ = vector_.flatten()
 
@@ -41,6 +41,6 @@ def UnitVector(vector: Matrix | FloatMatrix | np.ndarray) -> FloatMatrix:
 
             vector_[elemNum] = elem / vectorLength
 
-    np.reshape(vector_, newshape=originalShape)
+    vector_ = np.reshape(vector_, newshape=originalShape)
 
-    return vector_
+    return FloatMatrix(vector_)
