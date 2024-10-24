@@ -1,5 +1,6 @@
 import numpy as np
 
+from basis import Basis
 from matrix import FloatMatrix, Matrix
 from matrixAdd import MatrixAdd
 from matrixSubtract import MatrixSubtract
@@ -8,7 +9,7 @@ from unitVector import UnitVector
 from vectorDot import VectorDot
 
 
-def GramSchmidt(basis: Matrix | FloatMatrix | np.ndarray) -> FloatMatrix:
+def GramSchmidt(span: Matrix | FloatMatrix | np.ndarray) -> FloatMatrix:
     """
     Computes an orthonormal basis for the subspace represented by the input basis, using the Gram-Schmidt process.
 
@@ -26,27 +27,29 @@ def GramSchmidt(basis: Matrix | FloatMatrix | np.ndarray) -> FloatMatrix:
     by the previously processed vectors, and the resulting orthogonal component is normalized to create the orthonormal basis.
     """
 
-    if isinstance(basis, Matrix):
+    if isinstance(span, Matrix):
 
-        basis_ = FloatMatrix(basis)
+        span_ = FloatMatrix(span)
 
-    if isinstance(basis, np.ndarray):
+    if isinstance(span, np.ndarray):
 
-        basis_ = FloatMatrix(basis)
+        span_ = FloatMatrix(span)
 
     else:
 
-        basis_ = FloatMatrix(basis)
+        span_ = FloatMatrix(span)
 
-    basisVectors = np.array([col for col in basis_.T])
+    basis = Basis(span=span_)
 
-    orthogonalVectors = np.empty(shape=(basis_.numCols, basis_.numRows))
+    basisVectors = np.array([col for col in basis.T])
+
+    orthogonalVectors = np.empty(shape=(basis.numCols, basis.numRows))
 
     orthogonalVectors[0] = UnitVector(vector=basisVectors[0]).flatten()
 
-    for basis_VectorNum in range(1, basis_.numCols):
+    for basis_VectorNum in range(1, basis.numCols):
 
-        componentAlreadyAccounted = FloatMatrix(basis_.numRows, 1, 0, 0)
+        componentAlreadyAccounted = FloatMatrix(basis.numRows, 1, 0, 0)
 
         basis_Vector = FloatMatrix(basisVectors[basis_VectorNum])
 

@@ -31,7 +31,7 @@ def RREF(
 
                 firstNonZero = None
 
-                if abs(elem - 0) > 0.0000001:
+                if elem != 0:
 
                     firstNonZero = elem
 
@@ -43,7 +43,7 @@ def RREF(
 
             for colNum, elem in enumerate(row):
 
-                matrix_[rowNum][colNum] = elem / firstNonZero
+                matrix_[rowNum][colNum] = round(elem / firstNonZero, 30)
 
         return matrix_
 
@@ -63,7 +63,7 @@ def RREF(
 
                 firstNonZero = None
 
-                if abs(elem - 0) > 0.0000001:
+                if elem != 0:
 
                     firstNonZero = elem
 
@@ -75,7 +75,7 @@ def RREF(
 
             for colNum, elem in enumerate(row):
 
-                matrix_[rowNum][colNum] = elem / firstNonZero
+                matrix_[rowNum][colNum] = round(elem / firstNonZero, 30)
 
         return matrix_
 
@@ -127,7 +127,7 @@ def RREF(
 
             firstNonZeroIndex = None
 
-            if abs(elem - 0) > 0.0000001:
+            if elem != 0:
 
                 assert elem == 1
 
@@ -162,7 +162,7 @@ def RREF(
 
             for colNum, elem in enumerate(row):
 
-                matrix_[rowNum][colNum] = elem - (pivotRow[colNum] * factor)
+                matrix_[rowNum][colNum] = round(elem - (pivotRow[colNum] * factor), 12)
 
         pivotRowNum += 1
 

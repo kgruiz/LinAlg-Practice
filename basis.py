@@ -46,7 +46,7 @@ def Basis(span: Matrix | FloatMatrix | np.ndarray) -> FloatMatrix | Matrix:
 
         for i, elem in enumerate(col):
 
-            if elem == 1:
+            if abs(elem - 1) < 0.00001:
 
                 oneCount += 1
 
@@ -58,7 +58,7 @@ def Basis(span: Matrix | FloatMatrix | np.ndarray) -> FloatMatrix | Matrix:
 
             for colIndex, elem in enumerate(spanRREF[oneRowIndex]):
 
-                if elem == 1:
+                if abs(elem - 1) < 0.00001:
 
                     leadingOneIndex = colIndex
 

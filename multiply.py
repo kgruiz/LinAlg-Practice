@@ -54,6 +54,6 @@ def Multiply(
                 matrixB=FloatMatrix(matrixB_[:, col]),
             )
 
-            resultMatrix[row][col] = newElem
+            resultMatrix[row][col] = round(newElem, 12)
 
     return resultMatrix
