@@ -1,6 +1,6 @@
 import numpy as np
 
-from matrix import FloatMatrix, Matrix
+from Matrix import FloatMatrix, Matrix
 
 
 def MatrixSubtract(

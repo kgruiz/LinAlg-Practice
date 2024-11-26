@@ -1,30 +1,30 @@
 import numpy as np
 
-from basis import Basis
-from matrix import FloatMatrix, Matrix
-from matrixAdd import MatrixAdd
-from matrixSubtract import MatrixSubtract
-from scalarMultiply import ScalarMultiply
-from unitVector import UnitVector
-from vectorDot import VectorDot
+from Basis import Basis
+from Matrix import FloatMatrix, Matrix
+from MatrixAdd import MatrixAdd
+from MatrixSubtract import MatrixSubtract
+from ScalarMultiply import ScalarMultiply
+from UnitVector import UnitVector
+from VectorDot import VectorDot
 
 
 def GramSchmidt(span: Matrix | FloatMatrix | np.ndarray) -> FloatMatrix:
     """
-    Computes an orthonormal basis for the subspace represented by the input basis, using the Gram-Schmidt process.
+    Computes an orthonormal Basis for the subspace represented by the input span, using the Gram-Schmidt process.
 
     Args:
-        basis (Matrix | FloatMatrix | np.ndarray): The input basis vectors, represented as a Matrix, FloatMatrix, or numpy ndarray.
+        span (Matrix | FloatMatrix | np.ndarray): The input span vectors, represented as a Matrix, FloatMatrix, or numpy ndarray.
 
     Returns:
-        FloatMatrix: An orthonormal basis for the input subspace, represented as a FloatMatrix.
+        FloatMatrix: An orthonormal Basis for the input subspace, represented as a FloatMatrix.
 
     Raises:
         ValueError: If the input type is not Matrix, FloatMatrix, or numpy ndarray.
 
-    The function converts the input basis into a FloatMatrix if necessary and then applies the Gram-Schmidt orthogonalization
-    procedure to generate an orthonormal basis. Each vector in the basis is iteratively projected onto the subspace formed
-    by the previously processed vectors, and the resulting orthogonal component is normalized to create the orthonormal basis.
+    The function converts the input span into a FloatMatrix if necessary and then applies the Gram-Schmidt orthogonalization
+    procedure to generate an orthonormal Basis. Each vector in the span is iteratively projected onto the subspace formed
+    by the previously processed vectors, and the resulting orthogonal component is normalized to create the orthonormal Basis.
     """
 
     if isinstance(span, Matrix):
@@ -39,45 +39,45 @@ def GramSchmidt(span: Matrix | FloatMatrix | np.ndarray) -> FloatMatrix:
 
         span_ = FloatMatrix(span)
 
-    basis = Basis(span=span_)
+    Basis = Basis(span=span_)
 
-    basisVectors = np.array([col for col in basis.T])
+    BasisVectors = np.array([col for col in Basis.T])
 
-    orthogonalVectors = np.empty(shape=(basis.numCols, basis.numRows))
+    orthogonalVectors = np.empty(shape=(Basis.numCols, Basis.numRows))
 
-    orthogonalVectors[0] = UnitVector(vector=basisVectors[0]).flatten()
+    orthogonalVectors[0] = UnitVector(vector=BasisVectors[0]).flatten()
 
-    for basis_VectorNum in range(1, basis.numCols):
+    for Basis_VectorNum in range(1, Basis.numCols):
 
-        componentAlreadyAccounted = FloatMatrix(basis.numRows, 1, 0, 0)
+        componentAlreadyAccounted = FloatMatrix(Basis.numRows, 1, 0, 0)
 
-        basis_Vector = FloatMatrix(basisVectors[basis_VectorNum])
+        Basis_Vector = FloatMatrix(BasisVectors[Basis_VectorNum])
 
-        for orthogonalVectorNum in range(0, basis_VectorNum):
+        for orthogonalVectorNum in range(0, Basis_VectorNum):
 
             orthogonalVector = FloatMatrix(orthogonalVectors[orthogonalVectorNum])
 
-            basis_ProjectedAmount = VectorDot(
-                matrixA=basis_Vector, matrixB=orthogonalVector
+            Basis_ProjectedAmount = VectorDot(
+                matrixA=Basis_Vector, matrixB=orthogonalVector
             )
 
-            basis_ProjectedInOrthogongalDireciton = ScalarMultiply(
-                scalar=basis_ProjectedAmount, matrix=orthogonalVector
+            Basis_ProjectedInOrthogongalDireciton = ScalarMultiply(
+                scalar=Basis_ProjectedAmount, matrix=orthogonalVector
             )
 
             componentAlreadyAccounted = MatrixAdd(
                 matrixA=componentAlreadyAccounted,
-                matrixB=basis_ProjectedInOrthogongalDireciton,
+                matrixB=Basis_ProjectedInOrthogongalDireciton,
             )
 
-        orthogonalbasis_Component = MatrixSubtract(
-            matrixA=basis_Vector, matrixB=componentAlreadyAccounted
+        orthogonalBasis_Component = MatrixSubtract(
+            matrixA=Basis_Vector, matrixB=componentAlreadyAccounted
         )
 
-        unitOrthogonalbasis_Component = UnitVector(vector=orthogonalbasis_Component)
+        unitOrthogonalBasis_Component = UnitVector(vector=orthogonalBasis_Component)
 
-        orthogonalVectors[basis_VectorNum] = unitOrthogonalbasis_Component.flatten()
+        orthogonalVectors[Basis_VectorNum] = unitOrthogonalBasis_Component.flatten()
 
-    orthonormalbasis_ = FloatMatrix(orthogonalVectors.T)
+    orthonormalBasis_ = FloatMatrix(orthogonalVectors.T)
 
-    return orthonormalbasis_
+    return orthonormalBasis_

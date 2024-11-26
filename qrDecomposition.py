@@ -1,22 +1,22 @@
 import numpy as np
 
-from basis import Basis
-from gramSchmidt import GramSchmidt
-from matrix import FloatMatrix, Matrix
-from multiply import Multiply
-from transpose import Transpose
+from Basis import Basis
+from GramSchmidt import GramSchmidt
+from Matrix import FloatMatrix, Matrix
+from Multiply import Multiply
+from Transpose import Transpose
 
 
-def qrDecomposition(
+def QRDecomposition(
     span: Matrix | FloatMatrix | np.ndarray,
 ) -> tuple[FloatMatrix, FloatMatrix]:
     """
-    Peforms QR Decompositon on the input basis
+    Peforms QR Decompositon on the input span
 
     Returns a tuple with (q, r)
     """
 
-    def cleanNegZeros(matrix: FloatMatrix) -> FloatMatrix:
+    def CleanNegZeros(matrix: FloatMatrix) -> FloatMatrix:
 
         matrix_ = matrix
 
@@ -42,17 +42,17 @@ def qrDecomposition(
 
         span_ = FloatMatrix(span)
 
-    basis = Basis(span=span_)
+    Basis = Basis(span=span_)
 
-    orthonormalBasis = GramSchmidt(span=basis)
+    orthonormalBasis = GramSchmidt(span=Basis)
 
     q = FloatMatrix(orthonormalBasis)
 
     qT = Transpose(matrix=q)
 
-    r = Multiply(matrixA=qT, matrixB=basis)
+    r = Multiply(matrixA=qT, matrixB=Basis)
 
-    q = cleanNegZeros(matrix=q)
-    r = cleanNegZeros(matrix=r)
+    q = CleanNegZeros(matrix=q)
+    r = CleanNegZeros(matrix=r)
 
     return q, r

@@ -2,11 +2,11 @@ from math import sqrt
 
 import numpy as np
 
-from matrix import FloatMatrix, Matrix
+from Matrix import FloatMatrix, Matrix
 
 
 def Length(vector: Matrix | FloatMatrix | np.ndarray) -> float:
-    """Computes the length of a given vector"""
+    """Computes the Length of a given vector"""
 
     if isinstance(vector, Matrix):
 

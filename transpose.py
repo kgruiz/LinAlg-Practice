@@ -1,10 +1,10 @@
 import numpy as np
 
-from matrix import FloatMatrix, Matrix
+from Matrix import FloatMatrix, Matrix
 
 
 def Transpose(matrix: Matrix | FloatMatrix | np.ndarray) -> FloatMatrix:
-    """Returns the transpose of a matrix or vector"""
+    """Returns the Transpose of a matrix or vector"""
 
     if isinstance(matrix, Matrix):
 

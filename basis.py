@@ -1,24 +1,24 @@
 import numpy as np
 
-from matrix import FloatMatrix, Matrix
-from rref import RREF
+from Matrix import FloatMatrix, Matrix
+from RREF import RREF
 
 
 def Basis(span: Matrix | FloatMatrix | np.ndarray) -> FloatMatrix | Matrix:
     """
-    Computes the basis of a subspace spanned by the given matrix.
+    Computes the Basis of a subspace spanned by the given matrix.
 
     The function takes a matrix (which could be a custom Matrix type, a FloatMatrix, or a NumPy ndarray)
-    that spans a subspace and returns the basis of this subspace. It first converts the input matrix to
+    that spans a subspace and returns the Basis of this subspace. It first converts the input matrix to
     a FloatMatrix, then calculates its row-reduced echelon form (RREF). The function identifies the pivot
-    columns in the RREF matrix and returns the corresponding columns from the original matrix as the basis.
+    columns in the RREF matrix and returns the corresponding columns from the original matrix as the Basis.
 
     Args:
         span: A matrix or array that represents a set of vectors spanning a subspace. It can be a Matrix,
         FloatMatrix, or NumPy ndarray.
 
     Returns:
-        A FloatMatrix representing the basis of the subspace.
+        A FloatMatrix representing the Basis of the subspace.
     """
 
     if isinstance(span, Matrix):
@@ -66,8 +66,8 @@ def Basis(span: Matrix | FloatMatrix | np.ndarray) -> FloatMatrix | Matrix:
 
             if leadingOneIndex == colNum:
 
-                pivotCols.append(colNum)
+                pivotCols.Append(colNum)
 
-    basis = span_[:, pivotCols]
+    Basis = span_[:, pivotCols]
 
-    return FloatMatrix(basis)
+    return FloatMatrix(Basis)

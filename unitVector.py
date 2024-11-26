@@ -1,7 +1,7 @@
 import numpy as np
 
-from matrix import FloatMatrix, Matrix
-from vectorLength import Length
+from Matrix import FloatMatrix, Matrix
+from VectorLength import Length
 
 
 def UnitVector(vector: Matrix | FloatMatrix | np.ndarray) -> FloatMatrix:

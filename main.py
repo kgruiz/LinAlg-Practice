@@ -7,29 +7,30 @@ import numpy as np
 from sympy import Matrix as symMatrix
 from tqdm import tqdm
 
-from basis import Basis
-from determinat import Determinat
-from gramSchmidt import GramSchmidt
-from inverse import Inverse
-from matrix import FloatMatrix, Matrix
-from matrixAdd import MatrixAdd
-from matrixSubtract import MatrixSubtract
-from multiply import Multiply
-from qrDecomposition import qrDecomposition
-from rref import RREF
-from scalarMultiply import ScalarMultiply
-from transpose import Transpose
-from unitVector import UnitVector
-from vectorDot import VectorDot
-from vectorLength import Length
+from Base2RREF import Base2RREF
+from Basis import Basis
+from Determinat import Determinat
+from GramSchmidt import GramSchmidt
+from Inverse import Inverse
+from Matrix import FloatMatrix, Matrix
+from MatrixAdd import MatrixAdd
+from MatrixSubtract import MatrixSubtract
+from Multiply import Multiply
+from QRDecomposition import QRDecomposition
+from RREF import RREF
+from ScalarMultiply import ScalarMultiply
+from Transpose import Transpose
+from UnitVector import UnitVector
+from VectorDot import VectorDot
+from VectorLength import Length
 
 # ============================
 # Core Test Functions and Corresponding Random Test Functions
 # ============================
 
 
-# --- testMatrix ---
-def testMatrix(
+# --- TestMatrix ---
+def TestMatrix(
     Arows: int = 4,
     Acols: int = 3,
     Brows: int = 3,
@@ -54,24 +55,27 @@ def testMatrix(
         None
     """
     if verbose:
+
         print(f"Making A and B\n")
 
     a = Matrix(Arows, Acols, min_, max_)
 
     if verbose:
+
         print(f"A:\n{a}")
 
     b = Matrix(Brows, Bcols, min_, max_)
 
     if verbose:
+
         print(f"B:\n{b}")
 
 
-def randomTestMatrix(
+def RandomTestMatrix(
     minSize: int = -100, maxSize: int = 100, verbose: bool = False
 ) -> bool:
     """
-    Generates random dimensions and values to test the testMatrix function.
+    Generates Random dimensions and values to test the TestMatrix function.
 
     Args:
         minSize (int): Minimum size for the matrix dimensions and element values.
@@ -79,7 +83,7 @@ def randomTestMatrix(
         verbose (bool): If True, prints the testing details.
 
     Returns:
-        bool: Always returns True as testMatrix does not perform validations.
+        bool: Always returns True as TestMatrix does not perform validations.
     """
     Arows = random.randint(0, maxSize)
     Acols = random.randint(0, maxSize)
@@ -87,7 +91,8 @@ def randomTestMatrix(
     Bcols = random.randint(0, maxSize)
 
     try:
-        testMatrix(
+
+        TestMatrix(
             Arows=Arows,
             Acols=Acols,
             Brows=Brows,
@@ -97,14 +102,17 @@ def randomTestMatrix(
             verbose=verbose,
         )
         return True
+
     except Exception as e:
+
         if verbose:
-            print(f"Exception in randomTestMatrix: {e}")
+
+            print(f"Exception in RandomTestMatrix: {e}")
         return False
 
 
-# --- testVectorDot ---
-def testVectorDot(
+# --- TestVectorDot ---
+def TestVectorDot(
     Arows: int = 4,
     Acols: int = 1,
     Brows: int = 1,
@@ -132,18 +140,22 @@ def testVectorDot(
     b = Matrix(Brows, Bcols, min_, max_)
 
     if verbose:
+
         print(f"A:\n{a}")
         print(f"B:\n{b}")
         print(f"Calculating Dot Product of A and B\n")
 
     try:
+
         c = VectorDot(a, b)
     except Exception:
+
         print(f"C:\n{c}\n")
         print(f"{Arows=}\n{Acols=}\n{Brows=}\n{Bcols=}\n{min_=}\n{max_=}")
         return False
 
     if verbose:
+
         print(f"C:\n{c}")
 
     a_flat = a.reshape(-1)
@@ -153,21 +165,25 @@ def testVectorDot(
     correct = c == d
 
     if not correct:
+
         print(f"{Arows=}\n{Acols=}\n{Brows=}\n{Bcols=}\n{min_=}\n{max_=}")
         print(f"C:\n{c}")
         print(f"D:\n{d}")
         return False
+
     else:
+
         if verbose:
+
             print(f"Correct Shape\nCorrect Elements")
         return True
 
 
-def randomTestVectorDot(
+def RandomTestVectorDot(
     minSize: int = -100, maxSize: int = 100, verbose: bool = False
 ) -> bool:
     """
-    Generates random dimensions and values to test the testVectorDot function.
+    Generates Random dimensions and values to test the TestVectorDot function.
 
     Args:
         minSize (int): Minimum size for the vector dimensions and element values.
@@ -175,25 +191,29 @@ def randomTestVectorDot(
         verbose (bool): If True, prints the testing details.
 
     Returns:
-        bool: Result of the testVectorDot function.
+        bool: Result of the TestVectorDot function.
     """
     vectorElemCount = random.randint(0, maxSize)
 
     if random.randrange(0, 2) == 0:
+
         Arows = vectorElemCount
         Acols = 1
     else:
+
         Arows = 1
         Acols = vectorElemCount
 
     if random.randrange(0, 2) == 0:
+
         Brows = vectorElemCount
         Bcols = 1
     else:
+
         Brows = 1
         Bcols = vectorElemCount
 
-    testResult = testVectorDot(
+    testResult = TestVectorDot(
         Arows=Arows,
         Acols=Acols,
         Brows=Brows,
@@ -206,8 +226,8 @@ def randomTestVectorDot(
     return testResult
 
 
-# --- testMultiply ---
-def testMultiply(
+# --- TestMultiply ---
+def TestMultiply(
     Arows: int = 4,
     Acols: int = 3,
     Brows: int = 3,
@@ -234,49 +254,61 @@ def testMultiply(
     a = Matrix(Arows, Acols, min_, max_)
 
     if verbose:
+
         print(f"A:\n{a}")
 
     b = Matrix(Brows, Bcols, min_, max_)
 
     if verbose:
+
         print(f"B:\n{b}")
         print(f"Multiplying A and B\n")
 
     try:
+
         c = Multiply(matrixA=a, matrixB=b)
     except Exception:
+
         print(f"C:\n{c}\n")
         print(f"{Arows=}\n{Acols=}\n{Brows=}\n{Bcols=}\n{min_=}\n{max_=}")
         return False
 
     if verbose:
+
         print(f"c:\n{c}")
 
     d = np.matmul(a.matrix, b.matrix)
     correct = c.shape == d.shape
 
     for row in range(c.shape[0]):
+
         for col in range(c.shape[1]):
+
             if not correct:
+
                 break
             correct = c[row][col] == d[row][col]
 
     if not correct:
+
         print(f"{Arows=}\n{Acols=}\n{Brows=}\n{Bcols=}\n{min_=}\n{max_=}")
         print(f"c:\n{c}")
         print(f"d:\n{d}")
         return False
+
     else:
+
         if verbose:
+
             print(f"Correct Shape\nCorrect Elements")
         return True
 
 
-def randomTestMultiply(
+def RandomTestMultiply(
     minSize: int = -100, maxSize: int = 100, verbose: bool = False
 ) -> bool:
     """
-    Generates random dimensions and values to test the testMultiply function.
+    Generates Random dimensions and values to test the TestMultiply function.
 
     Args:
         minSize (int): Minimum size for the matrix dimensions and element values.
@@ -284,14 +316,14 @@ def randomTestMultiply(
         verbose (bool): If True, prints the testing details.
 
     Returns:
-        bool: Result of the testMultiply function.
+        bool: Result of the TestMultiply function.
     """
     Arows = random.randint(0, maxSize)
     Acols = random.randint(0, maxSize)
     Brows = Acols  # Ensures multiplication is possible
     Bcols = random.randint(0, maxSize)
 
-    testResult = testMultiply(
+    testResult = TestMultiply(
         Arows=Arows,
         Acols=Acols,
         Brows=Brows,
@@ -304,8 +336,8 @@ def randomTestMultiply(
     return testResult
 
 
-# --- testMatrixAdd ---
-def testMatrixAdd(
+# --- TestMatrixAdd ---
+def TestMatrixAdd(
     Arows: int = 4,
     Acols: int = 3,
     Brows: int = 4,
@@ -332,48 +364,60 @@ def testMatrixAdd(
     a = Matrix(Arows, Acols, min_, max_)
 
     if verbose:
+
         print(f"A:\n{a}")
 
     b = Matrix(Brows, Bcols, min_, max_)
 
     if verbose:
+
         print(f"B:\n{b}")
 
     try:
+
         c = MatrixAdd(matrixA=a, matrixB=b)
     except Exception:
+
         print(f"C:\n{c}\n")
         print(f"{Arows=}\n{Acols=}\n{Brows=}\n{Bcols=}\n{min_=}\n{max_=}")
         return False
 
     if verbose:
+
         print(f"C:\n{c}")
 
     d = a.matrix + b.matrix
     correct = c.shape == d.shape
 
     for row in range(c.shape[0]):
+
         for col in range(c.shape[1]):
+
             if not correct:
+
                 break
             correct = c[row][col] == d[row][col]
 
     if not correct:
+
         print(f"{Arows=}\n{Acols=}\n{Brows=}\n{Bcols=}\n{min_=}\n{max_=}")
         print(f"C:\n{c}")
         print(f"D:\n{d}")
         return False
+
     else:
+
         if verbose:
+
             print(f"Correct Shape\nCorrect Elements")
         return True
 
 
-def randomTestMatrixAdd(
+def RandomTestMatrixAdd(
     minSize: int = -100, maxSize: int = 100, verbose: bool = False
 ) -> bool:
     """
-    Generates random dimensions and values to test the testMatrixAdd function.
+    Generates Random dimensions and values to test the TestMatrixAdd function.
 
     Args:
         minSize (int): Minimum size for the matrix dimensions and element values.
@@ -381,14 +425,14 @@ def randomTestMatrixAdd(
         verbose (bool): If True, prints the testing details.
 
     Returns:
-        bool: Result of the testMatrixAdd function.
+        bool: Result of the TestMatrixAdd function.
     """
     Arows = random.randint(0, maxSize)
     Acols = random.randint(0, maxSize)
     Brows = Arows  # Ensures addition is possible
     Bcols = Acols
 
-    testResult = testMatrixAdd(
+    testResult = TestMatrixAdd(
         Arows=Arows,
         Acols=Acols,
         Brows=Brows,
@@ -401,8 +445,8 @@ def randomTestMatrixAdd(
     return testResult
 
 
-# --- testMatrixSubtract ---
-def testMatrixSubtract(
+# --- TestMatrixSubtract ---
+def TestMatrixSubtract(
     Arows: int = 4,
     Acols: int = 3,
     Brows: int = 4,
@@ -429,48 +473,60 @@ def testMatrixSubtract(
     a = Matrix(Arows, Acols, min_, max_)
 
     if verbose:
+
         print(f"A:\n{a}")
 
     b = Matrix(Brows, Bcols, min_, max_)
 
     if verbose:
+
         print(f"B:\n{b}")
 
     try:
+
         c = MatrixSubtract(matrixA=a, matrixB=b)
     except Exception:
+
         print(f"C:\n{c}\n")
         print(f"{Arows=}\n{Acols=}\n{Brows=}\n{Bcols=}\n{min_=}\n{max_=}")
         return False
 
     if verbose:
+
         print(f"C:\n{c}")
 
     d = a.matrix - b.matrix
     correct = c.shape == d.shape
 
     for row in range(c.shape[0]):
+
         for col in range(c.shape[1]):
+
             if not correct:
+
                 break
             correct = c[row][col] == d[row][col]
 
     if not correct:
+
         print(f"{Arows=}\n{Acols=}\n{Brows=}\n{Bcols=}\n{min_=}\n{max_=}")
         print(f"C:\n{c}")
         print(f"D:\n{d}")
         return False
+
     else:
+
         if verbose:
+
             print(f"Correct Shape\nCorrect Elements")
         return True
 
 
-def randomTestMatrixSubtract(
+def RandomTestMatrixSubtract(
     minSize: int = -100, maxSize: int = 100, verbose: bool = False
 ) -> bool:
     """
-    Generates random dimensions and values to test the testMatrixSubtract function.
+    Generates Random dimensions and values to test the TestMatrixSubtract function.
 
     Args:
         minSize (int): Minimum size for the matrix dimensions and element values.
@@ -478,14 +534,14 @@ def randomTestMatrixSubtract(
         verbose (bool): If True, prints the testing details.
 
     Returns:
-        bool: Result of the testMatrixSubtract function.
+        bool: Result of the TestMatrixSubtract function.
     """
     Arows = random.randint(0, maxSize)
     Acols = random.randint(0, maxSize)
     Brows = Arows  # Ensures subtraction is possible
     Bcols = Acols
 
-    testResult = testMatrixSubtract(
+    testResult = TestMatrixSubtract(
         Arows=Arows,
         Acols=Acols,
         Brows=Brows,
@@ -498,8 +554,8 @@ def randomTestMatrixSubtract(
     return testResult
 
 
-# --- testVectorLength ---
-def testVectorLength(
+# --- TestVectorLength ---
+def TestVectorLength(
     rows: int = 1,
     cols: int = 4,
     min_: int = 0,
@@ -517,21 +573,25 @@ def testVectorLength(
         verbose (bool): If True, prints the vector and results.
 
     Returns:
-        bool: True if the length is correct, False otherwise.
+        bool: True if the Length is correct, False otherwise.
     """
     a = Matrix(rows, cols, min_, max_)
 
     if verbose:
+
         print(f"A:\n{a}")
 
     try:
+
         c = Length(vector=a)
     except Exception:
+
         print(f"C:\n{c}\n")
         print(f"{rows=}\n{cols=}\n{min_=}\n{max_=}\n{verbose=}\n")
         return False
 
     if verbose:
+
         print(f"c:\n{c}")
 
     d = np.linalg.norm(a.matrix)
@@ -539,21 +599,25 @@ def testVectorLength(
     correct = c == d
 
     if not correct:
+
         print(f"{rows=}\n{cols=}\n{min_=}\n{max_=}\n{verbose=}\n")
         print(f"c:\n{c}")
         print(f"d:\n{d}")
         return False
+
     else:
+
         if verbose:
+
             print(f"Correct Shape\nCorrect Elements")
         return True
 
 
-def randomTestVectorLength(
+def RandomTestVectorLength(
     minSize: int = -100, maxSize: int = 100, verbose: bool = False
 ) -> bool:
     """
-    Generates random dimensions and values to test the testVectorLength function.
+    Generates Random dimensions and values to test the TestVectorLength function.
 
     Args:
         minSize (int): Minimum size for the vector dimensions and element values.
@@ -561,18 +625,20 @@ def randomTestVectorLength(
         verbose (bool): If True, prints the testing details.
 
     Returns:
-        bool: Result of the testVectorLength function.
+        bool: Result of the TestVectorLength function.
     """
     vectorElemCount = random.randint(0, maxSize)
 
     if random.randrange(0, 2) == 0:
+
         rows = vectorElemCount
         cols = 1
     else:
+
         rows = 1
         cols = vectorElemCount
 
-    testResult = testVectorLength(
+    testResult = TestVectorLength(
         rows=rows,
         cols=cols,
         min_=minSize,
@@ -583,8 +649,8 @@ def randomTestVectorLength(
     return testResult
 
 
-# --- testTranspose ---
-def testTranspose(
+# --- TestTranspose ---
+def TestTranspose(
     rows: int = 2,
     cols: int = 4,
     min_: int = 0,
@@ -592,9 +658,11 @@ def testTranspose(
     verbose: bool = False,
 ) -> bool:
     """ """
+
     a = Matrix(rows, cols, min_, max_)
 
     if verbose:
+
         print(f"A:\n{a}")
 
     try:
@@ -610,6 +678,7 @@ def testTranspose(
         return False
 
     if verbose:
+
         print(f"transA:\n{transA}")
 
     c = a.matrix.T
@@ -623,6 +692,7 @@ def testTranspose(
         print(f"Shape C: {c.shape}\n")
 
     for row in range(transA.shape[0]):
+
         for col in range(transA.shape[1]):
 
             if not correct:
@@ -651,12 +721,14 @@ def testTranspose(
         return False
 
     else:
+
         if verbose:
+
             print(f"Correct Shape\nCorrect Elements")
         return True
 
 
-def randomTestTranspose(
+def RandomTestTranspose(
     minSize: int = -100, maxSize: int = 100, verbose: bool = False
 ) -> bool:
     """ """
@@ -664,7 +736,7 @@ def randomTestTranspose(
     rows = random.randint(0, maxSize)
     cols = random.randint(0, maxSize)
 
-    testResult = testTranspose(
+    testResult = TestTranspose(
         rows=rows,
         cols=cols,
         min_=minSize,
@@ -675,8 +747,8 @@ def randomTestTranspose(
     return testResult
 
 
-# --- testUnitVector ---
-def testUnitVector(
+# --- TestUnitVector ---
+def TestUnitVector(
     rows: int = 1,
     cols: int = 4,
     min_: int = 0,
@@ -699,6 +771,7 @@ def testUnitVector(
     a = Matrix(rows, cols, min_, max_)
 
     if verbose:
+
         print(f"A:\n{a}")
 
     try:
@@ -764,16 +837,18 @@ def testUnitVector(
         return False
 
     else:
+
         if verbose:
+
             print(f"Correct Shape\nCorrect Elements")
         return True
 
 
-def randomTestUnitVector(
+def RandomTestUnitVector(
     minSize: int = -100, maxSize: int = 100, verbose: bool = False
 ) -> bool:
     """
-    Generates random dimensions and values to test the testUnitVector function.
+    Generates Random dimensions and values to test the TestUnitVector function.
 
     Args:
         minSize (int): Minimum size for the vector dimensions and element values.
@@ -781,18 +856,20 @@ def randomTestUnitVector(
         verbose (bool): If True, prints the testing details.
 
     Returns:
-        bool: Result of the testUnitVector function.
+        bool: Result of the TestUnitVector function.
     """
     vectorElemCount = random.randint(0, maxSize)
 
     if random.randrange(0, 2) == 0:
+
         rows = vectorElemCount
         cols = 1
     else:
+
         rows = 1
         cols = vectorElemCount
 
-    testResult = testUnitVector(
+    testResult = TestUnitVector(
         rows=rows,
         cols=cols,
         min_=minSize,
@@ -803,8 +880,8 @@ def randomTestUnitVector(
     return testResult
 
 
-# --- testScalarMultiply ---
-def testScalarMultiply(
+# --- TestScalarMultiply ---
+def TestScalarMultiply(
     scalar: int | float = 5,
     rows: int = 4,
     cols: int = 3,
@@ -816,7 +893,7 @@ def testScalarMultiply(
     Tests the ScalarMultiply operation on a matrix.
 
     Args:
-        scalar (int | float): Scalar value to multiply with the matrix.
+        scalar (int | float): Scalar value to Multiply with the matrix.
         rows (int): Number of rows in the matrix.
         cols (int): Number of columns in the matrix.
         min_ (int): Minimum value for matrix elements.
@@ -829,50 +906,62 @@ def testScalarMultiply(
     a = Matrix(rows, cols, min_, max_)
 
     if verbose:
+
         print(f"A:\n{a}")
 
     try:
+
         c = ScalarMultiply(scalar=scalar, matrix=a)
     except Exception:
+
         print(f"C:\n{c}\n")
         print(f"{scalar=}\n{rows=}\n{cols=}\n{min_=}\n{max_=}\n{verbose=}\n")
         return False
 
     if verbose:
+
         print(f"C:\n{c}")
 
     d = scalar * a.matrix
     correct = c.shape == d.shape
 
     for row in range(c.shape[0]):
+
         for col in range(c.shape[1]):
+
             if not correct:
+
                 break
             correct = abs(c[row][col] - d[row][col]) < 0.00001
             if not correct:
+
                 print(c[row][col])
                 print(d[row][col])
                 break
 
     if not correct:
+
         print(f"{scalar=}\n{rows=}\n{cols=}\n{min_=}\n{max_=}\n{verbose=}\n")
         print(f"A:\n{a}")
         print(f"C:\n{c}")
         print(f"D:\n{d}")
         return False
+
     else:
+
         if verbose:
+
             print(f"Correct Shape\nCorrect Elements")
         return True
 
 
-def randomTestScalarMultiply(
+def RandomTestScalarMultiply(
     minSize: int = -100,
     maxSize: int = 100,
     verbose: bool = False,
 ) -> bool:
     """
-    Generates random dimensions and scalar values to test the testScalarMultiply function.
+    Generates Random dimensions and scalar values to test the TestScalarMultiply function.
 
     Args:
         minSize (int): Minimum size for the matrix dimensions and scalar values.
@@ -880,14 +969,14 @@ def randomTestScalarMultiply(
         verbose (bool): If True, prints the testing details.
 
     Returns:
-        bool: Result of the testScalarMultiply function.
+        bool: Result of the TestScalarMultiply function.
     """
     rows = random.randint(0, maxSize)
     cols = random.randint(0, maxSize)
 
     scalar = random.randint(minSize, maxSize)
 
-    testResult = testScalarMultiply(
+    testResult = TestScalarMultiply(
         scalar=scalar,
         rows=rows,
         cols=cols,
@@ -899,8 +988,8 @@ def randomTestScalarMultiply(
     return testResult
 
 
-# --- testRREF ---
-def testRREF(
+# --- TestRREF ---
+def TestRREF(
     rows: int = 4,
     cols: int = 3,
     min_: int = 0,
@@ -923,6 +1012,7 @@ def testRREF(
     a = Matrix(rows, cols, min_, max_)
 
     if verbose:
+
         print(f"A:\n{a}")
 
     rrefA = RREF(matrix=a)
@@ -932,37 +1022,46 @@ def testRREF(
     sympyRREF = FloatMatrix(np.array(sympyRREF).astype(float))
 
     if verbose:
+
         print(f"rrefA:\n{rrefA}")
         print(f"sympyRREF:\n{sympyRREF}")
 
     correct = rrefA.shape == sympyRREF.shape
 
     for row in range(rrefA.shape[0]):
+
         for col in range(rrefA.shape[1]):
+
             if not correct:
+
                 break
             correct = abs(rrefA[row][col] - sympyRREF[row][col]) < 0.0001
             if not correct:
+
                 print(rrefA[row][col])
                 print(sympyRREF[row][col])
                 break
 
     if not correct:
+
         print(f"{rows=}\n{cols=}\n{min_=}\n{max_=}\n{verbose=}\n")
         print(f"rrefA:\n{rrefA}")
         print(f"sympyRREF:\n{sympyRREF}")
         return False
+
     else:
+
         if verbose:
+
             print(f"Correct Shape\nCorrect Elements")
         return True
 
 
-def randomTestRREF(
+def RandomTestRREF(
     minSize: int = -100, maxSize: int = 100, verbose: bool = False
 ) -> bool:
     """
-    Generates random dimensions and values to test the testRREF function.
+    Generates Random dimensions and values to test the TestRREF function.
 
     Args:
         minSize (int): Minimum size for the matrix dimensions and element values.
@@ -970,13 +1069,13 @@ def randomTestRREF(
         verbose (bool): If True, prints the testing details.
 
     Returns:
-        bool: Result of the testRREF function.
+        bool: Result of the TestRREF function.
     """
     rows = random.randint(0, maxSize)
     cols = random.randint(0, maxSize)
     augmented = 0  # Unused parameter, kept for interface consistency
 
-    testResult = testRREF(
+    testResult = TestRREF(
         rows=rows,
         cols=cols,
         min_=minSize,
@@ -987,8 +1086,93 @@ def randomTestRREF(
     return testResult
 
 
-# --- testBasis ---
-def testBasis(
+# --- TestBase2RREF ---
+def TestBase2RREF(
+    rows: int = 4,
+    cols: int = 3,
+    min_: int = 0,
+    max_: int = 1,
+    verbose: bool = False,
+) -> bool:
+    """ """
+
+    a = Matrix(rows, cols, min_, max_)
+
+    print(f"A:\n{a}")
+
+    if verbose:
+
+        print(f"A:\n{a}")
+
+    Base2RREFA = Base2RREF(matrix=a)
+
+    print(f"Base2RREFA:\n{Base2RREFA}")
+
+    print(f"{rows=}\n{cols=}\n{min_=}\n{max_=}\n{verbose=}\n")
+
+    sympyRREF = symMatrix(a.matrix)
+    sympyRREF = sympyRREF.rref()[0]
+    sympyRREF = FloatMatrix(np.array(sympyRREF).astype(float))
+
+    if verbose:
+
+        print(f"rrefA:\n{Base2RREFA}")
+        print(f"sympyRREF:\n{sympyRREF}")
+
+    correct = Base2RREFA.shape == sympyRREF.shape
+
+    for row in range(Base2RREFA.shape[0]):
+
+        for col in range(Base2RREFA.shape[1]):
+
+            if not correct:
+
+                break
+
+            correct = abs(Base2RREFA[row][col] - sympyRREF[row][col]) < 0.0001
+            if not correct:
+
+                print(Base2RREFA[row][col])
+                print(sympyRREF[row][col])
+                break
+
+    if not correct:
+
+        print(f"{rows=}\n{cols=}\n{min_=}\n{max_=}\n{verbose=}\n")
+        print(f"rrefA:\n{Base2RREFA}")
+        print(f"sympyRREF:\n{sympyRREF}")
+        return False
+
+    else:
+
+        if verbose:
+
+            print(f"Correct Shape\nCorrect Elements")
+        return True
+
+
+def RandomTestBase2RREF(
+    minSize: int = -100, maxSize: int = 100, verbose: bool = False
+) -> bool:
+    """ """
+
+    rows = random.randint(0, maxSize)
+    cols = random.randint(0, maxSize)
+    augmented = 0  # Unused parameter, kept for interface consistency
+
+    testResult = TestBase2RREF(
+        rows=rows,
+        cols=cols,
+        min_=0,
+        max_=1,
+        verbose=verbose,
+    )
+
+    return testResult
+
+
+# --- TestBasis ---
+def TestBasis(
     rows: int = 4,
     cols: int = 3,
     min_: int = 0,
@@ -996,7 +1180,7 @@ def testBasis(
     verbose: bool = False,
 ) -> bool:
     """
-    Tests the Basis operation to find a basis for the column space of a matrix.
+    Tests the Basis operation to find a Basis for the column space of a matrix.
 
     Args:
         rows (int): Number of rows in the matrix.
@@ -1006,12 +1190,12 @@ def testBasis(
         verbose (bool): If True, prints the matrix and results.
 
     Returns:
-        bool: True if the basis is correct, False otherwise.
+        bool: True if the Basis is correct, False otherwise.
     """
 
-    def basisOfVectors(vectors):
+    def BasisOfVectors(vectors):
         """
-        Returns a set of linearly independent vectors forming the basis of the input matrix.
+        Returns a set of linearly independent vectors forming the Basis of the input matrix.
 
         Parameters:
         vectors (numpy.ndarray): A 2D array where each column represents a vector.
@@ -1025,18 +1209,26 @@ def testBasis(
         row = 0
 
         for col in range(n_cols):
+
             if row >= n_rows:
+
                 break
             if matrix[row, col] == 0:
+
                 for r in range(row + 1, n_rows):
+
                     if matrix[r, col] != 0:
+
                         matrix[[row, r]] = matrix[[r, row]]
                         break
             if matrix[row, col] != 0:
-                pivot_columns.append(col)
+
+                pivot_columns.Append(col)
                 matrix[row] = matrix[row] / matrix[row, col]
                 for r in range(n_rows):
+
                     if r != row:
+
                         matrix[r] -= matrix[r, col] * matrix[row]
                 row += 1
 
@@ -1049,20 +1241,21 @@ def testBasis(
     a = FloatMatrix(np.array([[-6, -88, -31, -7], [-6, -88, -12, -13]]))
 
     if verbose:
+
         print(f"A:\n{a}")
-    basisA = Basis(span=a)
-    c = basisOfVectors(a.matrix)
+    BasisA = Basis(span=a)
+    c = BasisOfVectors(a.matrix)
 
     if verbose:
 
-        print(f"basisA:\n{basisA}")
+        print(f"BasisA:\n{BasisA}")
         print(f"C:\n{c}")
 
-    correct = basisA.shape == c.shape
+    correct = BasisA.shape == c.shape
 
     if (
-        basisA.shape[0] == 1
-        and basisA.shape[1] == 1
+        BasisA.shape[0] == 1
+        and BasisA.shape[1] == 1
         and c.shape[0] == 1
         and c.shape[1] == 1
     ):
@@ -1074,22 +1267,23 @@ def testBasis(
     if not correct:
 
         print(f"\n\nError causing components:\n")
-        print(f"Shape basisA: {basisA.shape}")
+        print(f"Shape BasisA: {BasisA.shape}")
         print(f"Shape C: {c.shape}\n")
 
-    for row in range(basisA.shape[0]):
-        for col in range(basisA.shape[1]):
+    for row in range(BasisA.shape[0]):
+
+        for col in range(BasisA.shape[1]):
 
             if not correct:
 
                 break
 
-            correct = abs(basisA[row][col] - c[row][col]) < 0.00001
+            correct = abs(BasisA[row][col] - c[row][col]) < 0.00001
 
             if not correct:
 
                 print(f"\n\nError causing components:\n")
-                print(f"basisA: {basisA[row][col]}")
+                print(f"BasisA: {BasisA[row][col]}")
                 print(f"C: {c[row][col]}")
 
                 break
@@ -1100,22 +1294,24 @@ def testBasis(
 
         print(f"A:\n{a}\n")
 
-        print(f"basisA:\n{basisA}\n")
+        print(f"BasisA:\n{BasisA}\n")
         print(f"C:\n{c}")
 
         return False
 
     else:
+
         if verbose:
+
             print(f"Correct Shape\nCorrect Elements")
         return True
 
 
-def randomTestBasis(
+def RandomTestBasis(
     minSize: int = -100, maxSize: int = 100, verbose: bool = False
 ) -> bool:
     """
-    Generates random dimensions and values to test the testBasis function.
+    Generates Random dimensions and values to test the TestBasis function.
 
     Args:
         minSize (int): Minimum size for the matrix dimensions and element values.
@@ -1123,12 +1319,12 @@ def randomTestBasis(
         verbose (bool): If True, prints the testing details.
 
     Returns:
-        bool: Result of the testBasis function.
+        bool: Result of the TestBasis function.
     """
     rows = random.randint(1, maxSize)
     cols = random.randint(1, maxSize)
 
-    testResult = testBasis(
+    testResult = TestBasis(
         rows=rows,
         cols=cols,
         min_=minSize,
@@ -1139,8 +1335,8 @@ def randomTestBasis(
     return testResult
 
 
-# --- testQRDecomposition ---
-def testQRDecomposition(
+# --- TestQRDecomposition ---
+def TestQRDecomposition(
     rows: int = 4,
     cols: int = 3,
     min_: int = 0,
@@ -1155,17 +1351,17 @@ def testQRDecomposition(
 
         print(f"A:\n{a}")
 
-    q, r = qrDecomposition(span=a)
+    q, r = QRDecomposition(span=a)
 
-    basisA = Basis(span=a)
+    BasisA = Basis(span=a)
 
-    q2, r2 = np.linalg.qr(basisA)
+    q2, r2 = np.linalg.qr(BasisA)
 
     try:
 
         if verbose:
 
-            print(f"basisA:\n{basisA}\n")
+            print(f"BasisA:\n{BasisA}\n")
 
             print(f"q:\n{q}\n")
             print(f"q2:\n{FloatMatrix(q2)}")
@@ -1186,7 +1382,7 @@ def testQRDecomposition(
 
             print(f"A:\n{a}\n")
 
-            print(f"basisA:\n{basisA}\n")
+            print(f"BasisA:\n{BasisA}\n")
 
             print(f"q:\n{q}\n")
             print(f"q2:\n{FloatMatrix(q2)}")
@@ -1197,22 +1393,22 @@ def testQRDecomposition(
 
         for colNum in range(q.numCols):
 
-            firstNonZeroIndex = None
+            FirstNonZeroIndex = None
 
             for row in range(q.numRows):
 
                 if abs(q[row][colNum] - 0) > 0.000001:
 
-                    firstNonZeroIndex = row
+                    FirstNonZeroIndex = row
 
                     break
 
             if (
-                q[firstNonZeroIndex][colNum] > 0.000001
-                and q2[firstNonZeroIndex][colNum] < -0.000001
+                q[FirstNonZeroIndex][colNum] > 0.000001
+                and q2[FirstNonZeroIndex][colNum] < -0.000001
             ) or (
-                q[firstNonZeroIndex][colNum] < -0.000001
-                and q2[firstNonZeroIndex][colNum] > 0.000001
+                q[FirstNonZeroIndex][colNum] < -0.000001
+                and q2[FirstNonZeroIndex][colNum] > 0.000001
             ):
 
                 for row in range(q.numRows):
@@ -1222,6 +1418,7 @@ def testQRDecomposition(
                         q[row][colNum] = -q[row][colNum]
 
         for row in range(q.shape[0]):
+
             for col in range(q.shape[1]):
 
                 if not correct:
@@ -1244,7 +1441,7 @@ def testQRDecomposition(
 
             print(f"A:\n{a}\n")
 
-            print(f"basisA:\n{basisA}\n")
+            print(f"BasisA:\n{BasisA}\n")
 
             print(f"q:\n{q}\n")
             print(f"q2:\n{FloatMatrix(q2)}")
@@ -1267,7 +1464,7 @@ def testQRDecomposition(
 
             print(f"A:\n{a}\n")
 
-            print(f"basisA:\n{basisA}\n")
+            print(f"BasisA:\n{BasisA}\n")
 
             print(f"q:\n{q}\n")
             print(f"q2:\n{FloatMatrix(q2)}")
@@ -1278,22 +1475,22 @@ def testQRDecomposition(
 
         for rowNum in range(r.numRows):
 
-            firstNonZeroIndex = None
+            FirstNonZeroIndex = None
 
             for col in range(r.numCols):
 
                 if abs(r[rowNum][col] - 0) > 0.000001:
 
-                    firstNonZeroIndex = col
+                    FirstNonZeroIndex = col
 
                     break
 
             if (
-                r[rowNum][firstNonZeroIndex] > 0.000001
-                and r2[rowNum][firstNonZeroIndex] < -0.000001
+                r[rowNum][FirstNonZeroIndex] > 0.000001
+                and r2[rowNum][FirstNonZeroIndex] < -0.000001
             ) or (
-                r[rowNum][firstNonZeroIndex] < -0.000001
-                and r2[rowNum][firstNonZeroIndex] > 0.000001
+                r[rowNum][FirstNonZeroIndex] < -0.000001
+                and r2[rowNum][FirstNonZeroIndex] > 0.000001
             ):
 
                 for col in range(r.numCols):
@@ -1303,6 +1500,7 @@ def testQRDecomposition(
                         r[rowNum][col] = -r[rowNum][col]
 
         for row in range(r.shape[0]):
+
             for col in range(r.shape[1]):
 
                 if not correct:
@@ -1325,7 +1523,7 @@ def testQRDecomposition(
 
             print(f"A:\n{a}\n")
 
-            print(f"basisA:\n{basisA}\n")
+            print(f"BasisA:\n{BasisA}\n")
 
             print(f"q:\n{q}\n")
             print(f"q2:\n{FloatMatrix(q2)}")
@@ -1335,7 +1533,9 @@ def testQRDecomposition(
             return False
 
         else:
+
             if verbose:
+
                 print(f"Correct Shape\nCorrect Elements")
             return True
 
@@ -1350,7 +1550,7 @@ def testQRDecomposition(
 
         print(f"A:\n{a}\n")
 
-        print(f"basisA:\n{basisA}\n")
+        print(f"BasisA:\n{BasisA}\n")
 
         print(f"q:\n{q}\n")
         print(f"q2:\n{FloatMatrix(q2)}")
@@ -1360,14 +1560,15 @@ def testQRDecomposition(
         return False
 
 
-def randomTestQRDecomposition(
+def RandomTestQRDecomposition(
     minSize: int = -100, maxSize: int = 100, verbose: bool = False
 ) -> bool:
     """ """
+
     rows = random.randint(1, maxSize)
     cols = random.randint(1, maxSize)
 
-    testResult = testQRDecomposition(
+    testResult = TestQRDecomposition(
         rows=rows,
         cols=cols,
         min_=minSize,
@@ -1378,8 +1579,8 @@ def randomTestQRDecomposition(
     return testResult
 
 
-# --- testGramSchmidtRandomSpan ---
-def testGramSchmidtRandomSpan(
+# --- TestGramSchmidtRandomSpan ---
+def TestGramSchmidtRandomSpan(
     rows: int = 4,
     cols: int = 3,
     min_: int = 0,
@@ -1387,7 +1588,7 @@ def testGramSchmidtRandomSpan(
     verbose: bool = False,
 ) -> bool:
     """
-    Tests the Gram Schmidt operation to find an orthonormal basis from an input basis.
+    Tests the Gram Schmidt operation to find an orthonormal Basis from an input Basis.
 
     Args:
         rows (int): Number of rows in the matrix.
@@ -1397,7 +1598,7 @@ def testGramSchmidtRandomSpan(
         verbose (bool): If True, prints the matrix and results.
 
     Returns:
-        bool: True if the orthonormal basis is correct, False otherwise.
+        bool: True if the orthonormal Basis is correct, False otherwise.
     """
 
     a = Matrix(rows, cols, min_, max_)
@@ -1434,22 +1635,22 @@ def testGramSchmidtRandomSpan(
 
     for colNum in range(orthonormalA.numCols):
 
-        firstNonZeroIndex = None
+        FirstNonZeroIndex = None
 
         for row in range(orthonormalA.numRows):
 
             if abs(orthonormalA[row][colNum] - 0) > 0.0001:
 
-                firstNonZeroIndex = row
+                FirstNonZeroIndex = row
 
                 break
 
         if (
-            orthonormalA[firstNonZeroIndex][colNum] > 0.0001
-            and c[firstNonZeroIndex][colNum] < -0.0001
+            orthonormalA[FirstNonZeroIndex][colNum] > 0.0001
+            and c[FirstNonZeroIndex][colNum] < -0.0001
         ) or (
-            orthonormalA[firstNonZeroIndex][colNum] < -0.0001
-            and c[firstNonZeroIndex][colNum] > 0.0001
+            orthonormalA[FirstNonZeroIndex][colNum] < -0.0001
+            and c[FirstNonZeroIndex][colNum] > 0.0001
         ):
 
             for row in range(orthonormalA.numRows):
@@ -1457,6 +1658,7 @@ def testGramSchmidtRandomSpan(
                 orthonormalA[row][colNum] = -orthonormalA[row][colNum]
 
     for row in range(orthonormalA.shape[0]):
+
         for col in range(orthonormalA.shape[1]):
 
             if not correct:
@@ -1486,16 +1688,18 @@ def testGramSchmidtRandomSpan(
         return False
 
     else:
+
         if verbose:
+
             print(f"Correct Shape\nCorrect Elements")
         return True
 
 
-def randomTestGramSchmidtRandomSpan(
+def RandomTestGramSchmidtRandomSpan(
     minSize: int = -100, maxSize: int = 100, verbose: bool = False
 ) -> bool:
     """
-    Generates random dimensions and values to test the testGramSchmidt function.
+    Generates Random dimensions and values to test the TestGramSchmidt function.
 
     Args:
         minSize (int): Minimum size for the matrix dimensions and element values.
@@ -1503,12 +1707,12 @@ def randomTestGramSchmidtRandomSpan(
         verbose (bool): If True, prints the testing details.
 
     Returns:
-        bool: Result of the testBasis function.
+        bool: Result of the TestBasis function.
     """
     rows = random.randint(1, maxSize)
     cols = random.randint(1, maxSize)
 
-    testResult = testGramSchmidt(
+    testResult = TestGramSchmidt(
         rows=rows,
         cols=cols,
         min_=minSize,
@@ -1519,8 +1723,8 @@ def randomTestGramSchmidtRandomSpan(
     return testResult
 
 
-# --- testGramSchmidt ---
-def testGramSchmidt(
+# --- TestGramSchmidt ---
+def TestGramSchmidt(
     rows: int = 4,
     cols: int = 3,
     min_: int = 0,
@@ -1528,7 +1732,7 @@ def testGramSchmidt(
     verbose: bool = False,
 ) -> bool:
     """
-    Tests the Gram Schmidt operation to find an orthonormal basis from an input basis.
+    Tests the Gram Schmidt operation to find an orthonormal Basis from an input Basis.
 
     Args:
         rows (int): Number of rows in the matrix.
@@ -1538,7 +1742,7 @@ def testGramSchmidt(
         verbose (bool): If True, prints the matrix and results.
 
     Returns:
-        bool: True if the orthonormal basis is correct, False otherwise.
+        bool: True if the orthonormal Basis is correct, False otherwise.
     """
 
     a = Matrix(rows, cols, min_, max_)
@@ -1547,7 +1751,7 @@ def testGramSchmidt(
 
         a = Matrix(rows, cols, min_, max_)
 
-    basisA = Basis(span=a)
+    BasisA = Basis(span=a)
 
     if verbose:
 
@@ -1555,22 +1759,22 @@ def testGramSchmidt(
 
     try:
 
-        orthonormalA = GramSchmidt(span=basisA)
+        orthonormalA = GramSchmidt(span=BasisA)
 
     except IndexError:
 
         print(f"{rows=}\n{cols=}\n{min_=}\n{max_=}\n{verbose=}\n")
 
         print(f"A:\n{a}\n")
-        print(f"BasisA:\n{basisA}\n")
+        print(f"BasisA:\n{BasisA}\n")
 
         return False
 
-    c, R = np.linalg.qr(basisA)
+    c, R = np.linalg.qr(BasisA)
 
     if verbose:
 
-        print(f"basisA:\n{basisA}")
+        print(f"BasisA:\n{BasisA}")
         print(f"C:\n{c}")
 
     correct = orthonormalA.shape == c.shape
@@ -1584,7 +1788,7 @@ def testGramSchmidt(
         print(f"{rows=}\n{cols=}\n{min_=}\n{max_=}\n{verbose=}\n")
 
         print(f"A:\n{a}\n")
-        print(f"BasisA:\n{basisA}\n")
+        print(f"BasisA:\n{BasisA}\n")
 
         print(f"orthonormalA:\n{orthonormalA}\n")
         print(f"FloatMatrix(c):\n{FloatMatrix(c)}")
@@ -1594,22 +1798,22 @@ def testGramSchmidt(
 
     for colNum in range(orthonormalA.numCols):
 
-        firstNonZeroIndex = None
+        FirstNonZeroIndex = None
 
         for row in range(orthonormalA.numRows):
 
             if abs(orthonormalA[row][colNum] - 0) > 0.0001:
 
-                firstNonZeroIndex = row
+                FirstNonZeroIndex = row
 
                 break
 
         if (
-            orthonormalA[firstNonZeroIndex][colNum] > 0.0001
-            and c[firstNonZeroIndex][colNum] < -0.0001
+            orthonormalA[FirstNonZeroIndex][colNum] > 0.0001
+            and c[FirstNonZeroIndex][colNum] < -0.0001
         ) or (
-            orthonormalA[firstNonZeroIndex][colNum] < -0.0001
-            and c[firstNonZeroIndex][colNum] > 0.0001
+            orthonormalA[FirstNonZeroIndex][colNum] < -0.0001
+            and c[FirstNonZeroIndex][colNum] > 0.0001
         ):
 
             for row in range(orthonormalA.numRows):
@@ -1617,6 +1821,7 @@ def testGramSchmidt(
                 orthonormalA[row][colNum] = -orthonormalA[row][colNum]
 
     for row in range(orthonormalA.shape[0]):
+
         for col in range(orthonormalA.shape[1]):
 
             if not correct:
@@ -1638,7 +1843,7 @@ def testGramSchmidt(
         print(f"{rows=}\n{cols=}\n{min_=}\n{max_=}\n{verbose=}\n")
 
         print(f"A:\n{a}\n")
-        print(f"BasisA:\n{basisA}\n")
+        print(f"BasisA:\n{BasisA}\n")
 
         print(f"orthonormalA:\n{orthonormalA}\n")
         print(f"FloatMatrix(c):\n{FloatMatrix(c)}")
@@ -1647,17 +1852,19 @@ def testGramSchmidt(
         return False
 
     else:
+
         if verbose:
+
             print(f"Correct Shape\nCorrect Elements")
 
         return True
 
 
-def randomTestGramSchmidt(
+def RandomTestGramSchmidt(
     minSize: int = -100, maxSize: int = 100, verbose: bool = False
 ) -> bool:
     """
-    Generates random dimensions and values to test the testGramSchmidt function.
+    Generates Random dimensions and values to test the TestGramSchmidt function.
 
     Args:
         minSize (int): Minimum size for the matrix dimensions and element values.
@@ -1665,12 +1872,12 @@ def randomTestGramSchmidt(
         verbose (bool): If True, prints the testing details.
 
     Returns:
-        bool: Result of the testBasis function.
+        bool: Result of the TestBasis function.
     """
     rows = random.randint(1, maxSize)
     cols = random.randint(1, maxSize)
 
-    testResult = testGramSchmidt(
+    testResult = TestGramSchmidt(
         rows=rows,
         cols=cols,
         min_=minSize,
@@ -1681,8 +1888,8 @@ def randomTestGramSchmidt(
     return testResult
 
 
-# --- testDeterminant ---
-def testDeterminant(
+# --- TestDeterminant ---
+def TestDeterminant(
     rows: int = 4,
     cols: int = 4,
     min_: int = -10,
@@ -1705,37 +1912,45 @@ def testDeterminant(
     a = Matrix(rows, cols, min_, max_)
 
     if verbose:
+
         print(f"A:\n{a}")
 
     detA = Determinat(matrix=a)
     b = np.linalg.det(a.matrix)
 
     if verbose:
+
         print(f"detA:\n{detA}")
         print(f"B:\n{b}")
 
     if abs(detA) > 100000000:
+
         correct = abs((detA - b) / b) < 0.000001
     else:
+
         correct = abs(detA - b) < 0.00001
 
     if not correct:
+
         print(f"{rows=}\n{cols=}\n{min_=}\n{max_=}\n{verbose=}\n")
         print(f"A:\n{a}")
         print(f"detA:\n{detA}")
         print(f"B:\n{b}")
         return False
+
     else:
+
         if verbose:
+
             print(f"Correct Shape\nCorrect Elements")
         return True
 
 
-def randomTestDeterminant(
+def RandomTestDeterminant(
     minSize: int = -100, maxSize: int = 12, maxVal: int = 100, verbose: bool = False
 ) -> bool:
     """
-    Generates random square dimensions and values to test the testDeterminant function.
+    Generates Random square dimensions and values to test the TestDeterminant function.
 
     Args:
         minSize (int): Minimum size for the matrix dimensions and element values.
@@ -1744,12 +1959,12 @@ def randomTestDeterminant(
         verbose (bool): If True, prints the testing details.
 
     Returns:
-        bool: Result of the testDeterminant function.
+        bool: Result of the TestDeterminant function.
     """
     rows = random.randint(0, maxSize)
     cols = rows  # Ensures the matrix is square
 
-    testResult = testDeterminant(
+    testResult = TestDeterminant(
         rows=rows,
         cols=cols,
         min_=minSize,
@@ -1760,8 +1975,8 @@ def randomTestDeterminant(
     return testResult
 
 
-# --- testInverse ---
-def testInverse(
+# --- TestInverse ---
+def TestInverse(
     rows: int = 4,
     cols: int = 4,
     min_: int = -10,
@@ -1779,57 +1994,71 @@ def testInverse(
         verbose (bool): If True, prints the matrix and results.
 
     Returns:
-        bool: True if the inverse is correct or None if the matrix is singular, False otherwise.
+        bool: True if the Inverse is correct or None if the matrix is singular, False otherwise.
     """
     a = Matrix(rows, cols, min_, max_)
 
     if verbose:
+
         print(f"A:\n{a}")
 
     invA = Inverse(matrix=a)
 
     if Determinat(a) == 0:
+
         return invA is None
 
     try:
+
         c = np.linalg.inv(a.matrix)
     except np.linalg.LinAlgError:
+
         if verbose:
+
             print("Matrix is singular and cannot be inverted.")
         return invA is None
 
     if verbose:
+
         print(f"invA:\n{invA}")
         print(f"C:\n{c}")
 
     correct = invA.shape == c.shape
 
     for row in range(invA.shape[0]):
+
         for col in range(invA.shape[1]):
+
             if not correct:
+
                 break
             correct = abs(invA[row][col] - c[row][col]) < 0.00001
             if not correct:
+
                 print(invA[row][col])
                 print(c[row][col])
                 break
 
     if not correct:
+
         print(f"{rows=}\n{cols=}\n{min_=}\n{max_=}\n{verbose=}\n")
         print(f"invA:\n{invA}")
         print(f"C:\n{c}")
         return False
+
     else:
+
         if verbose:
+
             print(f"Correct Shape\nCorrect Elements")
         return True
 
 
-def randomTestInverse(
+def RandomTestInverse(
     minSize: int = -100, maxSize: int = 100, maxVal: int = 100, verbose: bool = False
 ) -> bool:
     """
-    Generates random square dimensions and values to test the testInverse function.
+    Generates Random square dimensions and values to test the TestInverse function.
 
     Args:
         minSize (int): Minimum size for the matrix dimensions and element values.
@@ -1838,12 +2067,12 @@ def randomTestInverse(
         verbose (bool): If True, prints the testing details.
 
     Returns:
-        bool: Result of the testInverse function.
+        bool: Result of the TestInverse function.
     """
     rows = random.randint(0, maxSize)
     cols = rows  # Ensures the matrix is square
 
-    testResult = testInverse(
+    testResult = TestInverse(
         rows=rows,
         cols=cols,
         min_=minSize,
@@ -1859,7 +2088,7 @@ def randomTestInverse(
 # ============================
 
 
-def calculateTimeComplexity(
+def CalculateTimeComplexity(
     func,
     minSize: int = -100,
     maxSize: int = 100,
@@ -1881,28 +2110,33 @@ def calculateTimeComplexity(
     """
     runs = []
     if verbose:
+
         print(f"Function: {func.__name__}")
 
     for size in range(maxSize):
+
         startTime = time.time()
 
         if (
-            func.__name__ == "randomTestInverse"
-            or func.__name__ == "randomTestDeterminant"
+            func.__name__ == "RandomTestInverse"
+            or func.__name__ == "RandomTestDeterminant"
         ):
             testResult = func(minSize=-maxVal, maxSize=maxVal, verbose=False)
         else:
+
             testResult = func(minSize=minSize, maxSize=maxSize, verbose=False)
 
         endTime = time.time()
 
         if not testResult:
+
             print(f"{func.__name__}")
             break
 
-        runs.append((size, endTime - startTime))
+        runs.Append((size, endTime - startTime))
 
         if verbose:
+
             print(f"\nSize: {size}\n\tTime: {endTime - startTime} s")
 
     fig = plt.figure()
@@ -1915,6 +2149,7 @@ def calculateTimeComplexity(
     plt.savefig(f"{func.__name__}Complexity.png")
 
     if verbose and runs:
+
         plt.show()
 
 
@@ -1929,11 +2164,28 @@ if __name__ == "__main__":
 
     noErrors = True
 
+    # Test Base2RREF
+    if noErrors:
+
+        for _ in tqdm(range(1000), desc="Base2RREF"):
+
+            testResult = RandomTestBase2RREF(
+                minSize=minSize, maxSize=maxSize, verbose=False
+            )
+
+            if not testResult:
+
+                print("BASE2RREF")
+                noErrors = False
+
+                break
+
     # Test qrDecomposition
     if noErrors:
 
         for _ in tqdm(range(1000), desc="qrDecomposition"):
-            testResult = randomTestQRDecomposition(
+
+            testResult = RandomTestQRDecomposition(
                 minSize=minSize, maxSize=15, verbose=False
             )
 
@@ -1947,8 +2199,9 @@ if __name__ == "__main__":
     # Test Basis
     if noErrors:
 
-        for _ in tqdm(range(1000), desc="testBasis"):
-            testResult = randomTestBasis(minSize=minSize, maxSize=15, verbose=False)
+        for _ in tqdm(range(1000), desc="TestBasis"):
+
+            testResult = RandomTestBasis(minSize=minSize, maxSize=15, verbose=False)
 
             if not testResult:
 
@@ -1960,11 +2213,13 @@ if __name__ == "__main__":
     # Test Transpose
     if noErrors:
 
-        for _ in tqdm(range(1000), desc="testTranspose"):
-            testResult = randomTestTranspose(
+        for _ in tqdm(range(1000), desc="TestTranspose"):
+
+            testResult = RandomTestTranspose(
                 minSize=minSize, maxSize=maxSize, verbose=False
             )
             if not testResult:
+
                 print("Transpose")
                 noErrors = False
                 break
@@ -1972,11 +2227,13 @@ if __name__ == "__main__":
     # Test GramSchmidt
     if noErrors:
 
-        for _ in tqdm(range(1000), desc="testGramSchmidt"):
-            testResult = randomTestGramSchmidt(
+        for _ in tqdm(range(1000), desc="TestGramSchmidt"):
+
+            testResult = RandomTestGramSchmidt(
                 minSize=minSize, maxSize=15, verbose=False
             )
             if not testResult:
+
                 print("GramSchmidt")
                 noErrors = False
                 break
@@ -1984,11 +2241,13 @@ if __name__ == "__main__":
     # Test GramSchmidtRandomSpan
     if noErrors:
 
-        for _ in tqdm(range(1000), desc="testGramSchmidtRandomSpan"):
-            testResult = randomTestGramSchmidtRandomSpan(
+        for _ in tqdm(range(1000), desc="TestGramSchmidtRandomSpan"):
+
+            testResult = RandomTestGramSchmidtRandomSpan(
                 minSize=minSize, maxSize=15, verbose=False
             )
             if not testResult:
+
                 print("GramSchmidtRandomSpan")
                 noErrors = False
                 break
@@ -1996,11 +2255,13 @@ if __name__ == "__main__":
     # Test UnitVector
     if noErrors:
 
-        for _ in tqdm(range(10000), desc="testUnitVector"):
-            testResult = randomTestUnitVector(
+        for _ in tqdm(range(10000), desc="TestUnitVector"):
+
+            testResult = RandomTestUnitVector(
                 minSize=minSize, maxSize=maxSize, verbose=False
             )
             if not testResult:
+
                 print("UnitVector")
                 noErrors = False
                 break
@@ -2008,11 +2269,13 @@ if __name__ == "__main__":
     # Test Inverse
     if noErrors:
 
-        for _ in tqdm(range(50), desc="testInverse"):
-            testResult = randomTestInverse(
+        for _ in tqdm(range(50), desc="TestInverse"):
+
+            testResult = RandomTestInverse(
                 minSize=minSize, maxSize=8, maxVal=maxSize, verbose=False
             )
             if not testResult:
+
                 print("Inverse")
                 noErrors = False
                 break
@@ -2020,11 +2283,13 @@ if __name__ == "__main__":
     # Test Determinant
     if noErrors:
 
-        for _ in tqdm(range(100), desc="testDeterminant"):
-            testResult = randomTestDeterminant(
+        for _ in tqdm(range(100), desc="TestDeterminant"):
+
+            testResult = RandomTestDeterminant(
                 minSize=minSize, maxSize=8, maxVal=maxSize, verbose=False
             )
             if not testResult:
+
                 print("Determinant")
                 noErrors = False
                 break
@@ -2032,11 +2297,13 @@ if __name__ == "__main__":
     # Test VectorDot
     if noErrors:
 
-        for _ in tqdm(range(1000), desc="testVectorDot"):
-            testResult = randomTestVectorDot(
+        for _ in tqdm(range(1000), desc="TestVectorDot"):
+
+            testResult = RandomTestVectorDot(
                 minSize=minSize, maxSize=maxSize, verbose=False
             )
             if not testResult:
+
                 print("VectorDot")
                 noErrors = False
                 break
@@ -2044,11 +2311,13 @@ if __name__ == "__main__":
     # Test Multiply
     if noErrors:
 
-        for _ in tqdm(range(10), desc="testMultiply"):
-            testResult = randomTestMultiply(
+        for _ in tqdm(range(10), desc="TestMultiply"):
+
+            testResult = RandomTestMultiply(
                 minSize=minSize, maxSize=maxSize, verbose=False
             )
             if not testResult:
+
                 print("Multiply")
                 noErrors = False
                 break
@@ -2056,11 +2325,13 @@ if __name__ == "__main__":
     # Test MatrixAdd
     if noErrors:
 
-        for _ in tqdm(range(100), desc="testMatrixAdd"):
-            testResult = randomTestMatrixAdd(
+        for _ in tqdm(range(100), desc="TestMatrixAdd"):
+
+            testResult = RandomTestMatrixAdd(
                 minSize=minSize, maxSize=maxSize, verbose=False
             )
             if not testResult:
+
                 print("MatrixAdd")
                 noErrors = False
                 break
@@ -2068,11 +2339,13 @@ if __name__ == "__main__":
     # Test MatrixSubtract
     if noErrors:
 
-        for _ in tqdm(range(100), desc="testMatrixSubtract"):
-            testResult = randomTestMatrixSubtract(
+        for _ in tqdm(range(100), desc="TestMatrixSubtract"):
+
+            testResult = RandomTestMatrixSubtract(
                 minSize=minSize, maxSize=maxSize, verbose=False
             )
             if not testResult:
+
                 print("MatrixSubtract")
                 noErrors = False
                 break
@@ -2080,11 +2353,13 @@ if __name__ == "__main__":
     # Test ScalarMultiply
     if noErrors:
 
-        for _ in tqdm(range(100), desc="testScalarMultiply"):
-            testResult = randomTestScalarMultiply(
+        for _ in tqdm(range(100), desc="TestScalarMultiply"):
+
+            testResult = RandomTestScalarMultiply(
                 minSize=minSize, maxSize=maxSize, verbose=False
             )
             if not testResult:
+
                 print("ScalarMultiply")
                 noErrors = False
                 break
@@ -2092,11 +2367,13 @@ if __name__ == "__main__":
     # Test VectorLength
     if noErrors:
 
-        for _ in tqdm(range(1000), desc="testVectorLength"):
-            testResult = randomTestVectorLength(
+        for _ in tqdm(range(1000), desc="TestVectorLength"):
+
+            testResult = RandomTestVectorLength(
                 minSize=minSize, maxSize=maxSize, verbose=False
             )
             if not testResult:
+
                 print("VectorLength")
                 noErrors = False
                 break
@@ -2104,9 +2381,12 @@ if __name__ == "__main__":
     # Test RREF
     if noErrors:
 
-        for _ in tqdm(range(25), desc="testRREF"):
-            testResult = randomTestRREF(minSize=minSize, maxSize=maxSize, verbose=False)
+        for _ in tqdm(range(25), desc="TestRREF"):
+
+            testResult = RandomTestRREF(minSize=minSize, maxSize=maxSize, verbose=False)
             if not testResult:
+
                 print("RREF")
+
                 noErrors = False
                 break

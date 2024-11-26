@@ -1,6 +1,6 @@
 import numpy as np
 
-from matrix import FloatMatrix, Matrix
+from Matrix import FloatMatrix, Matrix
 
 
 def RREF(
@@ -19,7 +19,7 @@ def RREF(
 
         matrix_ = FloatMatrix(matrix)
 
-    def scaleRows(matrix: FloatMatrix) -> FloatMatrix:
+    def ScaleRows(matrix: FloatMatrix) -> FloatMatrix:
 
         matrix_ = matrix
 
@@ -47,7 +47,7 @@ def RREF(
 
         return matrix_
 
-    def scaleRow(matrix: FloatMatrix, rowNum: int) -> FloatMatrix:
+    def ScaleRow(matrix: FloatMatrix, rowNum: int) -> FloatMatrix:
 
         matrix_ = matrix
 
@@ -79,7 +79,7 @@ def RREF(
 
         return matrix_
 
-    def cleanNegZeros(matrix: FloatMatrix) -> FloatMatrix:
+    def CleanNegZeros(matrix: FloatMatrix) -> FloatMatrix:
 
         matrix_ = matrix
 
@@ -93,11 +93,11 @@ def RREF(
 
         return matrix_
 
-    def orderRows(matrix: FloatMatrix) -> FloatMatrix:
+    def OrderRows(matrix: FloatMatrix) -> FloatMatrix:
 
         matrix_ = matrix
 
-        def firstNonZeroIndex(row):
+        def FirstNonZeroIndex(row):
 
             row_ = row
 
@@ -106,43 +106,43 @@ def RREF(
             return nonZeroIndices[0] if nonZeroIndices.size > 0 else len(row_)
 
         sortedMatrix = FloatMatrix(
-            matrix_[np.argsort([firstNonZeroIndex(row) for row in matrix_])]
+            matrix_[np.argsort([FirstNonZeroIndex(row) for row in matrix_])]
         )
 
         return sortedMatrix
 
     pivotRowNum = 0
 
-    firstNonZeroIndex = None
+    FirstNonZeroIndex = None
 
-    matrix_ = orderRows(matrix=matrix_)
+    matrix_ = OrderRows(matrix=matrix_)
 
     while pivotRowNum < matrix_.numRows:
 
-        scaleRow(matrix=matrix_, rowNum=pivotRowNum)
+        ScaleRow(matrix=matrix_, rowNum=pivotRowNum)
 
         pivotRow = matrix_[pivotRowNum, :]
 
         for i, elem in enumerate(pivotRow):
 
-            firstNonZeroIndex = None
+            FirstNonZeroIndex = None
 
             if elem != 0:
 
                 assert elem == 1
 
-                firstNonZeroIndex = i
+                FirstNonZeroIndex = i
 
                 break
 
         if (
-            firstNonZeroIndex is not None
-            and firstNonZeroIndex + augmentedColCount >= matrix_.numCols
+            FirstNonZeroIndex is not None
+            and FirstNonZeroIndex + augmentedColCount >= matrix_.numCols
         ):
 
             break
 
-        if firstNonZeroIndex is None:
+        if FirstNonZeroIndex is None:
 
             pivotRowNum += 1
 
@@ -154,11 +154,11 @@ def RREF(
 
                 continue
 
-            if row[firstNonZeroIndex] == 0:
+            if row[FirstNonZeroIndex] == 0:
 
                 continue
 
-            factor = row[firstNonZeroIndex] / pivotRow[firstNonZeroIndex]
+            factor = row[FirstNonZeroIndex] / pivotRow[FirstNonZeroIndex]
 
             for colNum, elem in enumerate(row):
 
@@ -166,10 +166,10 @@ def RREF(
 
         pivotRowNum += 1
 
-    matrix_ = scaleRows(matrix=matrix_)
+    matrix_ = ScaleRows(matrix=matrix_)
 
-    matrix_ = cleanNegZeros(matrix=matrix_)
+    matrix_ = CleanNegZeros(matrix=matrix_)
 
-    matrix_ = orderRows(matrix=matrix_)
+    matrix_ = OrderRows(matrix=matrix_)
 
     return matrix_

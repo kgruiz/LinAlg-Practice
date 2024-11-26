@@ -1,6 +1,6 @@
 import numpy as np
 
-from matrix import FloatMatrix, Matrix
+from Matrix import FloatMatrix, Matrix
 
 
 def VectorDot(
@@ -43,14 +43,14 @@ def VectorDot(
                     Shape B: {matrixB.numRows} x {matrixB.numCols}"
         )
 
-    lengthA = max(matrixA_.numRows, matrixA_.numCols)
-    lengthB = max(matrixB_.numRows, matrixB_.numCols)
+    LengthA = max(matrixA_.numRows, matrixA_.numCols)
+    LengthB = max(matrixB_.numRows, matrixB_.numCols)
 
-    if lengthA != lengthB:
+    if LengthA != LengthB:
 
         raise Exception(
-            f"Cannot perform dot product.\nMatrices A and B have different lengths.\n\
-                Length A: {lengthA}\nLength B: {lengthB}"
+            f"Cannot perform dot product.\nMatrices A and B have different Lengths.\n\
+                Length A: {LengthA}\nLength B: {LengthB}"
         )
 
     if matrixA_.shape[0] != 1:

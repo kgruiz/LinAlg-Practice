@@ -1,16 +1,16 @@
 import numpy as np
 
-from matrix import FloatMatrix, Matrix
-from matrixAdd import MatrixAdd
-from matrixSubtract import MatrixSubtract
-from scalarMultiply import ScalarMultiply
-from unitVector import UnitVector
-from vectorDot import VectorDot
+from Matrix import FloatMatrix, Matrix
+from MatrixAdd import MatrixAdd
+from MatrixSubtract import MatrixSubtract
+from ScalarMultiply import ScalarMultiply
+from UnitVector import UnitVector
+from VectorDot import VectorDot
 
 
 def Determinat(matrix: Matrix | FloatMatrix | np.ndarray, iter=0) -> int | float:
     """
-    Computes the determinat of a matrix
+    Computes the Determinat of a matrix
     """
 
     if isinstance(matrix, Matrix):
@@ -28,7 +28,7 @@ def Determinat(matrix: Matrix | FloatMatrix | np.ndarray, iter=0) -> int | float
     if matrix_.numRows != matrix_.numCols:
 
         raise Exception(
-            f"Cannot compute the determinat of a non-square matrix.\n\
+            f"Cannot compute the Determinat of a non-square matrix.\n\
             Input matrix has shape: {matrix_.numRows} x {matrix_.numCols}"
         )
 
