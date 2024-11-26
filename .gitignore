@@ -1,0 +1,58 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# macOS files
+.DS_Store
+
+# Archives (Usually Makefile outputs)
+*.tar.gz
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# Log files
+*.log
+
+# Hidden files (macOS/Linux)
+.*~
+
+# Environment variables and sensitive information
+.env
+
+# Virtual environments
+venv/
+.env/
+env/
+
+# Data files
+*.csv
+*.h5
+*.db
+*.sqlite3
+
+# Generated files
+*.parquet
+*.feather
+*.joblib
+
+# Model files
+*.pkl
+*.pt
+*.onnx
+*.ckpt
+
+# Miscellaneous
+*.bak
+*.swp
+
+# IDEs and editors
+.vscode/
+.idea/
+
+# macOS specific
+.DS_Store
