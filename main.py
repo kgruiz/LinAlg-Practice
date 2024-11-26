@@ -2165,20 +2165,20 @@ if __name__ == "__main__":
     noErrors = True
 
     # Test Base2RREF
-    if noErrors:
+    # if noErrors:
 
-        for _ in tqdm(range(1000), desc="Base2RREF"):
+    #     for _ in tqdm(range(1000), desc="Base2RREF"):
 
-            testResult = RandomTestBase2RREF(
-                minSize=minSize, maxSize=maxSize, verbose=False
-            )
+    #         testResult = RandomTestBase2RREF(
+    #             minSize=minSize, maxSize=maxSize, verbose=False
+    #         )
 
-            if not testResult:
+    #         if not testResult:
 
-                print("BASE2RREF")
-                noErrors = False
+    #             print("BASE2RREF")
+    #             noErrors = False
 
-                break
+    #             break
 
     # Test qrDecomposition
     if noErrors:

@@ -42,15 +42,15 @@ def QRDecomposition(
 
         span_ = FloatMatrix(span)
 
-    Basis = Basis(span=span_)
+    basis = Basis(span=span_)
 
-    orthonormalBasis = GramSchmidt(span=Basis)
+    orthonormalBasis = GramSchmidt(span=basis)
 
     q = FloatMatrix(orthonormalBasis)
 
     qT = Transpose(matrix=q)
 
-    r = Multiply(matrixA=qT, matrixB=Basis)
+    r = Multiply(matrixA=qT, matrixB=basis)
 
     q = CleanNegZeros(matrix=q)
     r = CleanNegZeros(matrix=r)

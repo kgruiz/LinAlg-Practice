@@ -41,3 +41,25 @@ To run the tests, execute the `Main.py` script. The script will run all the test
 
 ```bash
 python Main.py
+```
+
+The image describes the following content:
+
+---
+
+### Utility Functions
+The project includes utility functions for measuring the time complexity of the test functions. These functions are defined in the `Main.py` script.
+
+---
+
+### Dependencies
+The project requires the following Python packages:
+- **numpy**
+- **sympy**
+- **tqdm**
+- **matplotlib**
+
+You can install these dependencies using pip:
+```bash
+pip install numpy sympy tqdm matplotlib
+```
