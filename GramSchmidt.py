@@ -39,44 +39,44 @@ def GramSchmidt(span: Matrix | FloatMatrix | np.ndarray) -> FloatMatrix:
 
         span_ = FloatMatrix(span)
 
-    Basis = Basis(span=span_)
+    basis = Basis(span=span_)
 
-    BasisVectors = np.array([col for col in Basis.T])
+    basisVectors = np.array([col for col in basis.T])
 
-    orthogonalVectors = np.empty(shape=(Basis.numCols, Basis.numRows))
+    orthogonalVectors = np.empty(shape=(basis.numCols, basis.numRows))
 
-    orthogonalVectors[0] = UnitVector(vector=BasisVectors[0]).flatten()
+    orthogonalVectors[0] = UnitVector(vector=basisVectors[0]).flatten()
 
-    for Basis_VectorNum in range(1, Basis.numCols):
+    for basisVectorNum in range(1, basis.numCols):
 
-        componentAlreadyAccounted = FloatMatrix(Basis.numRows, 1, 0, 0)
+        componentAlreadyAccounted = FloatMatrix(basis.numRows, 1, 0, 0)
 
-        Basis_Vector = FloatMatrix(BasisVectors[Basis_VectorNum])
+        basisVector = FloatMatrix(basisVectors[basisVectorNum])
 
-        for orthogonalVectorNum in range(0, Basis_VectorNum):
+        for orthogonalVectorNum in range(0, basisVectorNum):
 
             orthogonalVector = FloatMatrix(orthogonalVectors[orthogonalVectorNum])
 
-            Basis_ProjectedAmount = VectorDot(
-                matrixA=Basis_Vector, matrixB=orthogonalVector
+            basisProjectedAmount = VectorDot(
+                matrixA=basisVector, matrixB=orthogonalVector
             )
 
-            Basis_ProjectedInOrthogongalDireciton = ScalarMultiply(
-                scalar=Basis_ProjectedAmount, matrix=orthogonalVector
+            basisProjectedInOrthogongalDirection = ScalarMultiply(
+                scalar=basisProjectedAmount, matrix=orthogonalVector
             )
 
             componentAlreadyAccounted = MatrixAdd(
                 matrixA=componentAlreadyAccounted,
-                matrixB=Basis_ProjectedInOrthogongalDireciton,
+                matrixB=basisProjectedInOrthogongalDirection,
             )
 
-        orthogonalBasis_Component = MatrixSubtract(
-            matrixA=Basis_Vector, matrixB=componentAlreadyAccounted
+        orthogonalBasisComponent = MatrixSubtract(
+            matrixA=basisVector, matrixB=componentAlreadyAccounted
         )
 
-        unitOrthogonalBasis_Component = UnitVector(vector=orthogonalBasis_Component)
+        unitOrthogonalBasisComponent = UnitVector(vector=orthogonalBasisComponent)
 
-        orthogonalVectors[Basis_VectorNum] = unitOrthogonalBasis_Component.flatten()
+        orthogonalVectors[basisVectorNum] = unitOrthogonalBasisComponent.flatten()
 
     orthonormalBasis_ = FloatMatrix(orthogonalVectors.T)
 

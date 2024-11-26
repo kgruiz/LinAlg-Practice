@@ -1,7 +1,7 @@
 import numpy as np
 
 from Determinat import Determinat
-from Matrix import Append, FloatIdn, FloatMatrix, Matrix
+from Matrix import FloatIdn, FloatMatrix, Matrix, MatrixAppend
 from RREF import RREF
 
 
@@ -53,7 +53,7 @@ def Inverse(matrix: Matrix | FloatMatrix | np.ndarray) -> FloatMatrix | None:
 
     idn = FloatIdn(dimension=matrix_.numRows)
 
-    augmentedMatrix = Append(matrixA=matrix_, matrixB=idn, horizontalStack=True)
+    augmentedMatrix = MatrixAppend(matrixA=matrix_, matrixB=idn, horizontalStack=True)
 
     augmentedRREF = RREF(matrix=augmentedMatrix, augmentedColCount=matrix_.numRows)
 

@@ -55,15 +55,15 @@ class Matrix:
 
         elif len(args) == 1 and isinstance(args[0], FloatMatrix):
             # New constructor: Convert FloatMatrix to Matrix if all floats are integers
-            float_matrix = args[0].matrix
-            if not np.all(float_matrix == np.round(float_matrix)):
+            floatMatrix = args[0].matrix
+            if not np.all(floatMatrix == np.round(floatMatrix)):
 
                 raise ValueError(
                     "FloatMatrix contains non-integer values and cannot be converted to Matrix."
                 )
-            int_matrix = float_matrix.astype(int)
-            self.matrix = int_matrix
-            self.numRows, self.numCols = int_matrix.shape
+            intMatrix = floatMatrix.astype(int)
+            self.matrix = intMatrix
+            self.numRows, self.numCols = intMatrix.shape
 
         elif len(args) >= 2 and all(isinstance(arg, int) for arg in args[:2]):
             numRows, numCols = args[0], args[1]
@@ -432,31 +432,31 @@ class FloatIdn(FloatMatrix):
         super().__init__(idn)
 
 
-def Append(
+def MatrixAppend(
     matrixA: Matrix | FloatMatrix | np.ndarray,
     matrixB: Matrix | FloatMatrix | np.ndarray,
     horizontalStack: bool = True,
 ) -> FloatMatrix | Matrix:
     """
-    Appends two matrices (or arrays) either horizontally or vertically, and returns
+    MatrixAppends two matrices (or arrays) either horizontally or vertically, and returns
     the result as a Matrix or FloatMatrix depending on the input types.
 
     Parameters:
     ----------
     matrixA : Matrix | FloatMatrix | np.ndarray
-        The first matrix to Append. Can be of type Matrix, FloatMatrix, or np.ndarray.
+        The first matrix to MatrixAppend. Can be of type Matrix, FloatMatrix, or np.ndarray.
 
     matrixB : Matrix | FloatMatrix | np.ndarray
-        The second matrix to Append. Can be of type Matrix, FloatMatrix, or np.ndarray.
+        The second matrix to MatrixAppend. Can be of type Matrix, FloatMatrix, or np.ndarray.
 
     horizontalStack : bool, optional, default=False
-        If True, the matrices are Appended horizontally (side by side).
-        If False, the matrices are Appended vertically (one on top of the other).
+        If True, the matrices are MatrixAppended horizontally (side by side).
+        If False, the matrices are MatrixAppended vertically (one on top of the other).
 
     Returns:
     -------
     FloatMatrix | Matrix
-        A new Matrix or FloatMatrix that contains the result of the Append operation.
+        A new Matrix or FloatMatrix that contains the result of the MatrixAppend operation.
         The result is a FloatMatrix if either input is a FloatMatrix, otherwise a Matrix.
 
     Raises:
@@ -466,7 +466,7 @@ def Append(
 
     Notes:
     ------
-    The function copies the matrix data from the input Matrix or FloatMatrix objects before performing the Append operation.
+    The function copies the matrix data from the input Matrix or FloatMatrix objects before performing the MatrixAppend operation.
     If the inputs are `np.ndarray`, they will be treated as `Matrix` by default.
     """
 
@@ -478,7 +478,7 @@ def Append(
         if matrixA.numRows != matrixB.numRows:
 
             raise Exception(
-                f"Cannot horizontally Append matrices with different number of rows.\n                MatrixA Shape: {matrixA.numRows} x {matrixA.numCols}\n                    MatrixB Shape: {matrixB.numRows} x {matrixB.numCols}"
+                f"Cannot horizontally MatrixAppend matrices with different number of rows.\n                MatrixA Shape: {matrixA.numRows} x {matrixA.numCols}\n                    MatrixB Shape: {matrixB.numRows} x {matrixB.numCols}"
             )
 
         resultArray = np.hstack((arrayA, arrayB))
@@ -488,7 +488,7 @@ def Append(
         if matrixA.numCols != matrixB.numCols:
 
             raise Exception(
-                f"Cannot vertically Append matrices with different number of columns.\n                MatrixA Shape: {matrixA.numRows} x {matrixA.numCols}\n                    MatrixB Shape: {matrixB.numRows} x {matrixB.numCols}"
+                f"Cannot vertically MatrixAppend matrices with different number of columns.\n                MatrixA Shape: {matrixA.numRows} x {matrixA.numCols}\n                    MatrixB Shape: {matrixB.numRows} x {matrixB.numCols}"
             )
 
         resultArray = np.vstack((arrayA, arrayB))
@@ -563,15 +563,15 @@ class Base2Matrix:
 
         elif len(args) == 1 and isinstance(args[0], FloatMatrix):
             # New constructor: Convert FloatMatrix to Matrix if all floats are integers
-            float_matrix = args[0].matrix
-            if not np.all(float_matrix == np.round(float_matrix)):
+            floatMatrix = args[0].matrix
+            if not np.all(floatMatrix == np.round(floatMatrix)):
 
                 raise ValueError(
                     "FloatMatrix contains non-integer values and cannot be converted to Matrix."
                 )
-            int_matrix = float_matrix.astype(int)
-            self.matrix = int_matrix
-            self.numRows, self.numCols = int_matrix.shape
+            intMatrix = floatMatrix.astype(int)
+            self.matrix = intMatrix
+            self.numRows, self.numCols = intMatrix.shape
 
         elif len(args) >= 2 and all(isinstance(arg, int) for arg in args[:2]):
             numRows, numCols = args[0], args[1]

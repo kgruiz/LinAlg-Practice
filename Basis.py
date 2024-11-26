@@ -66,7 +66,7 @@ def Basis(span: Matrix | FloatMatrix | np.ndarray) -> FloatMatrix | Matrix:
 
             if leadingOneIndex == colNum:
 
-                pivotCols.Append(colNum)
+                pivotCols.append(colNum)
 
     Basis = span_[:, pivotCols]
 
