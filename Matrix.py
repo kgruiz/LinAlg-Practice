@@ -237,11 +237,9 @@ def MatrixString(matrix, numAugmented=0):
             if isinstance(val, Basic):
 
                 displayVal = pretty(val)
-
             else:
 
-                displayVal = str(val)
-
+                displayVal = f"{val:.2f}" if isinstance(val, float) else str(val)
             displayRow.append(displayVal)
         displayVals.append(displayRow)
 
@@ -251,6 +249,7 @@ def MatrixString(matrix, numAugmented=0):
         colWidths.append(maxWidth)
 
     lines = []
+
     for row in range(matrix.shape[0]):
 
         rowStr = "|"  # Add starting pipe
@@ -519,11 +518,9 @@ def FloatMatrixString(matrix: np.ndarray, numAugmented: int) -> str:
             if isinstance(val, Basic):
 
                 displayVal = pretty(val)
-
             else:
 
-                displayVal = str(val)
-
+                displayVal = f"{val:.2f}" if isinstance(val, float) else str(val)
             displayRow.append(displayVal)
         displayVals.append(displayRow)
 
@@ -536,15 +533,17 @@ def FloatMatrixString(matrix: np.ndarray, numAugmented: int) -> str:
     for row in range(matrix.shape[0]):
 
         rowStr = "|"  # Add starting pipe
-        for i in range(matrix.shape[1]):
+        for col in range(matrix.shape[1]):
 
-            displayVal = displayVals[row][i]
+            displayVal = displayVals[row][col]
             rowStr += " " + displayVal.rjust(
-                colWidths[i] + 1
+                colWidths[col] + 1
             )  # Add space before each column
-            if i < matrix.shape[1] - 1:  # Add space between columns except the last one
+            if (
+                col < matrix.shape[1] - 1
+            ):  # Add space between columns except the last one
                 rowStr += " "
-            if numAugmented != 0 and i == matrix.shape[1] - numAugmented - 1:
+            if numAugmented != 0 and col == matrix.shape[1] - numAugmented - 1:
 
                 rowStr += " :"
         rowStr += " |"  # Add ending pipe

@@ -1,5 +1,6 @@
 import numpy as np
 from sympy import Matrix as SympyMatrix
+from sympy import Symbol, sympify
 
 from Matrix import FloatMatrix, Matrix
 
@@ -26,11 +27,8 @@ def RREF(
     if isinstance(matrix, Matrix):
 
         matrix_ = FloatMatrix(matrix)
-
-    if isinstance(matrix, np.ndarray):
-
+    elif isinstance(matrix, np.ndarray):
         matrix_ = FloatMatrix(matrix)
-
     else:
 
         matrix_ = FloatMatrix(matrix)
@@ -38,67 +36,49 @@ def RREF(
     def ScaleRows(matrix: FloatMatrix) -> FloatMatrix:
 
         matrix_ = matrix
-
         for rowNum, row in enumerate(matrix_):
 
             firstNonZero = None
-
             for elem in row:
-
-                firstNonZero = None
 
                 if elem != 0:
 
                     firstNonZero = elem
-
                     break
-
             if not firstNonZero:
 
                 continue
-
             for colNum, elem in enumerate(row):
 
-                matrix_[rowNum][colNum] = round(elem / firstNonZero, 30)
-
+                matrix_[rowNum][colNum] = sympify(elem) / sympify(firstNonZero)
         return matrix_
 
     def ScaleRow(matrix: FloatMatrix, rowNum: int) -> FloatMatrix:
 
         matrix_ = matrix
-
         for rowNum_, row in enumerate(matrix_):
 
             if rowNum_ != rowNum:
 
                 continue
-
             firstNonZero = None
-
             for elem in row:
-
-                firstNonZero = None
 
                 if elem != 0:
 
                     firstNonZero = elem
-
                     break
-
             if not firstNonZero:
 
                 continue
-
             for colNum, elem in enumerate(row):
 
-                matrix_[rowNum][colNum] = round(elem / firstNonZero, 30)
-
+                matrix_[rowNum][colNum] = sympify(elem) / sympify(firstNonZero)
         return matrix_
 
     def CleanNegZeros(matrix: FloatMatrix) -> FloatMatrix:
 
         matrix_ = matrix
-
         for rowNum, row in enumerate(matrix_):
 
             for colNum, elem in enumerate(row):
@@ -106,7 +86,6 @@ def RREF(
                 if elem == -0:
 
                     matrix_[rowNum][colNum] = +0
-
         return matrix_
 
     def OrderRows(matrix: FloatMatrix) -> FloatMatrix:
@@ -116,82 +95,62 @@ def RREF(
         def FirstNonZeroIndex(row):
 
             row_ = row
-
             nonZeroIndices = np.nonzero(row_)[0]
-
             return nonZeroIndices[0] if nonZeroIndices.size > 0 else len(row_)
 
         sortedMatrix = FloatMatrix(
             matrix_[np.argsort([FirstNonZeroIndex(row) for row in matrix_])]
         )
-
         return sortedMatrix
 
     pivotRowNum = 0
-
-    FirstNonZeroIndex = None
-
+    firstNonZeroIndex = None
     matrix_ = OrderRows(matrix=matrix_)
 
     while pivotRowNum < matrix_.numRows:
 
         ScaleRow(matrix=matrix_, rowNum=pivotRowNum)
-
         pivotRow = matrix_[pivotRowNum, :]
-
         for i, elem in enumerate(pivotRow):
-
-            FirstNonZeroIndex = None
 
             if elem != 0:
 
                 assert elem == 1
-
-                FirstNonZeroIndex = i
-
+                firstNonZeroIndex = i
                 break
-
         if (
-            FirstNonZeroIndex is not None
-            and FirstNonZeroIndex + augmentedColCount >= matrix_.numCols
+            firstNonZeroIndex is not None
+            and firstNonZeroIndex + augmentedColCount >= matrix_.numCols
         ):
-
             break
-
-        if FirstNonZeroIndex is None:
+        if firstNonZeroIndex is None:
 
             pivotRowNum += 1
-
             continue
-
         for rowNum, row in enumerate(matrix_):
 
             if rowNum == pivotRowNum:
 
                 continue
-
-            if row[FirstNonZeroIndex] == 0:
+            if row[firstNonZeroIndex] == 0:
 
                 continue
-
-            factor = row[FirstNonZeroIndex] / pivotRow[FirstNonZeroIndex]
-
+            factor = sympify(row[firstNonZeroIndex]) / sympify(
+                pivotRow[firstNonZeroIndex]
+            )
             for colNum, elem in enumerate(row):
 
-                matrix_[rowNum][colNum] = round(elem - (pivotRow[colNum] * factor), 12)
-
+                matrix_[rowNum][colNum] = (
+                    sympify(elem) - sympify(pivotRow[colNum]) * factor
+                )
         pivotRowNum += 1
 
     matrix_ = ScaleRows(matrix=matrix_)
-
     matrix_ = CleanNegZeros(matrix=matrix_)
-
     matrix_ = OrderRows(matrix=matrix_)
 
     sympyMatrix = SympyMatrix(matrix_.matrix)
-
     rrefMatrix, _ = sympyMatrix.rref()
-
     resultArray = np.array(rrefMatrix).astype(object)
 
     return FloatMatrix(resultArray)

@@ -23,6 +23,11 @@ from VectorDot import *
 from VectorLength import *
 
 
+def Bold(text: str) -> str:
+
+    return f"\033[1m{text}\033[0m"
+
+
 class Eigenvalue:
     """
     Represents an eigenvalue with its value, multiplicity, and identifier.
@@ -255,7 +260,14 @@ def GetEigenvectors(A: Union[FloatMatrix, Matrix], verbose: bool = False) -> Non
     Exception
         If eigenvalues are not calculated before computing eigenvectors.
     """
+    if verbose:
+
+        print("\nComputing Eigenvalues")
+        print("-" * 75)
+
     realEigenvalues, complexEigenvalues = GetEigenvalues(A=A, verbose=verbose)
+
+    print()
 
     if len(complexEigenvalues) > 0:
 
@@ -267,7 +279,29 @@ def GetEigenvectors(A: Union[FloatMatrix, Matrix], verbose: bool = False) -> Non
 
     idnMatrix = Idn(A.numRows)
 
+    if verbose:
+
+        print("\nComputing Eigenvectors")
+        print("-" * 75)
+
+    if verbose:
+
+        print("Input Matrix A:")
+        print(A)
+        print()
+
+    if verbose:
+
+        print(f"Identity Matrix ({pretty(Symbol(f'I_{A.numRows}'))}):")
+        print(idnMatrix)
+        print()
+
     for eigenValue in eigenValues:
+
+        if verbose:
+
+            print(f"\n\nEigenvalue: {eigenValue}")
+            print("-" * 50)
 
         if not isinstance(eigenValue, Eigenvalue):
 
@@ -275,13 +309,45 @@ def GetEigenvectors(A: Union[FloatMatrix, Matrix], verbose: bool = False) -> Non
 
         eigenIdn = ScalarMultiply(scalar=eigenValue.value, matrix=idnMatrix)
 
+        if verbose:
+
+            pass
+
         eigenvectorEquationMatrix = MatrixSubtract(matrixA=A, matrixB=eigenIdn)
 
-        zeroVector = Matrix(np.array([[0] * A.numRows]))
+        if verbose:
 
-        print(zeroVector)
+            print(
+                f"Eigenvector Equation Matrix ({pretty(Symbol('A') - lamda * Symbol(f'I_{A.numRows}'))}):"
+            )
+            pprint(eigenvectorEquationMatrix)
+            print()
 
-        augmentedEigenvectorEquation = MatrixAppend()
+        zeroVector = Matrix(np.zeros((A.numRows, 1)))
+
+        augmentedEigenvectorEquation = MatrixAppend(
+            matrixA=eigenvectorEquationMatrix, matrixB=zeroVector
+        )
+
+        augmentedEigenvectorEquation.SetNumAugmented(1)
+
+        if verbose:
+
+            print(
+                f"Augmented Eigenvector Matrix (({pretty(Symbol('A') - lamda * Symbol(f'I_{A.numRows}'))}){Bold(text="v")} = {Bold(text="0")}):"
+            )
+            pprint(augmentedEigenvectorEquation)
+            print()
+
+        rowReducedEigenvectorMatrix = RREF(
+            matrix=augmentedEigenvectorEquation, augmentedColCount=1
+        )
+
+        if verbose:
+
+            print(f"RREF of Augmented Eigenvector Matrix:")
+            pprint(augmentedEigenvectorEquation)
+            print()
 
 
 A = FloatMatrix(np.array([[1, 2], [4, 3]]))
