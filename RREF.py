@@ -5,6 +5,135 @@ from sympy import Symbol, sympify
 from Matrix import FloatMatrix, Matrix
 
 
+def GetPivotColumns(
+    matrix: Matrix | FloatMatrix | np.ndarray, numAugmented: int = 0
+) -> list:
+    """
+    Calculate which columns are pivot columns in the matrix.
+
+    Parameters
+    ----------
+    matrix : Matrix | FloatMatrix | np.ndarray
+        The matrix to analyze.
+    numAugmented : int, optional
+        The number of augmented columns, by default 0.
+
+    Returns
+    -------
+    list
+        A list of indices representing the pivot columns.
+    """
+    if isinstance(matrix, (Matrix, np.ndarray)):
+
+        matrix_ = FloatMatrix(matrix)
+    else:
+
+        matrix_ = matrix
+
+    originalNumAugmented = matrix_.numAugmented
+    if numAugmented == originalNumAugmented:
+
+        matrix_.SetNumAugmented(originalNumAugmented)
+    else:
+
+        raise Exception(
+            f"Invalid augmented column count: {numAugmented}, expected: {originalNumAugmented}"
+        )
+
+    pivotColumns = []
+
+    for colIndex in range(matrix_.numCols):
+
+        if colIndex >= numAugmented:
+
+            break
+
+        numNonZero = 0
+        firstNonZeroRow = None
+
+        for rowNum, elem in enumerate(matrix_[:, colIndex]):
+
+            if elem != 0:
+
+                numNonZero += 1
+
+                if firstNonZeroRow is None:
+
+                    firstNonZeroRow = rowNum
+
+                if numNonZero >= 2:
+
+                    break
+
+        if numNonZero is None or numNonZero >= 2:
+
+            continue
+
+        firstNonZeroCol = None
+
+        for colNum, elem in enumerate(matrix_[firstNonZeroRow, :]):
+
+            if elem != 0:
+
+                firstNonZeroCol = colNum
+
+                break
+
+        if firstNonZeroCol != colIndex:
+
+            continue
+
+        else:
+
+            pivotColumns.append(colIndex)
+
+    return pivotColumns
+
+
+def GetFreeVariables(
+    matrix: Matrix | FloatMatrix | np.ndarray, numAugmented: int = 0
+) -> list:
+    """
+    Calculate which columns are free variables in the matrix.
+
+    Parameters
+    ----------
+    matrix : Matrix | FloatMatrix | np.ndarray
+        The matrix to analyze.
+    numAugmented : int, optional
+        The number of augmented columns, by default 0.
+
+    Returns
+    -------
+    list
+        A list of indices representing the free variable columns.
+
+    """
+    if isinstance(matrix, (Matrix, np.ndarray)):
+
+        matrix_ = FloatMatrix(matrix)
+    else:
+
+        matrix_ = matrix
+
+    originalNumAugmented = matrix_.numAugmented
+
+    if numAugmented == originalNumAugmented:
+
+        matrix_.SetNumAugmented(originalNumAugmented)
+    else:
+
+        raise Exception(
+            f"Invalid augmented column count: {numAugmented}, expected: {originalNumAugmented}"
+        )
+
+    pivotColumns = GetPivotColumns(matrix_, numAugmented)
+    freeVariables = [
+        i for i in range(matrix_.numCols - numAugmented) if i not in pivotColumns
+    ]
+    return freeVariables
+
+
 def RREF(
     matrix: Matrix | FloatMatrix | np.ndarray, augmentedColCount: int = 0
 ) -> FloatMatrix:

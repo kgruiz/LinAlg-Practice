@@ -353,6 +353,30 @@ def GetEigenvectors(
             pprint(rowReducedEigenvectorMatrix)
             print()
 
+        pivotColIndices = GetPivotColumns(
+            matrix=rowReducedEigenvectorMatrix, numAugmented=1
+        )
+        freeVarIndices = GetFreeVariables(
+            matrix=rowReducedEigenvectorMatrix, numAugmented=1
+        )
+
+        if verbose:
+
+            pivotCols = "".join([f"{colIndex}, " for colIndex in pivotColIndices[:-1]])
+
+            if len(pivotColIndices) > 0:
+
+                pivotCols += f"{pivotColIndices[-1]}"
+
+            freeVars = "".join([f"{colIndex}, " for colIndex in freeVarIndices][:-1])
+
+            if len(freeVarIndices) > 0:
+
+                freeVars += f"{freeVarIndices[-1]}"
+
+            print(f"Pivot Columns ({len(pivotColIndices)}): {pivotCols}")
+            print(f"Free Variables ({len(freeVarIndices)}): {freeVars}")
+
 
 A = FloatMatrix(np.array([[1, 2], [4, 3]]))
 
