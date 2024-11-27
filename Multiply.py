@@ -10,7 +10,26 @@ def Multiply(
     matrixA: Union[Matrix, FloatMatrix, np.ndarray],
     matrixB: Union[Matrix, FloatMatrix, np.ndarray],
 ) -> FloatMatrix:
+    """
+    Multiply two matrices.
 
+    Parameters
+    ----------
+    matrixA : Union[Matrix, FloatMatrix, np.ndarray]
+        The first matrix.
+    matrixB : Union[Matrix, FloatMatrix, np.ndarray]
+        The second matrix.
+
+    Returns
+    -------
+    FloatMatrix
+        The product of `matrixA` and `matrixB`.
+
+    Raises
+    ------
+    Exception
+        If the number of columns in `matrixA` does not match the number of rows in `matrixB`.
+    """
     if isinstance(matrixA, np.ndarray):
 
         matrixA_ = FloatMatrix(matrixA)

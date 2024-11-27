@@ -8,7 +8,26 @@ def VectorDot(
     matrixA: Matrix | FloatMatrix | np.ndarray,
     matrixB: Matrix | FloatMatrix | np.ndarray,
 ) -> Symbol:
+    """
+    Compute the dot product of two vectors.
 
+    Parameters
+    ----------
+    matrixA : Matrix | FloatMatrix | np.ndarray
+        The first vector.
+    matrixB : Matrix | FloatMatrix | np.ndarray
+        The second vector.
+
+    Returns
+    -------
+    Symbol
+        The dot product of `matrixA` and `matrixB`.
+
+    Raises
+    ------
+    Exception
+        If either input is not a vector or if the vectors have different lengths.
+    """
     if isinstance(matrixA, np.ndarray):
 
         matrixA_ = FloatMatrix(matrixA)

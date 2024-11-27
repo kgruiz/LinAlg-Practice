@@ -11,20 +11,25 @@ from VectorDot import VectorDot
 
 def GramSchmidt(span: Matrix | FloatMatrix | np.ndarray) -> FloatMatrix:
     """
-    Computes an orthonormal Basis for the subspace represented by the input span, using the Gram-Schmidt process.
+    Generate an orthonormal basis using the Gram-Schmidt process.
 
-    Args:
-        span (Matrix | FloatMatrix | np.ndarray): The input span vectors, represented as a Matrix, FloatMatrix, or numpy ndarray.
+    Converts the input span into a `FloatMatrix` and applies the Gram-Schmidt
+    orthogonalization process to produce an orthonormal basis for the subspace.
 
-    Returns:
-        FloatMatrix: An orthonormal Basis for the input subspace, represented as a FloatMatrix.
+    Parameters
+    ----------
+    span : Matrix | FloatMatrix | np.ndarray
+        The input span vectors, which can be of type `Matrix`, `FloatMatrix`, or `numpy.ndarray`.
 
-    Raises:
-        ValueError: If the input type is not Matrix, FloatMatrix, or numpy ndarray.
+    Returns
+    -------
+    FloatMatrix
+        An orthonormal basis for the input subspace as a `FloatMatrix`.
 
-    The function converts the input span into a FloatMatrix if necessary and then applies the Gram-Schmidt orthogonalization
-    procedure to generate an orthonormal Basis. Each vector in the span is iteratively projected onto the subspace formed
-    by the previously processed vectors, and the resulting orthogonal component is normalized to create the orthonormal Basis.
+    Raises
+    ------
+    ValueError
+        If the input type is not supported.
     """
 
     if isinstance(span, Matrix):

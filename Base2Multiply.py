@@ -12,14 +12,24 @@ def Base2Multiply(
     matrixB: Union[Base2Matrix, np.ndarray],
 ) -> Base2Matrix:
     """
-    Multiplies two matrices in base 2.
+    Multiply two matrices in base 2.
 
-    Args:
-        matrixA (Union[Base2Matrix, np.ndarray]): The first matrix.
-        matrixB (Union[Base2Matrix, np.ndarray]): The second matrix.
+    Parameters
+    ----------
+    matrixA : Union[Base2Matrix, np.ndarray]
+        The first matrix.
+    matrixB : Union[Base2Matrix, np.ndarray]
+        The second matrix.
 
-    Returns:
-        Base2Matrix: The result of multiplying the two matrices.
+    Returns
+    -------
+    Base2Matrix
+        The result of multiplying the two matrices.
+
+    Raises
+    ------
+    Exception
+        If the number of columns in matrixA does not equal the number of rows in matrixB.
     """
     if isinstance(matrixA, np.ndarray):
 

@@ -7,25 +7,27 @@ from RREF import RREF
 
 def Inverse(matrix: Matrix | FloatMatrix | np.ndarray) -> FloatMatrix | None:
     """
-    Computes the Inverse of the input matrix using Gaussian elimination.
+    Compute the inverse of a matrix using Gaussian elimination.
 
-    This function first converts the input matrix into a `FloatMatrix` type if it's not already,
-    then checks if the matrix is square (i.e., has an equal number of rows and columns). If the
-    matrix is not square, an exception is raised. If the matrix is square but its determinant
-    is zero, it returns `None` because a matrix with a determinant of zero is singular and
-    non-invertible.
+    This function converts the input matrix into a `FloatMatrix` type if it's not already,
+    verifies that the matrix is square, and checks if the determinant is non-zero.
+    If invertible, it augments the matrix with an identity matrix and performs
+    Gaussian elimination to obtain the inverse.
 
-    If the matrix is invertible, the function augments it with an identity matrix of the same
-    dimension, then performs Gaussian elimination to reduce it to row-reduced echelon form (RREF).
-    The Inverse matrix is obtained from the right half of the augmented matrix.
+    Parameters
+    ----------
+    matrix : Matrix | FloatMatrix | np.ndarray
+        The input matrix to invert. Supported types are `Matrix`, `FloatMatrix`, or `numpy.ndarray`.
 
-    Args:
-        matrix (Matrix | FloatMatrix | np.ndarray): The input matrix to invert. Can be either a
-            `Matrix`, `FloatMatrix`, or a NumPy `ndarray`.
+    Returns
+    -------
+    FloatMatrix | None
+        The inverse of the input matrix as a `FloatMatrix`. Returns `None` if the matrix is singular.
 
-    Returns:
-        FloatMatrix | None: The Inverse of the input matrix as a `FloatMatrix`. If the matrix is
-        non-invertible, returns `None`.
+    Raises
+    ------
+    Exception
+        If the input matrix is not square.
     """
 
     if isinstance(matrix, Matrix):

@@ -1,6 +1,8 @@
+from typing import Union
+
 import numpy as np
 
-from Matrix import FloatMatrix, Matrix
+from Matrix import Base2Matrix, FloatMatrix, Matrix
 from MatrixAdd import MatrixAdd
 from MatrixSubtract import MatrixSubtract
 from ScalarMultiply import ScalarMultiply
@@ -8,9 +10,24 @@ from UnitVector import UnitVector
 from VectorDot import VectorDot
 
 
-def Determinat(matrix: Matrix | FloatMatrix | np.ndarray, iter=0) -> int | float:
+def Determinat(matrix: Union[Base2Matrix, np.ndarray]) -> float:
     """
-    Computes the Determinat of a matrix
+    Calculate the determinant of a square matrix.
+
+    Parameters
+    ----------
+    matrix : Union[Base2Matrix, np.ndarray]
+        The input square matrix.
+
+    Returns
+    -------
+    float
+        The determinant of the matrix.
+
+    Raises
+    ------
+    Exception
+        If the matrix is not square.
     """
 
     if isinstance(matrix, Matrix):

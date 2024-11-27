@@ -25,12 +25,25 @@ from VectorLength import *
 
 class Eigenvalue:
     """
-    Represents an eigenvalue along with its multiplicity and identifier.
+    Represents an eigenvalue with its value, multiplicity, and identifier.
 
-    Attributes:
-        value (Union[int, float, Basic]): The numerical value of the eigenvalue.
-        multiplicity (int): The number of times the eigenvalue appears.
-        index (Union[int, str, Symbol], optional): An identifier for the eigenvalue.
+    Attributes
+    ----------
+    value : Union[int, float, Basic]
+        The numerical value of the eigenvalue.
+    multiplicity : int
+        The number of times the eigenvalue appears.
+    index : Union[int, str, Symbol], optional
+        An identifier for the eigenvalue.
+
+    Methods
+    -------
+    __init__(value, multiplicity, index=None)
+        Initializes the Eigenvalue instance.
+    __str__()
+        Returns a string representation of the Eigenvalue.
+    __repr__()
+        Returns an unambiguous string representation of the Eigenvalue.
     """
 
     def __init__(
@@ -40,12 +53,16 @@ class Eigenvalue:
         index: Union[int, str, Symbol] = None,
     ):
         """
-        Initializes an instance of the Eigenvalue class.
+        Initialize an Eigenvalue instance.
 
-        Args:
-            value (Union[int, float, Basic]): The numerical value of the eigenvalue.
-            multiplicity (int): The multiplicity indicating how many times the eigenvalue occurs.
-            index (Union[int, str, Symbol], optional): An optional identifier for the eigenvalue.
+        Parameters
+        ----------
+        value : Union[int, float, Basic]
+            The numerical value of the eigenvalue.
+        multiplicity : int
+            The multiplicity indicating how many times the eigenvalue occurs.
+        index : Union[int, str, Symbol], optional
+            An optional identifier for the eigenvalue.
         """
         self.value = value
         self.multiplicity = multiplicity
@@ -53,47 +70,60 @@ class Eigenvalue:
 
     def __str__(self) -> str:
         """
-        Provides a readable string representation of the eigenvalue.
+        Return a readable string representation of the eigenvalue.
 
-        Returns:
-            str: A formatted string displaying the eigenvalue and its multiplicity.
+        Returns
+        -------
+        str
+            A formatted string displaying the eigenvalue and its multiplicity.
         """
         valueStr = pretty(self.value)
 
         if self.index is not None:
 
             lambdaStr = pretty(Symbol(f"{lamda}_{self.index}"))
-
         else:
 
             lambdaStr = pretty(Symbol(f"{lamda}"))
 
         return (
-            f"{lambdaStr}: {valueStr} ({pretty(Symbol("m_a"))} = {self.multiplicity})"
+            f"{lambdaStr}: {valueStr} ({pretty(Symbol('m_a'))} = {self.multiplicity})"
         )
 
     def __repr__(self) -> str:
         """
-        Provides an unambiguous string representation of the eigenvalue.
+        Return an unambiguous string representation of the eigenvalue.
 
-        Returns:
-            str: A string that can be used to recreate the Eigenvalue instance.
+        Returns
+        -------
+        str
+            A string that can be used to recreate the Eigenvalue instance.
         """
         return self.__str__()
 
 
 def GetEigenvalues(A: Union[FloatMatrix, Matrix], verbose: bool = False) -> tuple:
     """
-    Calculates the real and complex eigenvalues of a square matrix.
+    Calculate the real and complex eigenvalues of a square matrix.
 
-    Args:
-        A (Union[FloatMatrix, Matrix]): The input square matrix for which to compute eigenvalues.
-        verbose (bool, optional): If set to True, prints detailed computation steps.
+    Parameters
+    ----------
+    A : Union[FloatMatrix, Matrix]
+        The input square matrix for which to compute eigenvalues.
+    verbose : bool, optional
+        If True, prints detailed computation steps. Default is False.
 
-    Returns:
-        tuple: A tuple containing two sets:
-            - Set of real eigenvalues.
-            - Set of complex eigenvalues.
+    Returns
+    -------
+    tuple
+        A tuple containing two sets:
+        - Set of real eigenvalues.
+        - Set of complex eigenvalues.
+
+    Raises
+    ------
+    Exception
+        If the input matrix is not square.
     """
     if A.numRows != A.numCols:
 
@@ -109,7 +139,7 @@ def GetEigenvalues(A: Union[FloatMatrix, Matrix], verbose: bool = False) -> tupl
 
     if verbose:
 
-        print(f"Identity Matrix ({pretty(Symbol(f"I_{A.numRows}"))}):")
+        print(f"Identity Matrix ({pretty(Symbol(f'I_{A.numRows}'))}):")
         print(idnMatrix)
         print()
 
@@ -117,7 +147,7 @@ def GetEigenvalues(A: Union[FloatMatrix, Matrix], verbose: bool = False) -> tupl
 
     if verbose:
 
-        print(f"{pretty(lamda * Symbol(f"I_{A.numRows}"))}:")
+        print(f"{pretty(lamda * Symbol(f'I_{A.numRows}'))}:")
         print(lambdaIdn)
         print()
 
@@ -126,7 +156,7 @@ def GetEigenvalues(A: Union[FloatMatrix, Matrix], verbose: bool = False) -> tupl
     if verbose:
 
         print(
-            f"Characteristic Matrix ({pretty(Symbol("A") - lamda * Symbol(f"I_{A.numRows}"))}):"
+            f"Characteristic Matrix ({pretty(Symbol('A') - lamda * Symbol(f'I_{A.numRows}'))}):"
         )
         pprint(characteristicMatrix)
         print()
@@ -206,14 +236,24 @@ def GetEigenvalues(A: Union[FloatMatrix, Matrix], verbose: bool = False) -> tupl
 
 def GetEigenvectors(A: Union[FloatMatrix, Matrix], verbose: bool = False) -> None:
     """
-    Computes and displays the eigenvectors associated with each eigenvalue of a matrix.
+    Compute and display the eigenvectors associated with each eigenvalue of a matrix.
 
-    Args:
-        A (Union[FloatMatrix, Matrix]): The input square matrix for which to compute eigenvectors.
-        verbose (bool, optional): If set to True, prints detailed computation steps.
+    Parameters
+    ----------
+    A : Union[FloatMatrix, Matrix]
+        The input square matrix for which to compute eigenvectors.
+    verbose : bool, optional
+        If True, prints detailed computation steps. Default is False.
 
-    Returns:
-        None: This function prints the eigenvectors directly.
+    Returns
+    -------
+    None
+        This function prints the eigenvectors directly.
+
+    Raises
+    ------
+    Exception
+        If eigenvalues are not calculated before computing eigenvectors.
     """
     realEigenvalues, complexEigenvalues = GetEigenvalues(A=A, verbose=verbose)
 
@@ -241,9 +281,7 @@ def GetEigenvectors(A: Union[FloatMatrix, Matrix], verbose: bool = False) -> Non
 
         print(zeroVector)
 
-        augmentedEigenvectorEquation = MatrixAppend(
-            matrixA=eigenvectorEquationMatrix, matrixB=zeroVector
-        )
+        augmentedEigenvectorEquation = MatrixAppend()
 
 
 A = FloatMatrix(np.array([[1, 2], [4, 3]]))

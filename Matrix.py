@@ -8,22 +8,26 @@ from sympy import Basic, Symbol, pretty, symbols
 class Matrix:
     """
     Represents an integer matrix with various initialization options.
-    Can be initialized with dimensions, a numpy array, another Matrix object, or a FloatMatrix with integer values.
+
+    Can be initialized with dimensions, a numpy array, another Matrix object,
+    or a FloatMatrix with integer values.
     """
 
     def __init__(self, *args):
         """
-        Initializes the Matrix instance.
+        Initialize the Matrix instance.
 
-        Args:
-            *args: A variable number of arguments. Acceptable formats are:
-                - (rows, cols): Create a matrix with random integers.
-                - (numpy array): Create a matrix from an existing numpy array.
-                - (rows, cols, min, max): Create a matrix with specified value range.
-                - (Matrix object): Create a new matrix as a copy of an existing Matrix.
-                - (FloatMatrix object): Create a Matrix from a FloatMatrix if all floats are integers.
-                - (Symbol object): Create a 1x1 matrix with a Symbol.
-                - (list or tuple of Symbols): Create a column matrix with Symbols.
+        Parameters
+        ----------
+        *args : various
+            A variable number of arguments. Acceptable formats are:
+            - (rows, cols): Create a matrix with random integers.
+            - (numpy array): Create a matrix from an existing numpy array.
+            - (rows, cols, min, max): Create a matrix with specified value range.
+            - (Matrix object): Create a new matrix as a copy of an existing Matrix.
+            - (FloatMatrix object): Create a Matrix from a FloatMatrix if all floats are integers.
+            - (Symbol object): Create a 1x1 matrix with a Symbol.
+            - (list or tuple of Symbols): Create a column matrix with Symbols.
         """
         self.numAugmented = 0
         if len(args) == 2:
@@ -92,46 +96,69 @@ class Matrix:
 
     def __str__(self):
         """
-        Returns a string representation of the matrix.
+        Return a string representation of the matrix.
 
-        Returns:
-            str: A formatted string representing the matrix.
+        Returns
+        -------
+        str
+            A formatted string representing the matrix.
         """
         return MatrixString(self.matrix, self.numAugmented)
 
     def __getitem__(self, index):
         """
-        Allows matrix indexing using square brackets.
+        Access matrix elements using square brackets.
 
-        Args:
-            index (int or tuple): Index to access matrix elements.
+        Parameters
+        ----------
+        index : int or tuple
+            Index to access matrix elements.
 
-        Returns:
-            int: The element at the specified index.
+        Returns
+        -------
+        int
+            The element at the specified index.
         """
         return self.matrix[index]
 
     def __setitem__(self, index, value):
         """
-        Allows setting matrix elements using square brackets.
+        Set matrix elements using square brackets.
 
-        Args:
-            index (int or tuple): Index to access matrix elements.
-            value (int): Value to set at the specified index.
+        Parameters
+        ----------
+        index : int or tuple
+            Index to access matrix elements.
+        value : int
+            Value to set at the specified index.
         """
         self.matrix[index] = value
 
     def __len__(self):
         """
-        Returns the number of rows in the matrix.
+        Get the number of rows in the matrix.
 
-        Returns:
-            int: The number of rows in the matrix.
+        Returns
+        -------
+        int
+            The number of rows in the matrix.
         """
         return self.numRows
 
     def SetNumAugmented(self, numAugmented):
+        """
+        Set the number of augmented columns.
 
+        Parameters
+        ----------
+        numAugmented : int
+            The number of augmented columns.
+
+        Raises
+        ------
+        ValueError
+            If `numAugmented` is negative or exceeds the number of columns minus one.
+        """
         if numAugmented < 0 or numAugmented > self.numCols - 1:
 
             raise ValueError("numAugmented must be between 0 and numCols - 1.")
@@ -139,13 +166,22 @@ class Matrix:
 
     def __getattr__(self, attr):
         """
-        Provides access to attributes of the matrix, such as number of rows or columns.
+        Access matrix attributes such as number of rows or columns.
 
-        Args:
-            attr (str): The name of the attribute to retrieve.
+        Parameters
+        ----------
+        attr : str
+            The name of the attribute to retrieve.
 
-        Returns:
-            int or ndarray: The requested attribute value.
+        Returns
+        -------
+        int or ndarray
+            The requested attribute value.
+
+        Raises
+        ------
+        AttributeError
+            If the attribute does not exist.
         """
         if attr in object.__getattribute__(self, "__dict__"):
 
@@ -178,12 +214,17 @@ def MatrixString(matrix, numAugmented=0):
     """
     Formats a numpy matrix as a string with proper alignment for display, including augmented column separation.
 
-    Args:
-        matrix (np.ndarray): The matrix to format.
-        numAugmented (int): The number of augmented columns.
+    Parameters
+    ----------
+    matrix : np.ndarray
+        The matrix to format.
+    numAugmented : int
+        The number of augmented columns.
 
-    Returns:
-        str: A formatted string representing the matrix.
+    Returns
+    -------
+    str
+        A formatted string representing the matrix.
     """
     colWidths = []
     displayVals = []
@@ -235,22 +276,25 @@ def MatrixString(matrix, numAugmented=0):
 class FloatMatrix:
     """
     Represents a floating-point matrix with various initialization options.
+
     Can be initialized with dimensions, a numpy array, or another Matrix object.
     """
 
     def __init__(self, *args):
         """
-        Initializes the FloatMatrix instance.
+        Initialize the FloatMatrix instance.
 
-        Args:
-            *args: A variable number of arguments. Acceptable formats are:
-                - (rows, cols): Create a matrix with random floats.
-                - (numpy array): Create a matrix from an existing numpy array.
-                - (Matrix object): Create a new matrix as a copy of an existing Matrix.
-                - (FloatMatrix object): Create a new matrix as a copy of an existing FloatMatrix.
-                - (rows, cols, min, max): Create a matrix with specified value range.
-                - (Symbol object): Create a 1x1 matrix with a Symbol.
-                - (list or tuple of Symbols): Create a column matrix with Symbols.
+        Parameters
+        ----------
+        *args : various
+            A variable number of arguments. Acceptable formats are:
+            - (rows, cols): Create a matrix with random floats.
+            - (numpy array): Create a matrix from an existing numpy array.
+            - (Matrix object): Create a new matrix as a copy of an existing Matrix.
+            - (FloatMatrix object): Create a new matrix as a copy of an existing FloatMatrix.
+            - (rows, cols, min, max): Create a matrix with specified value range.
+            - (Symbol object): Create a 1x1 matrix with a Symbol.
+            - (list or tuple of Symbols): Create a column matrix with Symbols.
         """
 
         self.numAugmented = 0
@@ -334,46 +378,69 @@ class FloatMatrix:
 
     def __str__(self):
         """
-        Returns a  representation of the float matrix.
+        Return a string representation of the float matrix.
 
-        Returns:
-            str: A formatted string representing the float matrix.
+        Returns
+        -------
+        str
+            A formatted string representing the float matrix.
         """
         return FloatMatrixString(self.matrix, self.numAugmented)
 
     def __getitem__(self, index):
         """
-        Allows matrix indexing using square brackets.
+        Access float matrix elements using square brackets.
 
-        Args:
-            index (int or tuple): Index to access matrix elements.
+        Parameters
+        ----------
+        index : int or tuple
+            Index to access matrix elements.
 
-        Returns:
-            float: The element at the specified index.
+        Returns
+        -------
+        float
+            The element at the specified index.
         """
         return self.matrix[index]
 
     def __setitem__(self, index, value):
         """
-        Allows setting matrix elements using square brackets.
+        Set float matrix elements using square brackets.
 
-        Args:
-            index (int or tuple): Index to access matrix elements.
-            value (float): Value to set at the specified index.
+        Parameters
+        ----------
+        index : int or tuple
+            Index to access matrix elements.
+        value : float
+            Value to set at the specified index.
         """
         self.matrix[index] = value
 
     def __len__(self):
         """
-        Returns the number of rows in the matrix.
+        Get the number of rows in the float matrix.
 
-        Returns:
-            int: The number of rows in the matrix.
+        Returns
+        -------
+        int
+            The number of rows in the float matrix.
         """
         return self.numRows
 
     def SetNumAugmented(self, numAugmented):
+        """
+        Set the number of augmented columns in the float matrix.
 
+        Parameters
+        ----------
+        numAugmented : int
+            The number of augmented columns.
+
+        Raises
+        ------
+        ValueError
+            If `numAugmented` is negative or exceeds the number of columns minus one.
+        """
         if numAugmented < 0 or numAugmented > self.numCols - 1:
 
             raise ValueError("numAugmented must be between 0 and numCols - 1.")
@@ -381,13 +448,22 @@ class FloatMatrix:
 
     def __getattr__(self, attr):
         """
-        Provides access to attributes of the matrix, such as number of rows or columns.
+        Access float matrix attributes such as number of rows or columns.
 
-        Args:
-            attr (str): The name of the attribute to retrieve.
+        Parameters
+        ----------
+        attr : str
+            The name of the attribute to retrieve.
 
-        Returns:
-            int or ndarray: The requested attribute value.
+        Returns
+        -------
+        int or ndarray
+            The requested attribute value.
+
+        Raises
+        ------
+        AttributeError
+            If the attribute does not exist.
         """
         if attr in object.__getattribute__(self, "__dict__"):
 
@@ -420,12 +496,17 @@ def FloatMatrixString(matrix: np.ndarray, numAugmented: int) -> str:
     """
     Formats a numpy float matrix as a string with proper alignment for display, including augmented column separation.
 
-    Args:
-        matrix (np.ndarray): The matrix to format.
-        numAugmented (int): The number of augmented columns.
+    Parameters
+    ----------
+    matrix : np.ndarray
+        The matrix to format.
+    numAugmented : int
+        The number of augmented columns.
 
-    Returns:
-        str: A formatted string representing the float matrix.
+    Returns
+    -------
+    str
+        A formatted string representing the float matrix.
     """
     colWidths = []
     displayVals = []
@@ -474,16 +555,19 @@ def FloatMatrixString(matrix: np.ndarray, numAugmented: int) -> str:
 
 class Idn(Matrix):
     """
-    Represents an identity matrix with int values.
-    Initializes a square identity matrix of given dimension.
+    Represents an identity matrix with integer values.
+
+    Initializes a square identity matrix of the given dimension.
     """
 
     def __init__(self, dimension: int):
         """
-        Initializes the Idn instance as an int identity matrix.
+        Initialize the integer identity matrix.
 
-        Args:
-            dimension (int): The size of the identity matrix (number of rows and columns).
+        Parameters
+        ----------
+        dimension : int
+            The size of the identity matrix (number of rows and columns).
         """
         self.numAugmented = 0
         idn = np.zeros(shape=(dimension, dimension), dtype=int)
@@ -498,15 +582,18 @@ class Idn(Matrix):
 class FloatIdn(FloatMatrix):
     """
     Represents an identity matrix with floating-point values.
-    Initializes a square identity matrix of given dimension.
+
+    Initializes a square identity matrix of the given dimension.
     """
 
     def __init__(self, dimension: int):
         """
-        Initializes the FloatIdn instance as a floating-point identity matrix.
+        Initialize the floating-point identity matrix.
 
-        Args:
-            dimension (int): The size of the identity matrix (number of rows and columns).
+        Parameters
+        ----------
+        dimension : int
+            The size of the identity matrix (number of rows and columns).
         """
         self.numAugmented = 0
         idn = np.zeros(shape=(dimension, dimension), dtype=float)
@@ -524,38 +611,27 @@ def MatrixAppend(
     horizontalStack: bool = True,
 ) -> Union["FloatMatrix", "Matrix"]:
     """
-    MatrixAppends two matrices (or arrays) either horizontally or vertically, and returns
-    the result as a Matrix or FloatMatrix depending on the input types.
+    Append two matrices either horizontally or vertically.
 
-    Parameters:
+    Parameters
     ----------
     matrixA : Matrix | FloatMatrix | np.ndarray
-        The first matrix to MatrixAppend. Can be of type Matrix, FloatMatrix, or np.ndarray.
-
+        The first matrix to append.
     matrixB : Matrix | FloatMatrix | np.ndarray
-        The second matrix to MatrixAppend. Can be of type Matrix, FloatMatrix, or np.ndarray.
+        The second matrix to append.
+    horizontalStack : bool, optional
+        If True, append horizontally (default is True).
 
-    horizontalStack : bool, optional, default=False
-        If True, the matrices are MatrixAppended horizontally (side by side).
-        If False, the matrices are MatrixAppended vertically (one on top of the other).
-
-    Returns:
+    Returns
     -------
     FloatMatrix | Matrix
-        A new Matrix or FloatMatrix that contains the result of the MatrixAppend operation.
-        The result is a FloatMatrix if either input is a FloatMatrix, otherwise a Matrix.
+        The resulting appended matrix.
 
-    Raises:
+    Raises
     ------
     ValueError
-        If the dimensions of the input matrices are incompatible for the selected stacking operation.
-
-    Notes:
-    ------
-    The function copies the matrix data from the input Matrix or FloatMatrix objects before performing the MatrixAppend operation.
-    If the inputs are `np.ndarray`, they will be treated as `Matrix` by default.
+        If the dimensions are incompatible for the chosen append operation.
     """
-
     arrayA = matrixA.matrix.copy()
     arrayB = matrixB.matrix.copy()
 
@@ -605,8 +681,10 @@ class Base2Matrix:
         """
         Initializes the Matrix instance.
 
-        Args:
-            *args: A variable number of arguments. Acceptable formats are:
+        Parameters
+        ----------
+        *args : various
+            A variable number of arguments. Acceptable formats are:
                 - (rows, cols): Create a matrix with random integers.
                 - (numpy array): Create a matrix from an existing numpy array.
                 - (rows, cols, min, max): Create a matrix with specified value range.
@@ -672,8 +750,10 @@ class Base2Matrix:
         """
         Returns a string representation of the matrix.
 
-        Returns:
-            str: A formatted string representing the matrix.
+        Returns
+        -------
+        str
+            A formatted string representing the matrix.
         """
         EnsureNoTwo(matrix=self.matrix)
         return MatrixString(self.matrix, self.numAugmented)
@@ -682,11 +762,15 @@ class Base2Matrix:
         """
         Gets the item at the specified index.
 
-        Args:
-            index: The index of the item to retrieve.
+        Parameters
+        ----------
+        index : int or tuple
+            The index of the item to retrieve.
 
-        Returns:
-            Union[int, float, Symbol]: The element at the specified index.
+        Returns
+        -------
+        Union[int, float, Symbol]
+            The element at the specified index.
         """
         return self.matrix[index]
 
@@ -696,9 +780,12 @@ class Base2Matrix:
         """
         Sets the item at the specified index to the given value.
 
-        Args:
-            index: The index of the item to set.
-            value: The value to set at the specified index.
+        Parameters
+        ----------
+        index : int or tuple
+            The index of the item to set.
+        value : Union[int, float, Symbol]
+            The value to set at the specified index.
         """
         self.matrix[index] = value % 2 if isinstance(value, (int, float)) else value
         EnsureNoTwo(matrix=self.matrix)
@@ -707,8 +794,10 @@ class Base2Matrix:
         """
         Returns the number of rows in the matrix.
 
-        Returns:
-            int: The number of rows in the matrix.
+        Returns
+        -------
+        int
+            The number of rows in the matrix.
         """
         return self.numRows
 
@@ -716,8 +805,10 @@ class Base2Matrix:
         """
         Sets the number of augmented columns in the matrix.
 
-        Args:
-            numAugmented: The number of augmented columns.
+        Parameters
+        ----------
+        numAugmented : int
+            The number of augmented columns.
         """
         if numAugmented < 0 or numAugmented > self.numCols - 1:
 
@@ -728,11 +819,15 @@ class Base2Matrix:
         """
         Gets the attribute with the specified name.
 
-        Args:
-            attr: The name of the attribute to retrieve.
+        Parameters
+        ----------
+        attr : str
+            The name of the attribute to retrieve.
 
-        Returns:
-            Union[int, tuple, np.ndarray]: The requested attribute value.
+        Returns
+        -------
+        Union[int, tuple, np.ndarray]
+            The requested attribute value.
         """
         EnsureNoTwo(matrix=self.matrix)
         if attr in object.__getattribute__(self, "__dict__"):
@@ -763,7 +858,19 @@ class Base2Matrix:
 
 
 def EnsureNoTwo(matrix: Union[Base2Matrix, np.ndarray]) -> None:
+    """
+    Ensure that there are no duplicate elements in the matrix.
 
+    Parameters
+    ----------
+    matrix : Base2Matrix | np.ndarray
+        The matrix to check for duplicates.
+
+    Raises
+    ------
+    ValueError
+        If duplicate elements are found in the matrix.
+    """
     if isinstance(matrix, Base2Matrix):
 
         matrix_ = matrix.matrix

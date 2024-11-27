@@ -6,8 +6,19 @@ from Matrix import FloatMatrix, Matrix
 
 
 def Length(vector: Matrix | FloatMatrix | np.ndarray) -> float:
-    """Computes the Length of a given vector"""
+    """
+    Calculate the Euclidean length of a vector.
 
+    Parameters
+    ----------
+    vector : Matrix | FloatMatrix | np.ndarray
+        The input vector whose length is to be calculated.
+
+    Returns
+    -------
+    float
+        The Euclidean length of the input vector.
+    """
     if isinstance(vector, Matrix):
 
         vector_ = FloatMatrix(vector)

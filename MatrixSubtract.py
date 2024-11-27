@@ -7,8 +7,26 @@ def MatrixSubtract(
     matrixA: Matrix | FloatMatrix | np.ndarray,
     matrixB: Matrix | FloatMatrix | np.ndarray,
 ) -> FloatMatrix:
-    """Subtracts two matrices (A- B)"""
+    """
+    Subtract two matrices (A - B).
 
+    Parameters
+    ----------
+    matrixA : Matrix | FloatMatrix | np.ndarray
+        The matrix to subtract from.
+    matrixB : Matrix | FloatMatrix | np.ndarray
+        The matrix to be subtracted.
+
+    Returns
+    -------
+    FloatMatrix
+        The result of matrix subtraction.
+
+    Raises
+    ------
+    Exception
+        If the shapes of `matrixA` and `matrixB` are not identical.
+    """
     if isinstance(matrixA, np.ndarray):
 
         matrixA_ = FloatMatrix(matrixA)

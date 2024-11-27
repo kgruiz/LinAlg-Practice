@@ -32,40 +32,49 @@ from VectorLength import Length
 
 # --- TestMatrix ---
 def TestMatrix(
-    Arows: int = 4,
-    Acols: int = 3,
-    Brows: int = 3,
-    Bcols: int = 1,
+    arows: int = 4,
+    acols: int = 3,
+    brows: int = 3,
+    bcols: int = 1,
     min_: int = 0,
     max_: int = 100,
     verbose: bool = False,
-):
+) -> None:
     """
-    Tests the creation of two matrices A and B with specified dimensions and value ranges.
+    Test matrix operations with specified dimensions and value ranges.
 
-    Args:
-        Arows (int): Number of rows in matrix A.
-        Acols (int): Number of columns in matrix A.
-        Brows (int): Number of rows in matrix B.
-        Bcols (int): Number of columns in matrix B.
-        min_ (int): Minimum value for matrix elements.
-        max_ (int): Maximum value for matrix elements.
-        verbose (bool): If True, prints the matrices.
+    Parameters
+    ----------
+    arows : int, optional
+        Number of rows for matrix A. Default is 4.
+    acols : int, optional
+        Number of columns for matrix A. Default is 3.
+    brows : int, optional
+        Number of rows for matrix B. Default is 3.
+    bcols : int, optional
+        Number of columns for matrix B. Default is 1.
+    min_ : int, optional
+        Minimum value for matrix entries. Default is 0.
+    max_ : int, optional
+        Maximum value for matrix entries. Default is 100.
+    verbose : bool, optional
+        If True, prints detailed information. Default is False.
 
-    Returns:
-        None
+    Returns
+    -------
+    None
     """
     if verbose:
 
         print(f"Making A and B\n")
 
-    a = Matrix(Arows, Acols, min_, max_)
+    a = Matrix(arows, acols, min_, max_)
 
     if verbose:
 
         print(f"A:\n{a}")
 
-    b = Matrix(Brows, Bcols, min_, max_)
+    b = Matrix(brows, bcols, min_, max_)
 
     if verbose:
 
@@ -76,15 +85,21 @@ def RandomTestMatrix(
     minSize: int = -100, maxSize: int = 100, verbose: bool = False
 ) -> bool:
     """
-    Generates Random dimensions and values to test the TestMatrix function.
+    Perform a random test on matrix operations within specified size ranges.
 
-    Args:
-        minSize (int): Minimum size for the matrix dimensions and element values.
-        maxSize (int): Maximum size for the matrix dimensions and element values.
-        verbose (bool): If True, prints the testing details.
+    Parameters
+    ----------
+    minSize : int, optional
+        Minimum size for matrix entries. Default is -100.
+    maxSize : int, optional
+        Maximum size for matrix entries. Default is 100.
+    verbose : bool, optional
+        If True, prints detailed information. Default is False.
 
-    Returns:
-        bool: Always returns True as TestMatrix does not perform validations.
+    Returns
+    -------
+    bool
+        True if the test passes, False otherwise.
     """
     Arows = random.randint(0, maxSize)
     Acols = random.randint(0, maxSize)
@@ -94,10 +109,10 @@ def RandomTestMatrix(
     try:
 
         TestMatrix(
-            Arows=Arows,
-            Acols=Acols,
-            Brows=Brows,
-            Bcols=Bcols,
+            arows=Arows,
+            acols=Acols,
+            brows=Brows,
+            bcols=Bcols,
             min_=minSize,
             max_=maxSize,
             verbose=verbose,
@@ -114,31 +129,41 @@ def RandomTestMatrix(
 
 # --- TestVectorDot ---
 def TestVectorDot(
-    Arows: int = 4,
-    Acols: int = 1,
-    Brows: int = 1,
-    Bcols: int = 4,
+    arows: int = 4,
+    acols: int = 1,
+    brows: int = 1,
+    bcols: int = 4,
     min_: int = 0,
     max_: int = 10,
     verbose: bool = False,
 ) -> bool:
     """
-    Tests the VectorDot operation between two vectors A and B.
+    Test the dot product of vectors with specified dimensions and value ranges.
 
-    Args:
-        Arows (int): Number of rows in vector A.
-        Acols (int): Number of columns in vector A.
-        Brows (int): Number of rows in vector B.
-        Bcols (int): Number of columns in vector B.
-        min_ (int): Minimum value for vector elements.
-        max_ (int): Maximum value for vector elements.
-        verbose (bool): If True, prints the vectors and results.
+    Parameters
+    ----------
+    arows : int, optional
+        Number of rows for vector A. Default is 4.
+    acols : int, optional
+        Number of columns for vector A. Default is 1.
+    brows : int, optional
+        Number of rows for vector B. Default is 1.
+    bcols : int, optional
+        Number of columns for vector B. Default is 4.
+    min_ : int, optional
+        Minimum value for vector entries. Default is 0.
+    max_ : int, optional
+        Maximum value for vector entries. Default is 10.
+    verbose : bool, optional
+        If True, prints detailed information. Default is False.
 
-    Returns:
-        bool: True if the dot product is correct, False otherwise.
+    Returns
+    -------
+    bool
+        True if the test passes, False otherwise.
     """
-    a = Matrix(Arows, Acols, min_, max_)
-    b = Matrix(Brows, Bcols, min_, max_)
+    a = Matrix(arows, acols, min_, max_)
+    b = Matrix(brows, bcols, min_, max_)
 
     if verbose:
 
@@ -152,7 +177,7 @@ def TestVectorDot(
     except Exception:
 
         print(f"C:\n{c}\n")
-        print(f"{Arows=}\n{Acols=}\n{Brows=}\n{Bcols=}\n{min_=}\n{max_=}")
+        print(f"{arows=}\n{acols=}\n{brows=}\n{bcols=}\n{min_=}\n{max_=}")
         return False
 
     if verbose:
@@ -167,7 +192,7 @@ def TestVectorDot(
 
     if not correct:
 
-        print(f"{Arows=}\n{Acols=}\n{Brows=}\n{Bcols=}\n{min_=}\n{max_=}")
+        print(f"{arows=}\n{acols=}\n{brows=}\n{bcols=}\n{min_=}\n{max_=}")
         print(f"C:\n{c}")
         print(f"D:\n{d}")
         return False
@@ -184,15 +209,21 @@ def RandomTestVectorDot(
     minSize: int = -100, maxSize: int = 100, verbose: bool = False
 ) -> bool:
     """
-    Generates Random dimensions and values to test the TestVectorDot function.
+    Perform a random test on vector dot products within specified size ranges.
 
-    Args:
-        minSize (int): Minimum size for the vector dimensions and element values.
-        maxSize (int): Maximum size for the vector dimensions and element values.
-        verbose (bool): If True, prints the testing details.
+    Parameters
+    ----------
+    minSize : int, optional
+        Minimum size for vector entries. Default is -100.
+    maxSize : int, optional
+        Maximum size for vector entries. Default is 100.
+    verbose : bool, optional
+        If True, prints detailed information. Default is False.
 
-    Returns:
-        bool: Result of the TestVectorDot function.
+    Returns
+    -------
+    bool
+        True if the test passes, False otherwise.
     """
     vectorElemCount = random.randint(0, maxSize)
 
@@ -215,10 +246,10 @@ def RandomTestVectorDot(
         Bcols = vectorElemCount
 
     testResult = TestVectorDot(
-        Arows=Arows,
-        Acols=Acols,
-        Brows=Brows,
-        Bcols=Bcols,
+        arows=Arows,
+        acols=Acols,
+        brows=Brows,
+        bcols=Bcols,
         min_=minSize,
         max_=maxSize,
         verbose=verbose,
@@ -229,36 +260,46 @@ def RandomTestVectorDot(
 
 # --- TestMultiply ---
 def TestMultiply(
-    Arows: int = 4,
-    Acols: int = 3,
-    Brows: int = 3,
-    Bcols: int = 2,
+    arows: int = 4,
+    acols: int = 3,
+    brows: int = 3,
+    bcols: int = 2,
     min_: int = 0,
     max_: int = 10,
     verbose: bool = False,
 ) -> bool:
     """
-    Tests the Multiply operation between two matrices A and B.
+    Test matrix multiplication with specified dimensions and value ranges.
 
-    Args:
-        Arows (int): Number of rows in matrix A.
-        Acols (int): Number of columns in matrix A.
-        Brows (int): Number of rows in matrix B.
-        Bcols (int): Number of columns in matrix B.
-        min_ (int): Minimum value for matrix elements.
-        max_ (int): Maximum value for matrix elements.
-        verbose (bool): If True, prints the matrices and results.
+    Parameters
+    ----------
+    arows : int, optional
+        Number of rows for matrix A. Default is 4.
+    acols : int, optional
+        Number of columns for matrix A. Default is 3.
+    brows : int, optional
+        Number of rows for matrix B. Default is 3.
+    bcols : int, optional
+        Number of columns for matrix B. Default is 2.
+    min_ : int, optional
+        Minimum value for matrix entries. Default is 0.
+    max_ : int, optional
+        Maximum value for matrix entries. Default is 10.
+    verbose : bool, optional
+        If True, prints detailed information. Default is False.
 
-    Returns:
-        bool: True if the multiplication is correct, False otherwise.
+    Returns
+    -------
+    bool
+        True if the test passes, False otherwise.
     """
-    a = Matrix(Arows, Acols, min_, max_)
+    a = Matrix(arows, acols, min_, max_)
 
     if verbose:
 
         print(f"A:\n{a}")
 
-    b = Matrix(Brows, Bcols, min_, max_)
+    b = Matrix(brows, bcols, min_, max_)
 
     if verbose:
 
@@ -271,7 +312,7 @@ def TestMultiply(
     except Exception:
 
         print(f"C:\n{c}\n")
-        print(f"{Arows=}\n{Acols=}\n{Brows=}\n{Bcols=}\n{min_=}\n{max_=}")
+        print(f"{arows=}\n{acols=}\n{brows=}\n{bcols=}\n{min_=}\n{max_=}")
         return False
 
     if verbose:
@@ -292,7 +333,7 @@ def TestMultiply(
 
     if not correct:
 
-        print(f"{Arows=}\n{Acols=}\n{Brows=}\n{Bcols=}\n{min_=}\n{max_=}")
+        print(f"{arows=}\n{acols=}\n{brows=}\n{bcols=}\n{min_=}\n{max_=}")
         print(f"c:\n{c}")
         print(f"d:\n{d}")
         return False
@@ -309,15 +350,21 @@ def RandomTestMultiply(
     minSize: int = -100, maxSize: int = 100, verbose: bool = False
 ) -> bool:
     """
-    Generates Random dimensions and values to test the TestMultiply function.
+    Perform a random test on matrix multiplication within specified size ranges.
 
-    Args:
-        minSize (int): Minimum size for the matrix dimensions and element values.
-        maxSize (int): Maximum size for the matrix dimensions and element values.
-        verbose (bool): If True, prints the testing details.
+    Parameters
+    ----------
+    minSize : int, optional
+        Minimum size for matrix entries. Default is -100.
+    maxSize : int, optional
+        Maximum size for matrix entries. Default is 100.
+    verbose : bool, optional
+        If True, prints detailed information. Default is False.
 
-    Returns:
-        bool: Result of the TestMultiply function.
+    Returns
+    -------
+    bool
+        True if the test passes, False otherwise.
     """
     Arows = random.randint(0, maxSize)
     Acols = random.randint(0, maxSize)
@@ -325,10 +372,10 @@ def RandomTestMultiply(
     Bcols = random.randint(0, maxSize)
 
     testResult = TestMultiply(
-        Arows=Arows,
-        Acols=Acols,
-        Brows=Brows,
-        Bcols=Bcols,
+        arows=Arows,
+        acols=Acols,
+        brows=Brows,
+        bcols=Bcols,
         min_=minSize,
         max_=maxSize,
         verbose=verbose,
@@ -339,36 +386,46 @@ def RandomTestMultiply(
 
 # --- TestMatrixAdd ---
 def TestMatrixAdd(
-    Arows: int = 4,
-    Acols: int = 3,
-    Brows: int = 4,
-    Bcols: int = 3,
+    arows: int = 4,
+    acols: int = 3,
+    brows: int = 4,
+    bcols: int = 3,
     min_: int = 0,
     max_: int = 10,
     verbose: bool = False,
 ) -> bool:
     """
-    Tests the MatrixAdd function.
+    Test matrix addition with specified dimensions and value ranges.
 
-    Args:
-        Arows (int): Number of rows in matrix A.
-        Acols (int): Number of columns in matrix A.
-        Brows (int): Number of rows in matrix B.
-        Bcols (int): Number of columns in matrix B.
-        min_ (int): Minimum value in the matrices.
-        max_ (int): Maximum value in the matrices.
-        verbose (bool): If True, prints detailed information.
+    Parameters
+    ----------
+    arows : int, optional
+        Number of rows for matrix A. Default is 4.
+    acols : int, optional
+        Number of columns for matrix A. Default is 3.
+    brows : int, optional
+        Number of rows for matrix B. Default is 4.
+    bcols : int, optional
+        Number of columns for matrix B. Default is 3.
+    min_ : int, optional
+        Minimum value for matrix entries. Default is 0.
+    max_ : int, optional
+        Maximum value for matrix entries. Default is 10.
+    verbose : bool, optional
+        If True, prints detailed information. Default is False.
 
-    Returns:
-        bool: True if the test passes, False otherwise.
+    Returns
+    -------
+    bool
+        True if the test passes, False otherwise.
     """
-    a = Matrix(Arows, Acols, min_, max_)
+    a = Matrix(arows, acols, min_, max_)
 
     if verbose:
 
         print(f"A:\n{a}")
 
-    b = Matrix(Brows, Bcols, min_, max_)
+    b = Matrix(brows, bcols, min_, max_)
 
     if verbose:
 
@@ -380,7 +437,7 @@ def TestMatrixAdd(
     except Exception:
 
         print(f"C:\n{c}\n")
-        print(f"{Arows=}\n{Acols=}\n{Brows=}\n{Bcols=}\n{min_=}\n{max_=}")
+        print(f"{arows=}\n{acols=}\n{brows=}\n{bcols=}\n{min_=}\n{max_=}")
         return False
 
     if verbose:
@@ -401,7 +458,7 @@ def TestMatrixAdd(
 
     if not correct:
 
-        print(f"{Arows=}\n{Acols=}\n{Brows=}\n{Bcols=}\n{min_=}\n{max_=}")
+        print(f"{arows=}\n{acols=}\n{brows=}\n{bcols=}\n{min_=}\n{max_=}")
         print(f"C:\n{c}")
         print(f"D:\n{d}")
         return False
@@ -418,15 +475,21 @@ def RandomTestMatrixAdd(
     minSize: int = -100, maxSize: int = 100, verbose: bool = False
 ) -> bool:
     """
-    Performs a random test for MatrixAdd.
+    Perform a random test on matrix addition within specified size ranges.
 
-    Args:
-        minSize (int): Minimum size of the matrices.
-        maxSize (int): Maximum size of the matrices.
-        verbose (bool): If True, prints detailed information.
+    Parameters
+    ----------
+    minSize : int, optional
+        Minimum size for matrix entries. Default is -100.
+    maxSize : int, optional
+        Maximum size for matrix entries. Default is 100.
+    verbose : bool, optional
+        If True, prints detailed information. Default is False.
 
-    Returns:
-        bool: True if the test passes, False otherwise.
+    Returns
+    -------
+    bool
+        True if the test passes, False otherwise.
     """
     Arows = random.randint(0, maxSize)
     Acols = random.randint(0, maxSize)
@@ -434,10 +497,10 @@ def RandomTestMatrixAdd(
     Bcols = Acols
 
     testResult = TestMatrixAdd(
-        Arows=Arows,
-        Acols=Acols,
-        Brows=Brows,
-        Bcols=Bcols,
+        arows=Arows,
+        acols=Acols,
+        brows=Brows,
+        bcols=Bcols,
         min_=minSize,
         max_=maxSize,
         verbose=verbose,
@@ -448,36 +511,46 @@ def RandomTestMatrixAdd(
 
 # --- TestMatrixSubtract ---
 def TestMatrixSubtract(
-    Arows: int = 4,
-    Acols: int = 3,
-    Brows: int = 4,
-    Bcols: int = 3,
+    arows: int = 4,
+    acols: int = 3,
+    brows: int = 4,
+    bcols: int = 3,
     min_: int = 0,
     max_: int = 10,
     verbose: bool = False,
 ) -> bool:
     """
-    Tests the MatrixSubtract function.
+    Test matrix subtraction with specified dimensions and value ranges.
 
-    Args:
-        Arows (int): Number of rows in matrix A.
-        Acols (int): Number of columns in matrix A.
-        Brows (int): Number of rows in matrix B.
-        Bcols (int): Number of columns in matrix B.
-        min_ (int): Minimum value in the matrices.
-        max_ (int): Maximum value in the matrices.
-        verbose (bool): If True, prints detailed information.
+    Parameters
+    ----------
+    arows : int, optional
+        Number of rows for matrix A. Default is 4.
+    acols : int, optional
+        Number of columns for matrix A. Default is 3.
+    brows : int, optional
+        Number of rows for matrix B. Default is 4.
+    bcols : int, optional
+        Number of columns for matrix B. Default is 3.
+    min_ : int, optional
+        Minimum value for matrix entries. Default is 0.
+    max_ : int, optional
+        Maximum value for matrix entries. Default is 10.
+    verbose : bool, optional
+        If True, prints detailed information. Default is False.
 
-    Returns:
-        bool: True if the test passes, False otherwise.
+    Returns
+    -------
+    bool
+        True if the test passes, False otherwise.
     """
-    a = Matrix(Arows, Acols, min_, max_)
+    a = Matrix(arows, acols, min_, max_)
 
     if verbose:
 
         print(f"A:\n{a}")
 
-    b = Matrix(Brows, Bcols, min_, max_)
+    b = Matrix(brows, bcols, min_, max_)
 
     if verbose:
 
@@ -489,7 +562,7 @@ def TestMatrixSubtract(
     except Exception:
 
         print(f"C:\n{c}\n")
-        print(f"{Arows=}\n{Acols=}\n{Brows=}\n{Bcols=}\n{min_=}\n{max_=}")
+        print(f"{arows=}\n{acols=}\n{brows=}\n{bcols=}\n{min_=}\n{max_=}")
         return False
 
     if verbose:
@@ -510,7 +583,7 @@ def TestMatrixSubtract(
 
     if not correct:
 
-        print(f"{Arows=}\n{Acols=}\n{Brows=}\n{Bcols=}\n{min_=}\n{max_=}")
+        print(f"{arows=}\n{acols=}\n{brows=}\n{bcols=}\n{min_=}\n{max_=}")
         print(f"C:\n{c}")
         print(f"D:\n{d}")
         return False
@@ -527,15 +600,21 @@ def RandomTestMatrixSubtract(
     minSize: int = -100, maxSize: int = 100, verbose: bool = False
 ) -> bool:
     """
-    Performs a random test for MatrixSubtract.
+    Perform a random test on matrix subtraction within specified size ranges.
 
-    Args:
-        minSize (int): Minimum size of the matrices.
-        maxSize (int): Maximum size of the matrices.
-        verbose (bool): If True, prints detailed information.
+    Parameters
+    ----------
+    minSize : int, optional
+        Minimum size for matrix entries. Default is -100.
+    maxSize : int, optional
+        Maximum size for matrix entries. Default is 100.
+    verbose : bool, optional
+        If True, prints detailed information. Default is False.
 
-    Returns:
-        bool: True if the test passes, False otherwise.
+    Returns
+    -------
+    bool
+        True if the test passes, False otherwise.
     """
     Arows = random.randint(0, maxSize)
     Acols = random.randint(0, maxSize)
@@ -543,10 +622,10 @@ def RandomTestMatrixSubtract(
     Bcols = Acols
 
     testResult = TestMatrixSubtract(
-        Arows=Arows,
-        Acols=Acols,
-        Brows=Brows,
-        Bcols=Bcols,
+        arows=Arows,
+        acols=Acols,
+        brows=Brows,
+        bcols=Bcols,
         min_=minSize,
         max_=maxSize,
         verbose=verbose,
@@ -564,17 +643,25 @@ def TestVectorLength(
     verbose: bool = False,
 ) -> bool:
     """
-    Tests the Length operation for a vector.
+    Test the computation of vector lengths with specified dimensions and value ranges.
 
-    Args:
-        rows (int): Number of rows in the vector.
-        cols (int): Number of columns in the vector.
-        min_ (int): Minimum value for vector elements.
-        max_ (int): Maximum value for vector elements.
-        verbose (bool): If True, prints the vector and results.
+    Parameters
+    ----------
+    rows : int, optional
+        Number of rows for the vector. Default is 1.
+    cols : int, optional
+        Number of columns for the vector. Default is 4.
+    min_ : int, optional
+        Minimum value for vector entries. Default is 0.
+    max_ : int, optional
+        Maximum value for vector entries. Default is 10.
+    verbose : bool, optional
+        If True, prints detailed information. Default is False.
 
-    Returns:
-        bool: True if the Length is correct, False otherwise.
+    Returns
+    -------
+    bool
+        True if the test passes, False otherwise.
     """
     a = Matrix(rows, cols, min_, max_)
 
@@ -618,15 +705,21 @@ def RandomTestVectorLength(
     minSize: int = -100, maxSize: int = 100, verbose: bool = False
 ) -> bool:
     """
-    Generates Random dimensions and values to test the TestVectorLength function.
+    Perform a random test on vector length computations within specified size ranges.
 
-    Args:
-        minSize (int): Minimum size for the vector dimensions and element values.
-        maxSize (int): Maximum size for the vector dimensions and element values.
-        verbose (bool): If True, prints the testing details.
+    Parameters
+    ----------
+    minSize : int, optional
+        Minimum size for vector entries. Default is -100.
+    maxSize : int, optional
+        Maximum size for vector entries. Default is 100.
+    verbose : bool, optional
+        If True, prints detailed information. Default is False.
 
-    Returns:
-        bool: Result of the TestVectorLength function.
+    Returns
+    -------
+    bool
+        True if the test passes, False otherwise.
     """
     vectorElemCount = random.randint(0, maxSize)
 
@@ -658,8 +751,27 @@ def TestTranspose(
     max_: int = 10,
     verbose: bool = False,
 ) -> bool:
-    """ """
+    """
+    Test matrix transpose with specified dimensions and value ranges.
 
+    Parameters
+    ----------
+    rows : int, optional
+        Number of rows for the matrix. Default is 2.
+    cols : int, optional
+        Number of columns for the matrix. Default is 4.
+    min_ : int, optional
+        Minimum value for matrix entries. Default is 0.
+    max_ : int, optional
+        Maximum value for matrix entries. Default is 10.
+    verbose : bool, optional
+        If True, prints detailed information. Default is False.
+
+    Returns
+    -------
+    bool
+        True if the test passes, False otherwise.
+    """
     a = Matrix(rows, cols, min_, max_)
 
     if verbose:
@@ -732,8 +844,23 @@ def TestTranspose(
 def RandomTestTranspose(
     minSize: int = -100, maxSize: int = 100, verbose: bool = False
 ) -> bool:
-    """ """
+    """
+    Perform a random test on matrix transpositions within specified size ranges.
 
+    Parameters
+    ----------
+    minSize : int, optional
+        Minimum size for matrix entries. Default is -100.
+    maxSize : int, optional
+        Maximum size for matrix entries. Default is 100.
+    verbose : bool, optional
+        If True, prints detailed information. Default is False.
+
+    Returns
+    -------
+    bool
+        True if the test passes, False otherwise.
+    """
     rows = random.randint(0, maxSize)
     cols = random.randint(0, maxSize)
 
@@ -757,17 +884,25 @@ def TestUnitVector(
     verbose: bool = False,
 ) -> bool:
     """
-    Tests the UnitVector operation for a vector.
+    Test the creation of unit vectors with specified dimensions and value ranges.
 
-    Args:
-        rows (int): Number of rows in the vector.
-        cols (int): Number of columns in the vector.
-        min_ (int): Minimum value for vector elements.
-        max_ (int): Maximum value for vector elements.
-        verbose (bool): If True, prints the vector and results.
+    Parameters
+    ----------
+    rows : int, optional
+        Number of rows for the vector. Default is 1.
+    cols : int, optional
+        Number of columns for the vector. Default is 4.
+    min_ : int, optional
+        Minimum value for vector entries. Default is 0.
+    max_ : int, optional
+        Maximum value for vector entries. Default is 10.
+    verbose : bool, optional
+        If True, prints detailed information. Default is False.
 
-    Returns:
-        bool: True if the unit vector is correct, False otherwise.
+    Returns
+    -------
+    bool
+        True if the test passes, False otherwise.
     """
     a = Matrix(rows, cols, min_, max_)
 
@@ -849,15 +984,21 @@ def RandomTestUnitVector(
     minSize: int = -100, maxSize: int = 100, verbose: bool = False
 ) -> bool:
     """
-    Generates Random dimensions and values to test the TestUnitVector function.
+    Perform a random test on unit vector creation within specified size ranges.
 
-    Args:
-        minSize (int): Minimum size for the vector dimensions and element values.
-        maxSize (int): Maximum size for the vector dimensions and element values.
-        verbose (bool): If True, prints the testing details.
+    Parameters
+    ----------
+    minSize : int, optional
+        Minimum size for vector entries. Default is -100.
+    maxSize : int, optional
+        Maximum size for vector entries. Default is 100.
+    verbose : bool, optional
+        If True, prints detailed information. Default is False.
 
-    Returns:
-        bool: Result of the TestUnitVector function.
+    Returns
+    -------
+    bool
+        True if the test passes, False otherwise.
     """
     vectorElemCount = random.randint(0, maxSize)
 
@@ -1244,7 +1385,7 @@ def TestBasis(
                         break
             if matrix[row, col] != 0:
 
-                pivot_columns.Append(col)
+                pivot_columns.append(col)
                 matrix[row] = matrix[row] / matrix[row, col]
                 for r in range(n_rows):
 
@@ -2183,7 +2324,7 @@ def CalculateTimeComplexity(
             print(f"{func.__name__}")
             break
 
-        runs.Append((size, endTime - startTime))
+        runs.append((size, endTime - startTime))
 
         if verbose:
 

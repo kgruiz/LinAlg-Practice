@@ -11,14 +11,24 @@ def Base2VectorDot(
     matrixB: Union[Base2Matrix, np.ndarray],
 ) -> Symbol:
     """
-    Computes the dot product of two vectors in base 2.
+    Compute the dot product of two vectors in base 2.
 
-    Args:
-        matrixA (Union[Base2Matrix, np.ndarray]): The first vector.
-        matrixB (Union[Base2Matrix, np.ndarray]): The second vector.
+    Parameters
+    ----------
+    matrixA : Union[Base2Matrix, np.ndarray]
+        The first vector.
+    matrixB : Union[Base2Matrix, np.ndarray]
+        The second vector.
 
-    Returns:
-        Symbol: The dot product of the two vectors.
+    Returns
+    -------
+    Symbol
+        The result of the dot product modulo 2.
+
+    Raises
+    ------
+    Exception
+        If input matrices are not vectors or have different lengths.
     """
     base = 2
 

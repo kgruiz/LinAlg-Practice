@@ -11,9 +11,17 @@ def QRDecomposition(
     span: Matrix | FloatMatrix | np.ndarray,
 ) -> tuple[FloatMatrix, FloatMatrix]:
     """
-    Peforms QR Decompositon on the input span
+    Perform QR Decomposition on the input span.
 
-    Returns a tuple with (q, r)
+    Parameters
+    ----------
+    span : Matrix | FloatMatrix | np.ndarray
+        The matrix to decompose.
+
+    Returns
+    -------
+    tuple of FloatMatrix
+        A tuple containing matrices Q and R from the QR Decomposition.
     """
 
     def CleanNegZeros(matrix: FloatMatrix) -> FloatMatrix:

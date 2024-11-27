@@ -10,14 +10,24 @@ def MatrixAdd(
     matrixB: Union[Matrix, FloatMatrix, np.ndarray],
 ) -> FloatMatrix:
     """
-    Adds two matrices.
+    Add two matrices.
 
-    Args:
-        matrixA (Union[Matrix, FloatMatrix, np.ndarray]): The first matrix.
-        matrixB (Union[Matrix, FloatMatrix, np.ndarray]): The second matrix.
+    Parameters
+    ----------
+    matrixA : Union[Matrix, FloatMatrix, np.ndarray]
+        The first matrix.
+    matrixB : Union[Matrix, FloatMatrix, np.ndarray]
+        The second matrix.
 
-    Returns:
-        FloatMatrix: The result of adding the two matrices.
+    Returns
+    -------
+    FloatMatrix
+        The result of matrix addition.
+
+    Raises
+    ------
+    Exception
+        If the shapes of `matrixA` and `matrixB` are not identical.
     """
     if isinstance(matrixA, np.ndarray):
 

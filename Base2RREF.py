@@ -12,15 +12,26 @@ def Base2RREF(
     verbose: bool = False,
 ) -> Base2Matrix:
     """
-    Computes the Reduced Row Echelon Form (RREF) of a matrix in base 2.
+    Compute the Reduced Row Echelon Form (RREF) of a matrix in base 2.
 
-    Args:
-        matrix (Union[Base2Matrix, np.ndarray]): The input matrix.
-        augmentedColCount (int, optional): The number of augmented columns.
-        verbose (bool, optional): If True, prints detailed information.
+    Parameters
+    ----------
+    matrix : Union[Base2Matrix, np.ndarray]
+        The input matrix.
+    augmentedColCount : int, optional
+        The number of augmented columns. Default is None.
+    verbose : bool, optional
+        If True, prints detailed information. Default is False.
 
-    Returns:
-        Base2Matrix: The RREF of the input matrix.
+    Returns
+    -------
+    Base2Matrix
+        The RREF of the input matrix.
+
+    Raises
+    ------
+    Exception
+        If augmentedColCount is greater than the number of augmented columns.
     """
     base = 2
 

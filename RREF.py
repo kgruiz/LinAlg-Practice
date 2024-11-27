@@ -7,6 +7,21 @@ from Matrix import FloatMatrix, Matrix
 def RREF(
     matrix: Matrix | FloatMatrix | np.ndarray, augmentedColCount: int = 0
 ) -> FloatMatrix:
+    """
+    Compute the Reduced Row Echelon Form (RREF) of a matrix.
+
+    Parameters
+    ----------
+    matrix : Matrix | FloatMatrix | np.ndarray
+        The input matrix to convert to RREF.
+    augmentedColCount : int, optional
+        The number of augmented columns, by default 0.
+
+    Returns
+    -------
+    FloatMatrix
+        The matrix in Reduced Row Echelon Form.
+    """
 
     if isinstance(matrix, Matrix):
 

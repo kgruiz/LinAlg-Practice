@@ -7,7 +7,26 @@ from Matrix import FloatMatrix, Matrix
 def ScalarMultiply(
     scalar: int | float | Basic, matrix: Matrix | FloatMatrix | np.ndarray
 ) -> FloatMatrix:
+    """
+    Multiply a matrix by a scalar.
 
+    Parameters
+    ----------
+    scalar : int | float | Basic
+        The scalar value to multiply with the matrix.
+    matrix : Matrix | FloatMatrix | np.ndarray
+        The matrix to be multiplied by the scalar.
+
+    Returns
+    -------
+    FloatMatrix
+        The resulting matrix after scalar multiplication.
+
+    Raises
+    ------
+    Exception
+        If `scalar` is not of type int, float, or Basic.
+    """
     if isinstance(matrix, np.ndarray):
 
         matrix_ = FloatMatrix(matrix.astype(object))

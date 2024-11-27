@@ -5,8 +5,24 @@ from VectorLength import Length
 
 
 def UnitVector(vector: Matrix | FloatMatrix | np.ndarray) -> FloatMatrix:
-    """Computes the unit vector for a given vector"""
+    """
+    Compute the unit vector of a given vector.
 
+    Parameters
+    ----------
+    vector : Matrix | FloatMatrix | np.ndarray
+        The input vector to be normalized.
+
+    Returns
+    -------
+    FloatMatrix
+        The unit vector in the direction of `vector`.
+
+    Raises
+    ------
+    Exception
+        If the input is not a vector.
+    """
     if isinstance(vector, Matrix):
 
         vector_ = FloatMatrix(vector)
