@@ -76,14 +76,6 @@ A comprehensive Python library designed to deepen my understanding of linear alg
 
 3. **Install Dependencies**
 
-   Ensure you have `pip` installed. Then run:
-
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-   *If a `requirements.txt` file is not provided, install the necessary packages manually:*
-
    ```bash
    pip install numpy sympy matplotlib tqdm
    ```

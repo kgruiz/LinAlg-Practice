@@ -12,8 +12,8 @@ from GramSchmidt import *
 from Inverse import *
 from Matrix import *
 from MatrixAdd import *
+from MatrixMultiply import *
 from MatrixSubtract import *
-from Multiply import *
 from QRDecomposition import *
 from RREF import *
 from ScalarMultiply import *
