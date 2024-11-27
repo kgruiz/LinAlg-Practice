@@ -1,4 +1,5 @@
 import numpy as np
+import sympy
 from sympy import Matrix as SympyMatrix
 from sympy import Symbol, sympify
 
@@ -44,7 +45,7 @@ def GetPivotColumns(
 
     for colIndex in range(matrix_.numCols):
 
-        if colIndex >= numAugmented:
+        if colIndex >= matrix_.numCols - numAugmented:
 
             break
 
@@ -65,7 +66,7 @@ def GetPivotColumns(
 
                     break
 
-        if numNonZero is None or numNonZero >= 2:
+        if numNonZero == 0 or numNonZero >= 2:
 
             continue
 
@@ -236,9 +237,14 @@ def RREF(
 
         for rowNum_, row in enumerate(matrix_):
 
+            if rowNum_ > rowNum:
+
+                break
+
             if rowNum_ != rowNum:
 
                 continue
+
             firstNonZero = None
             for elem in row:
 
@@ -251,7 +257,13 @@ def RREF(
                 continue
             for colNum, elem in enumerate(row):
 
-                matrix_[rowNum][colNum] = sympify(elem) / sympify(firstNonZero)
+                if elem == firstNonZero:
+
+                    matrix_[rowNum][colNum] = 1
+
+                else:
+
+                    matrix_[rowNum][colNum] = sympify(elem) / sympify(firstNonZero)
 
         return matrix_
 
@@ -327,7 +339,7 @@ def RREF(
 
             if elem != 0:
 
-                assert elem == 1
+                assert elem == 1 or elem == sympy.Float(1)
                 firstNonZeroIndex = i
                 break
         if (

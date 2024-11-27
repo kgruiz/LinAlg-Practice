@@ -1,6 +1,21 @@
 import numpy as np
 import sympy
-from sympy import Basic, Expr, Poly, Symbol, eye, pprint, pretty, simplify
+from sympy import (
+    Add,
+    Basic,
+    ComplexRootOf,
+    CRootOf,
+    Eq,
+    Expr,
+    Poly,
+    Symbol,
+    eye,
+    im,
+    pprint,
+    pretty,
+    re,
+    simplify,
+)
 from sympy.abc import lamda
 
 from Base2Multiply import *
@@ -69,9 +84,19 @@ class Eigenvalue:
         index : Union[int, str, Symbol], optional
             An optional identifier for the eigenvalue.
         """
-        self.value = value
+        if isinstance(value, ComplexRootOf):
+
+            self.value = value.evalf()
+            self.real, self.imaginary = value.as_real_imag()
+        else:
+
+            self.value = value
+            self.real = None
+            self.imaginary = None
+
         self.multiplicity = multiplicity
         self.index = index
+        self.complex: bool = self.real is not None
 
     def __str__(self) -> str:
         """
@@ -82,7 +107,13 @@ class Eigenvalue:
         str
             A formatted string displaying the eigenvalue and its multiplicity.
         """
-        valueStr = pretty(self.value)
+        if self.complex:
+
+            valueStr = pretty(self.value.round(3))
+
+        else:
+
+            valueStr = pretty(self.value)
 
         if self.index is not None:
 
@@ -104,6 +135,30 @@ class Eigenvalue:
         str
             A string that can be used to recreate the Eigenvalue instance.
         """
+        return self.__str__()
+
+
+class Eigenvector:
+
+    def __init__(
+        self,
+        eigenvalue: Eigenvalue,
+        vector: Matrix | FloatMatrix,
+        geomMultiplicity: int,
+        algMultiplicity: int,
+    ):
+
+        self.eigenvalue = eigenvalue
+        self.vector = vector
+        self.geomMultiplicity = geomMultiplicity
+        self.algMultiplicity = algMultiplicity
+
+    def __str__(self) -> str:
+
+        return f"{self.eigenvalue}: {self.vector}"
+
+    def __repr__(self) -> str:
+
         return self.__str__()
 
 
@@ -193,6 +248,8 @@ def GetEigenvalues(A: Union[FloatMatrix, Matrix], verbose: bool = False) -> tupl
 
         if eigenValueRaw not in realEigenvaluesRaw:
 
+            eigenValueRaw = eigenValueRaw.round(2)
+
             complexEigenvalue = Eigenvalue(
                 value=eigenValueRaw, multiplicity=eigenValuesRaw.count(eigenValueRaw)
             )
@@ -201,6 +258,8 @@ def GetEigenvalues(A: Union[FloatMatrix, Matrix], verbose: bool = False) -> tupl
 
         else:
 
+            eigenValueRaw = eigenValueRaw.round(2)
+
             realEigenvalue = Eigenvalue(
                 value=eigenValueRaw, multiplicity=eigenValuesRaw.count(eigenValueRaw)
             )
@@ -208,7 +267,14 @@ def GetEigenvalues(A: Union[FloatMatrix, Matrix], verbose: bool = False) -> tupl
             realEigenvalues.add(realEigenvalue)
 
     realEigenvalues = set(sorted(realEigenvalues, key=lambda x: x.value))
-    complexEigenvalues = set(sorted(complexEigenvalues, key=lambda x: x.value))
+
+    for a in complexEigenvalues:
+
+        print(f"a: {a}")
+
+    complexEigenvalues = sorted(
+        complexEigenvalues, key=lambda x: (re(x.value), im(x.value))
+    )
 
     for i, realEigenvalue in enumerate(realEigenvalues):
 
@@ -275,11 +341,14 @@ def GetEigenvectors(
 
     if len(complexEigenvalues) > 0:
 
-        eigenValues = set(realEigenvalues).update(set(complexEigenvalues))
+        # TODO: handle complex eigenvalues
+        eigenValues = set(realEigenvalues).union(set(complexEigenvalues))
 
     else:
 
         eigenValues = set(realEigenvalues)
+
+    eigenValues = set(realEigenvalues)
 
     idnMatrix = Idn(A.numRows)
 
@@ -299,6 +368,8 @@ def GetEigenvectors(
         print(f"Identity Matrix ({pretty(Symbol(f'I_{A.numRows}'))}):")
         print(idnMatrix)
         print()
+
+    print(realEigenvalues)
 
     for eigenValue in eigenValues:
 
@@ -374,11 +445,121 @@ def GetEigenvectors(
 
                 freeVars += f"{freeVarIndices[-1]}"
 
-            print(f"Pivot Columns ({len(pivotColIndices)}): {pivotCols}")
-            print(f"Free Variables ({len(freeVarIndices)}): {freeVars}")
+            if len(pivotColIndices) == 1:
+
+                print(f"Pivot Column ({len(pivotColIndices)}): {pivotCols}")
+
+            else:
+
+                print(f"Pivot Columns ({len(pivotColIndices)}): {pivotCols}")
+
+            if len(freeVarIndices) == 1:
+
+                print(f"Free Variable ({len(freeVarIndices)}): {freeVars}")
+
+            else:
+
+                print(f"Free Variables ({len(freeVarIndices)}): {freeVars}")
+
+            geomMultiplicity = len(freeVarIndices)
+
+            eigenVectorElems = []
+
+            for colIndex in range(rowReducedEigenvectorMatrix.numCols - 1):
+
+                if colIndex in freeVarIndices:
+
+                    eigenVectorElems.append(
+                        Eq(Symbol(f"v_{colIndex}"), 1, evaluate=False)
+                    )
+
+                elif colIndex in pivotColIndices:
+
+                    firstNonZeroRow = None
+
+                    for rowNum, elem in enumerate(
+                        rowReducedEigenvectorMatrix[:, colIndex]
+                    ):
+
+                        if elem != 0:
+
+                            if firstNonZeroRow is not None:
+
+                                raise Exception(
+                                    f"Invalid pivot column: {colIndex}. More than one non-zero element in column."
+                                )
+
+                            firstNonZeroRow = rowNum
+
+                    if firstNonZeroRow is None:
+
+                        raise Exception(
+                            f"Invalid pivot column: {colIndex}. No non-zero elements in column."
+                        )
+
+                    rowValues = []
+
+                    for colNum, elem in enumerate(
+                        rowReducedEigenvectorMatrix[firstNonZeroRow, :]
+                    ):
+
+                        if elem != 0:
+
+                            if len(rowValues) > 0 and colNum < colIndex:
+
+                                raise Exception(
+                                    f"Invalid pivot column: {colIndex}. Not first non-zero element in row."
+                                )
+
+                            rowValues.append((colNum, elem))
+
+                    if len(rowValues) == 0:
+
+                        raise Exception(
+                            f"Invalid pivot column: {colIndex}. No non-zero elements in row."
+                        )
+
+                    elif len(rowValues) == 1:
+
+                        eigenVectorElems.append(
+                            Eq(Symbol(f"v_{colIndex}"), 0, evaluate=False)
+                        )
+
+                    elif len(rowValues) == 2:
+
+                        rowEq = Add(
+                            rowValues[0][1] * Symbol(f"v_{rowValues[0][0]}"),
+                            rowValues[1][1] * Symbol(f"v_{rowValues[1][0]}"),
+                        )
+
+                        print(pretty(rowEq))
+
+                    else:
+
+                        rowEq = Add(
+                            rowValues[0][1] * Symbol(f"v_{rowValues[0][0]}"),
+                            rowValues[1][1] * Symbol(f"v_{rowValues[1][0]}"),
+                        )
+
+                        for rowValue in rowValues[2:]:
+
+                            rowEq += rowValue[1] * Symbol(f"v_{rowValues[1][0]}")
+
+                        print(pretty(rowEq))
+
+                else:
+
+                    raise Exception(f"Invalid column index: {colIndex}")
+
+            for elem in eigenVectorElems:
+
+                print(f"{pretty(elem)}")
+
+            raise SystemExit
 
 
-A = FloatMatrix(np.array([[1, 2], [4, 3]]))
+# A = FloatMatrix(np.array([[1, 2], [4, 3]]))
+A = FloatMatrix(np.array([[5, 4, 2, 1], [0, 1, 3, 5], [0, 0, 1, 4], [5, 2, 6, 1]]))
 
 
 eigenVectors = GetEigenvectors(A=A, verbose=True)
