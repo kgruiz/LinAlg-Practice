@@ -93,39 +93,32 @@ from Transpose import Transpose
 from MatrixMultiply import MatrixMultiply
 
 # Create two matrices
-A = Matrix(3, 3, min_=1, max_=10)
-B = Matrix(3, 3, min_=1, max_=10)
+a = Matrix(3, 3, min_=1, max_=10)
+b = Matrix(3, 3, min_=1, max_=10)
 
-print("Matrix A:")
-print(A)
+print(f"Matrix A:\n{a}")
 
-print("Matrix B:")
-print(B)
+print(f"Matrix B:\n{b}")
 
 # Add matrices
-C = MatrixAdd(A, B)
-print("A + B:")
-print(C)
+c = MatrixAdd(a, b)
+print(f"A + B:\n{c}")
 
 # Subtract matrices
-D = MatrixSubtract(A, B)
-print("A - B:")
-print(D)
+d = MatrixSubtract(a, b)
+print(f"A - B:\n{d}")
 
 # Scalar multiplication
-E = ScalarMultiply(5, A)
-print("5 * A:")
-print(E)
+e = ScalarMultiply(5, a)
+print(f"5 * A:\n{e}")
 
 # Transpose
-F = Transpose(A)
-print("Transpose of A:")
-print(F)
+f = Transpose(a)
+print(f"Transpose of A:\n{f}")
 
 # Matrix multiplication
-G = MatrixMultiply(A, B)
-print("A * B:")
-print(G)
+g = MatrixMultiply(a, b)
+print(f"A * B:\n{g}")
 ```
 
 ### Advanced Operations
@@ -139,40 +132,33 @@ from Inverse import Inverse
 from Basis import Basis
 
 # Reduced Row Echelon Form
-rref_A = RREF(A)
-print("RREF of A:")
-print(rref_A)
+rrefA = RREF(a)
+print(f"RREF of A:\n{rrefA}")
 
 # QR Decomposition
-Q, R = QRDecomposition(A)
-print("QR Decomposition of A:")
-print("Q:")
-print(Q)
-print("R:")
-print(R)
+q, r = QRDecomposition(a)
+print(f"QR Decomposition of A:")
+print(f"Q:\n{q}")
+print(f"R:\n{r}")
 
 # Gram-Schmidt Orthogonalization
-orthonormal_basis = GramSchmidt(A)
-print("Orthonormal Basis from A:")
-print(orthonormal_basis)
+orthonormalBasis = GramSchmidt(a)
+print(f"Orthonormal Basis from A:\n{orthonormalBasis}")
 
 # Determinant
-det_A = Determinat(A)
-print("Determinant of A:")
-print(det_A)
+detA = Determinat(a)
+print(f"Determinant of A:\n{detA}")
 
 # Inverse (if A is invertible)
-inv_A = Inverse(A)
-if inv_A:
-    print("Inverse of A:")
-    print(inv_A)
+invA = Inverse(a)
+if invA:
+    print(f"Inverse of A:\n{invA}")
 else:
     print("Matrix A is singular and cannot be inverted.")
 
 # Basis of Column Space
-basis_A = Basis(A)
-print("Basis of Column Space of A:")
-print(basis_A)
+basisA = Basis(a)
+print(f"Basis of Column Space of A:\n{basisA}")
 ```
 
 ### Vector Operations
@@ -186,26 +172,21 @@ from UnitVector import UnitVector
 v1 = Matrix(1, 3, min_=1, max_=5)
 v2 = Matrix(1, 3, min_=1, max_=5)
 
-print("Vector v1:")
-print(v1)
+print(f"Vector v1:\n{v1}")
 
-print("Vector v2:")
-print(v2)
+print(f"Vector v2:\n{v2}")
 
 # Dot product
-dot = VectorDot(v1, v2)
-print("Dot Product of v1 and v2:")
-print(dot)
+dotProduct = VectorDot(v1, v2)
+print(f"Dot Product of v1 and v2:\n{dotProduct}")
 
 # Vector length
-length_v1 = Length(v1)
-print("Length of v1:")
-print(length_v1)
+lengthV1 = Length(v1)
+print(f"Length of v1:\n{lengthV1}")
 
 # Unit vector
-unit_v1 = UnitVector(v1)
-print("Unit Vector of v1:")
-print(unit_v1)
+unitV1 = UnitVector(v1)
+print(f"Unit Vector of v1:\n{unitV1}")
 ```
 
 ### Utilities
@@ -216,29 +197,24 @@ from Transpose import Transpose
 from Matrix import Matrix, FloatMatrix
 
 # Create two matrices
-A = Matrix(2, 3, min_=1, max_=5)
-B = Matrix(2, 2, min_=1, max_=5)
+a = Matrix(2, 3, min_=1, max_=5)
+b = Matrix(2, 2, min_=1, max_=5)
 
-print("Matrix A:")
-print(A)
+print(f"Matrix A:\n{a}")
 
-print("Matrix B:")
-print(B)
+print(f"Matrix B:\n{b}")
 
 # Append matrices horizontally
-C = MatrixAppend(A, B, horizontalStack=True)
-print("A appended with B horizontally:")
-print(C)
+c = MatrixAppend(a, b, horizontalStack=True)
+print(f"A appended with B horizontally:\n{c}")
 
 # Append matrices vertically
-D = MatrixAppend(A, B, horizontalStack=False)
-print("A appended with B vertically:")
-print(D)
+d = MatrixAppend(a, b, horizontalStack=False)
+print(f"A appended with B vertically:\n{d}")
 
 # Transpose a matrix
-transposed_A = Transpose(A)
-print("Transposed A:")
-print(transposed_A)
+transposedA = Transpose(a)
+print(f"Transposed A:\n{transposedA}")
 ```
 
 ## Testing Framework
@@ -284,7 +260,7 @@ The `CalculateTimeComplexity` utility measures the execution time of functions a
 **Example Usage:**
 
 ```python
-from Main import CalculateTimeComplexity, TestMultiply
+from Main import CalculateTimeComplexity, RandomTestMultiply
 
 # Measure time complexity of Matrix Multiply
 CalculateTimeComplexity(
@@ -305,7 +281,7 @@ The library includes utility functions to analyze the time complexity of its ope
 ### Example Usage
 
 ```python
-from Main import CalculateTimeComplexity, TestMatrixMultiply
+from Main import CalculateTimeComplexity, RandomTestMultiply
 
 # Measure time complexity of Matrix Multiply
 CalculateTimeComplexity(
