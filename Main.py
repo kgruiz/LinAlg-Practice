@@ -2591,8 +2591,6 @@ if __name__ == "__main__":
             if not testResult:
 
                 print("MatrixWithSymbols")
+
                 noErrors = False
                 break
-
-
-# ...add similar test functions for other operations involving Symbols...

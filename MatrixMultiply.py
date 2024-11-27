@@ -6,7 +6,7 @@ from Matrix import FloatMatrix, Matrix
 from VectorDot import VectorDot
 
 
-defMatrixMultiply(
+def MatrixMultiply(
     matrixA: Union[Matrix, FloatMatrix, np.ndarray],
     matrixB: Union[Matrix, FloatMatrix, np.ndarray],
 ) -> FloatMatrix:
