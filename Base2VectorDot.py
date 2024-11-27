@@ -10,7 +10,16 @@ def Base2VectorDot(
     matrixA: Union[Base2Matrix, np.ndarray],
     matrixB: Union[Base2Matrix, np.ndarray],
 ) -> Symbol:
+    """
+    Computes the dot product of two vectors in base 2.
 
+    Args:
+        matrixA (Union[Base2Matrix, np.ndarray]): The first vector.
+        matrixB (Union[Base2Matrix, np.ndarray]): The second vector.
+
+    Returns:
+        Symbol: The dot product of the two vectors.
+    """
     base = 2
 
     if isinstance(matrixA, np.ndarray):

@@ -1,14 +1,24 @@
+from typing import Union
+
 import numpy as np
 
 from Matrix import FloatMatrix, Matrix
 
 
 def MatrixAdd(
-    matrixA: Matrix | FloatMatrix | np.ndarray,
-    matrixB: Matrix | FloatMatrix | np.ndarray,
+    matrixA: Union[Matrix, FloatMatrix, np.ndarray],
+    matrixB: Union[Matrix, FloatMatrix, np.ndarray],
 ) -> FloatMatrix:
-    """Adds two matrices"""
+    """
+    Adds two matrices.
 
+    Args:
+        matrixA (Union[Matrix, FloatMatrix, np.ndarray]): The first matrix.
+        matrixB (Union[Matrix, FloatMatrix, np.ndarray]): The second matrix.
+
+    Returns:
+        FloatMatrix: The result of adding the two matrices.
+    """
     if isinstance(matrixA, np.ndarray):
 
         matrixA_ = FloatMatrix(matrixA)

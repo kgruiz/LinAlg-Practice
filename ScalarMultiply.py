@@ -1,11 +1,11 @@
 import numpy as np
-from sympy import Symbol
+from sympy import Basic, Symbol
 
 from Matrix import FloatMatrix, Matrix
 
 
 def ScalarMultiply(
-    scalar: int | float | Symbol, matrix: Matrix | FloatMatrix | np.ndarray
+    scalar: int | float | Basic, matrix: Matrix | FloatMatrix | np.ndarray
 ) -> FloatMatrix:
 
     if isinstance(matrix, np.ndarray):
@@ -23,7 +23,7 @@ def ScalarMultiply(
     if (
         not isinstance(scalar, int)
         and not isinstance(scalar, float)
-        and not isinstance(scalar, Symbol)
+        and not isinstance(scalar, Basic)
     ):
 
         raise Exception(f"Invalid scalar type: {type(scalar)}")

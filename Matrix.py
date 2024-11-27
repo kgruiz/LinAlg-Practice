@@ -596,7 +596,12 @@ class Base2Matrix:
     Can be initialized with dimensions, a numpy array, another Matrix object, or a FloatMatrix with integer values.
     """
 
-    def __init__(self, *args):
+    def __init__(
+        self,
+        *args: Union[
+            int, np.ndarray, "Base2Matrix", "Matrix", "FloatMatrix", Symbol, list, tuple
+        ],
+    ):
         """
         Initializes the Matrix instance.
 
@@ -663,7 +668,7 @@ class Base2Matrix:
                             f"TWO HAPPENS {row}|{col} == {intMatrix[row][col]}"
                         )
 
-    def __str__(self):
+    def __str__(self) -> str:
         """
         Returns a string representation of the matrix.
 
@@ -673,30 +678,32 @@ class Base2Matrix:
         EnsureNoTwo(matrix=self.matrix)
         return MatrixString(self.matrix, self.numAugmented)
 
-    def __getitem__(self, index):
+    def __getitem__(self, index: Union[int, tuple]) -> Union[int, float, Symbol]:
         """
-        Allows matrix indexing using square brackets.
+        Gets the item at the specified index.
 
         Args:
-            index (int or tuple): Index to access matrix elements.
+            index: The index of the item to retrieve.
 
         Returns:
-            int: The element at the specified index.
+            Union[int, float, Symbol]: The element at the specified index.
         """
         return self.matrix[index]
 
-    def __setitem__(self, index, value):
+    def __setitem__(
+        self, index: Union[int, tuple], value: Union[int, float, Symbol]
+    ) -> None:
         """
-        Allows setting matrix elements using square brackets.
+        Sets the item at the specified index to the given value.
 
         Args:
-            index (int or tuple): Index to access matrix elements.
-            value (int): Value to set at the specified index.
+            index: The index of the item to set.
+            value: The value to set at the specified index.
         """
         self.matrix[index] = value % 2 if isinstance(value, (int, float)) else value
         EnsureNoTwo(matrix=self.matrix)
 
-    def __len__(self):
+    def __len__(self) -> int:
         """
         Returns the number of rows in the matrix.
 
@@ -705,22 +712,27 @@ class Base2Matrix:
         """
         return self.numRows
 
-    def SetNumAugmented(self, numAugmented):
+    def SetNumAugmented(self, numAugmented: int) -> None:
+        """
+        Sets the number of augmented columns in the matrix.
 
+        Args:
+            numAugmented: The number of augmented columns.
+        """
         if numAugmented < 0 or numAugmented > self.numCols - 1:
 
             raise ValueError("numAugmented must be between 0 and numCols - 1.")
         self.numAugmented = numAugmented
 
-    def __getattr__(self, attr):
+    def __getattr__(self, attr: str) -> Union[int, tuple, np.ndarray]:
         """
-        Provides access to attributes of the matrix, such as number of rows or columns.
+        Gets the attribute with the specified name.
 
         Args:
-            attr (str): The name of the attribute to retrieve.
+            attr: The name of the attribute to retrieve.
 
         Returns:
-            int or ndarray: The requested attribute value.
+            Union[int, tuple, np.ndarray]: The requested attribute value.
         """
         EnsureNoTwo(matrix=self.matrix)
         if attr in object.__getattribute__(self, "__dict__"):

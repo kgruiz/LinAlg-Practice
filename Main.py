@@ -348,19 +348,19 @@ def TestMatrixAdd(
     verbose: bool = False,
 ) -> bool:
     """
-    Tests the MatrixAdd operation between two matrices A and B.
+    Tests the MatrixAdd function.
 
     Args:
         Arows (int): Number of rows in matrix A.
         Acols (int): Number of columns in matrix A.
         Brows (int): Number of rows in matrix B.
         Bcols (int): Number of columns in matrix B.
-        min_ (int): Minimum value for matrix elements.
-        max_ (int): Maximum value for matrix elements.
-        verbose (bool): If True, prints the matrices and results.
+        min_ (int): Minimum value in the matrices.
+        max_ (int): Maximum value in the matrices.
+        verbose (bool): If True, prints detailed information.
 
     Returns:
-        bool: True if the addition is correct, False otherwise.
+        bool: True if the test passes, False otherwise.
     """
     a = Matrix(Arows, Acols, min_, max_)
 
@@ -418,15 +418,15 @@ def RandomTestMatrixAdd(
     minSize: int = -100, maxSize: int = 100, verbose: bool = False
 ) -> bool:
     """
-    Generates Random dimensions and values to test the TestMatrixAdd function.
+    Performs a random test for MatrixAdd.
 
     Args:
-        minSize (int): Minimum size for the matrix dimensions and element values.
-        maxSize (int): Maximum size for the matrix dimensions and element values.
-        verbose (bool): If True, prints the testing details.
+        minSize (int): Minimum size of the matrices.
+        maxSize (int): Maximum size of the matrices.
+        verbose (bool): If True, prints detailed information.
 
     Returns:
-        bool: Result of the TestMatrixAdd function.
+        bool: True if the test passes, False otherwise.
     """
     Arows = random.randint(0, maxSize)
     Acols = random.randint(0, maxSize)
@@ -457,19 +457,19 @@ def TestMatrixSubtract(
     verbose: bool = False,
 ) -> bool:
     """
-    Tests the MatrixSubtract operation between two matrices A and B.
+    Tests the MatrixSubtract function.
 
     Args:
         Arows (int): Number of rows in matrix A.
         Acols (int): Number of columns in matrix A.
         Brows (int): Number of rows in matrix B.
         Bcols (int): Number of columns in matrix B.
-        min_ (int): Minimum value for matrix elements.
-        max_ (int): Maximum value for matrix elements.
-        verbose (bool): If True, prints the matrices and results.
+        min_ (int): Minimum value in the matrices.
+        max_ (int): Maximum value in the matrices.
+        verbose (bool): If True, prints detailed information.
 
     Returns:
-        bool: True if the subtraction is correct, False otherwise.
+        bool: True if the test passes, False otherwise.
     """
     a = Matrix(Arows, Acols, min_, max_)
 
@@ -527,15 +527,15 @@ def RandomTestMatrixSubtract(
     minSize: int = -100, maxSize: int = 100, verbose: bool = False
 ) -> bool:
     """
-    Generates Random dimensions and values to test the TestMatrixSubtract function.
+    Performs a random test for MatrixSubtract.
 
     Args:
-        minSize (int): Minimum size for the matrix dimensions and element values.
-        maxSize (int): Maximum size for the matrix dimensions and element values.
-        verbose (bool): If True, prints the testing details.
+        minSize (int): Minimum size of the matrices.
+        maxSize (int): Maximum size of the matrices.
+        verbose (bool): If True, prints detailed information.
 
     Returns:
-        bool: Result of the TestMatrixSubtract function.
+        bool: True if the test passes, False otherwise.
     """
     Arows = random.randint(0, maxSize)
     Acols = random.randint(0, maxSize)
@@ -1095,8 +1095,19 @@ def TestBase2RREF(
     max_: int = 1,
     verbose: bool = False,
 ) -> bool:
-    """ """
+    """
+    Tests the Base2RREF function.
 
+    Args:
+        rows (int): Number of rows in the matrix.
+        cols (int): Number of columns in the matrix.
+        min_ (int): Minimum value in the matrix.
+        max_ (int): Maximum value in the matrix.
+        verbose (bool): If True, prints detailed information.
+
+    Returns:
+        bool: True if the test passes, False otherwise.
+    """
     a = Matrix(rows, cols, min_, max_)
 
     print(f"A:\n{a}")
@@ -1155,8 +1166,17 @@ def TestBase2RREF(
 def RandomTestBase2RREF(
     minSize: int = -100, maxSize: int = 100, verbose: bool = False
 ) -> bool:
-    """ """
+    """
+    Performs a random test for Base2RREF.
 
+    Args:
+        minSize (int): Minimum size of the matrix.
+        maxSize (int): Maximum size of the matrix.
+        verbose (bool): If True, prints detailed information.
+
+    Returns:
+        bool: True if the test passes, False otherwise.
+    """
     rows = random.randint(0, maxSize)
     cols = random.randint(0, maxSize)
     augmented = 0  # Unused parameter, kept for interface consistency
@@ -2084,6 +2104,35 @@ def RandomTestInverse(
     return testResult
 
 
+def TestMatrixWithSymbols(verbose: bool = False) -> bool:
+    """
+    Tests matrix operations involving symbols.
+
+    Args:
+        verbose: If True, prints detailed information.
+
+    Returns:
+        bool: True if the test passes, False otherwise.
+    """
+    x, y, z = symbols("x y z")
+    a = Matrix([[x, y], [y, z]])
+    b = Matrix([[1, 0], [0, 1]])
+    try:
+
+        result = Multiply(a, b)
+        if verbose:
+
+            print(f"Result:\n{result}")
+        return True
+
+    except Exception as e:
+
+        if verbose:
+
+            print(f"Error: {e}")
+        return False
+
+
 # ============================
 # Utility Functions
 # ============================
@@ -2403,27 +2452,6 @@ if __name__ == "__main__":
                 print("MatrixWithSymbols")
                 noErrors = False
                 break
-
-
-def TestMatrixWithSymbols(verbose: bool = False) -> bool:
-
-    x, y, z = symbols("x y z")
-    a = Matrix([[x, y], [y, z]])
-    b = Matrix([[1, 0], [0, 1]])
-    try:
-
-        result = Multiply(a, b)
-        if verbose:
-
-            print(f"Result:\n{result}")
-        return True
-
-    except Exception as e:
-
-        if verbose:
-
-            print(f"Error: {e}")
-        return False
 
 
 # ...add similar test functions for other operations involving Symbols...

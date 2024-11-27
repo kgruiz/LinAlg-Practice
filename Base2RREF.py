@@ -1,3 +1,5 @@
+from typing import Union
+
 import numpy as np
 from sympy import Mod
 
@@ -5,11 +7,21 @@ from Matrix import Base2Matrix, EnsureNoTwo
 
 
 def Base2RREF(
-    matrix: Base2Matrix | np.ndarray,
+    matrix: Union[Base2Matrix, np.ndarray],
     augmentedColCount: int = None,
     verbose: bool = False,
 ) -> Base2Matrix:
+    """
+    Computes the Reduced Row Echelon Form (RREF) of a matrix in base 2.
 
+    Args:
+        matrix (Union[Base2Matrix, np.ndarray]): The input matrix.
+        augmentedColCount (int, optional): The number of augmented columns.
+        verbose (bool, optional): If True, prints detailed information.
+
+    Returns:
+        Base2Matrix: The RREF of the input matrix.
+    """
     base = 2
 
     if isinstance(matrix, Base2Matrix):
@@ -38,7 +50,15 @@ def Base2RREF(
         raise Exception(errorStr)
 
     def ScaleRows(matrix: Base2Matrix) -> Base2Matrix:
+        """
+        Scales the rows of the matrix.
 
+        Args:
+            matrix (Base2Matrix): The input matrix.
+
+        Returns:
+            Base2Matrix: The scaled matrix.
+        """
         matrix_ = Base2Matrix(matrix)
 
         for rowNum, row in enumerate(matrix_):
@@ -66,7 +86,16 @@ def Base2RREF(
         return matrix_
 
     def ScaleRow(matrix: Base2Matrix, rowNum: int) -> Base2Matrix:
+        """
+        Scales a specific row of the matrix.
 
+        Args:
+            matrix (Base2Matrix): The input matrix.
+            rowNum (int): The row number to scale.
+
+        Returns:
+            Base2Matrix: The matrix with the scaled row.
+        """
         matrix_ = Base2Matrix(matrix)
 
         for rowNum_, row in enumerate(matrix_):
@@ -98,7 +127,15 @@ def Base2RREF(
         return matrix_
 
     def CleanNegZeros(matrix: Base2Matrix) -> Base2Matrix:
+        """
+        Cleans negative zeros in the matrix.
 
+        Args:
+            matrix (Base2Matrix): The input matrix.
+
+        Returns:
+            Base2Matrix: The matrix with cleaned negative zeros.
+        """
         matrix_ = Base2Matrix(matrix)
 
         for rowNum, row in enumerate(matrix_):
@@ -113,6 +150,15 @@ def Base2RREF(
 
     def OrderRows(matrix: Base2Matrix) -> Base2Matrix:
 
+        """
+        Orders the rows of the matrix.
+
+        Args:
+            matrix (Base2Matrix): The input matrix.
+
+        Returns:
+            Base2Matrix: The matrix with ordered rows.
+        """
         matrix_ = Base2Matrix(matrix)
 
         def FirstNonZeroIndex(row):

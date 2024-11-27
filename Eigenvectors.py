@@ -24,20 +24,40 @@ from VectorLength import *
 
 
 class Eigenvalue:
+    """
+    Represents an eigenvalue along with its multiplicity and identifier.
+
+    Attributes:
+        value (Union[int, float, Basic]): The numerical value of the eigenvalue.
+        multiplicity (int): The number of times the eigenvalue appears.
+        index (Union[int, str, Symbol], optional): An identifier for the eigenvalue.
+    """
 
     def __init__(
         self,
-        value: int | float | Basic,
+        value: Union[int, float, Basic],
         multiplicity: int,
-        index: int | str | Symbol = None,
+        index: Union[int, str, Symbol] = None,
     ):
+        """
+        Initializes an instance of the Eigenvalue class.
 
+        Args:
+            value (Union[int, float, Basic]): The numerical value of the eigenvalue.
+            multiplicity (int): The multiplicity indicating how many times the eigenvalue occurs.
+            index (Union[int, str, Symbol], optional): An optional identifier for the eigenvalue.
+        """
         self.value = value
         self.multiplicity = multiplicity
         self.index = index
 
-    def __str__(self):
+    def __str__(self) -> str:
+        """
+        Provides a readable string representation of the eigenvalue.
 
+        Returns:
+            str: A formatted string displaying the eigenvalue and its multiplicity.
+        """
         valueStr = pretty(self.value)
 
         if self.index is not None:
@@ -52,13 +72,29 @@ class Eigenvalue:
             f"{lambdaStr}: {valueStr} ({pretty(Symbol("m_a"))} = {self.multiplicity})"
         )
 
-    def __repr__(self):
+    def __repr__(self) -> str:
+        """
+        Provides an unambiguous string representation of the eigenvalue.
 
+        Returns:
+            str: A string that can be used to recreate the Eigenvalue instance.
+        """
         return self.__str__()
 
 
-def GetEigenvalues(A: Union[FloatMatrix, Matrix], verbose: bool = False):
+def GetEigenvalues(A: Union[FloatMatrix, Matrix], verbose: bool = False) -> tuple:
+    """
+    Calculates the real and complex eigenvalues of a square matrix.
 
+    Args:
+        A (Union[FloatMatrix, Matrix]): The input square matrix for which to compute eigenvalues.
+        verbose (bool, optional): If set to True, prints detailed computation steps.
+
+    Returns:
+        tuple: A tuple containing two sets:
+            - Set of real eigenvalues.
+            - Set of complex eigenvalues.
+    """
     if A.numRows != A.numCols:
 
         raise Exception("Matrix must be square")
@@ -113,60 +149,104 @@ def GetEigenvalues(A: Union[FloatMatrix, Matrix], verbose: bool = False):
 
     eigenValuesRaw = characteristicPoly.all_roots()
 
-    realEigenValuesRaw = characteristicPoly.real_roots()
+    realEigenvaluesRaw = characteristicPoly.real_roots()
 
-    realEigenValues = set()
-    complexEigenValues = set()
+    realEigenvalues = set()
+    complexEigenvalues = set()
 
     for eigenValueRaw in eigenValuesRaw:
 
-        if eigenValueRaw not in realEigenValuesRaw:
+        if eigenValueRaw not in realEigenvaluesRaw:
 
-            complexEigenValue = Eigenvalue(
+            complexEigenvalue = Eigenvalue(
                 value=eigenValueRaw, multiplicity=eigenValuesRaw.count(eigenValueRaw)
             )
 
-            complexEigenValues.add(complexEigenValue)
+            complexEigenvalues.add(complexEigenvalue)
 
         else:
 
-            realEigenValue = Eigenvalue(
+            realEigenvalue = Eigenvalue(
                 value=eigenValueRaw, multiplicity=eigenValuesRaw.count(eigenValueRaw)
             )
 
-            realEigenValues.add(realEigenValue)
+            realEigenvalues.add(realEigenvalue)
 
-    realEigenValues = sorted(realEigenValues, key=lambda x: x.value)
-    complexEigenValues = sorted(complexEigenValues, key=lambda x: x.value)
+    realEigenvalues = set(sorted(realEigenvalues, key=lambda x: x.value))
+    complexEigenvalues = set(sorted(complexEigenvalues, key=lambda x: x.value))
 
-    for i, realEigenValue in enumerate(realEigenValues):
+    for i, realEigenvalue in enumerate(realEigenvalues):
 
-        realEigenValue.index = i
+        realEigenvalue.index = i
 
-    for i, complexEigenValue in enumerate(complexEigenValues):
+    for i, complexEigenvalue in enumerate(complexEigenvalues):
 
-        complexEigenValue.index = f"{i}i"
+        complexEigenvalue.index = f"{i}i"
 
     if verbose:
 
         print("Real Eigenvalues:")
 
-        for eigenValue in realEigenValues:
+        for eigenValue in realEigenvalues:
 
             print(f"  {eigenValue}")
 
-    if verbose and len(complexEigenValues) > 0:
+    if verbose and len(complexEigenvalues) > 0:
 
         print("Complex Eigenvalues:")
 
-        for complexEigenValue in complexEigenValues:
+        for complexEigenvalue in complexEigenvalues:
 
-            print(f"  {complexEigenValue}")
+            print(f"  {complexEigenvalue}")
 
         print()
 
+    return realEigenvalues, complexEigenvalues
 
-A = FloatMatrix(np.array([[4, 2], [3, 4]]))
+
+def GetEigenvectors(A: Union[FloatMatrix, Matrix], verbose: bool = False) -> None:
+    """
+    Computes and displays the eigenvectors associated with each eigenvalue of a matrix.
+
+    Args:
+        A (Union[FloatMatrix, Matrix]): The input square matrix for which to compute eigenvectors.
+        verbose (bool, optional): If set to True, prints detailed computation steps.
+
+    Returns:
+        None: This function prints the eigenvectors directly.
+    """
+    realEigenvalues, complexEigenvalues = GetEigenvalues(A=A, verbose=verbose)
+
+    if len(complexEigenvalues) > 0:
+
+        eigenValues = set(realEigenvalues).update(set(complexEigenvalues))
+
+    else:
+
+        eigenValues = set(realEigenvalues)
+
+    idnMatrix = Idn(A.numRows)
+
+    for eigenValue in eigenValues:
+
+        if not isinstance(eigenValue, Eigenvalue):
+
+            raise Exception("Eigenvalues must be calculated first")
+
+        eigenIdn = ScalarMultiply(scalar=eigenValue.value, matrix=idnMatrix)
+
+        eigenvectorEquationMatrix = MatrixSubtract(matrixA=A, matrixB=eigenIdn)
+
+        zeroVector = Matrix(np.array([[0] * A.numRows]))
+
+        print(zeroVector)
+
+        augmentedEigenvectorEquation = MatrixAppend(
+            matrixA=eigenvectorEquationMatrix, matrixB=zeroVector
+        )
 
 
-eigenValues = GetEigenvalues(A=A, verbose=True)
+A = FloatMatrix(np.array([[1, 2], [4, 3]]))
+
+
+eigenVectors = GetEigenvectors(A=A, verbose=True)
