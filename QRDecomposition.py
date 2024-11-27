@@ -3,7 +3,7 @@ import numpy as np
 from Basis import Basis
 from GramSchmidt import GramSchmidt
 from Matrix import FloatMatrix, Matrix
-from Multiply import Multiply
+from MatrixMultiply import MatrixMultiply
 from Transpose import Transpose
 
 
@@ -58,7 +58,7 @@ def QRDecomposition(
 
     qT = Transpose(matrix=q)
 
-    r = Multiply(matrixA=qT, matrixB=basis)
+    r = MatrixMultiply(matrixA=qT, matrixB=basis)
 
     q = CleanNegZeros(matrix=q)
     r = CleanNegZeros(matrix=r)

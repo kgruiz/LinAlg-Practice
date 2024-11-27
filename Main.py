@@ -15,8 +15,8 @@ from GramSchmidt import GramSchmidt
 from Inverse import Inverse
 from Matrix import FloatMatrix, Matrix
 from MatrixAdd import MatrixAdd
+from MatrixMultiply import MatrixMultiply
 from MatrixSubtract import MatrixSubtract
-from Multiply import Multiply
 from QRDecomposition import QRDecomposition
 from RREF import RREF
 from ScalarMultiply import ScalarMultiply
@@ -308,7 +308,7 @@ def TestMultiply(
 
     try:
 
-        c = Multiply(matrixA=a, matrixB=b)
+        c = MatrixMultiply(matrixA=a, matrixB=b)
     except Exception:
 
         print(f"C:\n{c}\n")
@@ -2260,7 +2260,7 @@ def TestMatrixWithSymbols(verbose: bool = False) -> bool:
     b = Matrix([[1, 0], [0, 1]])
     try:
 
-        result = Multiply(a, b)
+        result = MatrixMultiply(a, b)
         if verbose:
 
             print(f"Result:\n{result}")
