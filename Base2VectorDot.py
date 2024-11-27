@@ -1,12 +1,15 @@
+from typing import Union
+
 import numpy as np
+from sympy import Mod, Symbol
 
 from Matrix import Base2Matrix, EnsureNoTwo
 
 
 def Base2VectorDot(
-    matrixA: Base2Matrix | np.ndarray,
-    matrixB: Base2Matrix | np.ndarray,
-) -> int:
+    matrixA: Union[Base2Matrix, np.ndarray],
+    matrixB: Union[Base2Matrix, np.ndarray],
+) -> Symbol:
 
     base = 2
 
@@ -58,16 +61,7 @@ def Base2VectorDot(
 
         matrixB_ = matrixB_.T
 
-    dotProduct = 0
+    dotProduct = sum(a * b for a, b in zip(matrixA_[0], matrixB_[0]))
 
-    EnsureNoTwo(matrix=matrixA_)
-    EnsureNoTwo(matrix=matrixB_)
-
-    for elemA, elemB in zip(matrixA_[0], matrixB_[0]):
-
-        EnsureNoTwo(matrix=matrixA_)
-        EnsureNoTwo(matrix=matrixB_)
-
-        dotProduct = (dotProduct + ((elemA * elemB) % base)) % base
-
-    return dotProduct
+    # Use symbolic modulo operation
+    return Mod(dotProduct, 2)

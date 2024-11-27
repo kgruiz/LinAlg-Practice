@@ -1,3 +1,5 @@
+from typing import Union
+
 import numpy as np
 
 from Matrix import FloatMatrix, Matrix
@@ -5,8 +7,8 @@ from VectorDot import VectorDot
 
 
 def Multiply(
-    matrixA: Matrix | FloatMatrix | np.ndarray,
-    matrixB: Matrix | FloatMatrix | np.ndarray,
+    matrixA: Union[Matrix, FloatMatrix, np.ndarray],
+    matrixB: Union[Matrix, FloatMatrix, np.ndarray],
 ) -> FloatMatrix:
 
     if isinstance(matrixA, np.ndarray):
@@ -40,20 +42,6 @@ def Multiply(
                 {matrixA_.numCols} != Matrix B Rows: {matrixB_.numRows}"
         )
 
-    resultMatrix = FloatMatrix(
-        matrixA_.numRows,
-        matrixB_.numCols,
-    )
+    resultArray = np.dot(matrixA_.matrix, matrixB_.matrix).astype(object)
 
-    for row in range(resultMatrix.numRows):
-
-        for col in range(resultMatrix.numCols):
-
-            newElem = VectorDot(
-                matrixA=FloatMatrix(matrixA_[row, :]),
-                matrixB=FloatMatrix(matrixB_[:, col]),
-            )
-
-            resultMatrix[row][col] = round(newElem, 12)
-
-    return resultMatrix
+    return FloatMatrix(resultArray)

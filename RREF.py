@@ -1,4 +1,5 @@
 import numpy as np
+from sympy import Matrix as SympyMatrix
 
 from Matrix import FloatMatrix, Matrix
 
@@ -172,4 +173,10 @@ def RREF(
 
     matrix_ = OrderRows(matrix=matrix_)
 
-    return matrix_
+    sympyMatrix = SympyMatrix(matrix_.matrix)
+
+    rrefMatrix, _ = sympyMatrix.rref()
+
+    resultArray = np.array(rrefMatrix).astype(object)
+
+    return FloatMatrix(resultArray)

@@ -1,4 +1,5 @@
 import numpy as np
+from sympy import Mod
 
 from Base2VectorDot import Base2VectorDot
 from Matrix import Base2Matrix, EnsureNoTwo
@@ -53,7 +54,7 @@ def Base2Multiply(
                 matrixB=Base2Matrix(matrixB_[:, col]),
             )
 
-            resultMatrix[row][col] = newElem
+            resultMatrix[row][col] = Mod(newElem, 2)
 
             EnsureNoTwo(matrix=matrixA_)
             EnsureNoTwo(matrix=matrixB_)

@@ -5,6 +5,7 @@ import traceback
 import matplotlib.pyplot as plt
 import numpy as np
 from sympy import Matrix as symMatrix
+from sympy import symbols
 from tqdm import tqdm
 
 from Base2RREF import Base2RREF
@@ -2390,3 +2391,39 @@ if __name__ == "__main__":
 
                 noErrors = False
                 break
+
+    # Test Matrix with Symbols
+    if noErrors:
+
+        for _ in tqdm(range(100), desc="TestMatrixWithSymbols"):
+
+            testResult = TestMatrixWithSymbols(verbose=False)
+            if not testResult:
+
+                print("MatrixWithSymbols")
+                noErrors = False
+                break
+
+
+def TestMatrixWithSymbols(verbose: bool = False) -> bool:
+
+    x, y, z = symbols("x y z")
+    a = Matrix([[x, y], [y, z]])
+    b = Matrix([[1, 0], [0, 1]])
+    try:
+
+        result = Multiply(a, b)
+        if verbose:
+
+            print(f"Result:\n{result}")
+        return True
+
+    except Exception as e:
+
+        if verbose:
+
+            print(f"Error: {e}")
+        return False
+
+
+# ...add similar test functions for other operations involving Symbols...

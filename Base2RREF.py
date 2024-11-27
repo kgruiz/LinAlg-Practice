@@ -1,4 +1,5 @@
 import numpy as np
+from sympy import Mod
 
 from Matrix import Base2Matrix, EnsureNoTwo
 
@@ -92,7 +93,7 @@ def Base2RREF(
 
             for colNum, elem in enumerate(row):
 
-                matrix_[rowNum][colNum] = (elem / firstNonZero) % base
+                matrix_[rowNum][colNum] = Mod(elem, base)
 
         return matrix_
 
@@ -201,7 +202,7 @@ def Base2RREF(
 
                 EnsureNoTwo(matrix=matrix_)
 
-                matrix_[rowNum][colNum] = (elem - (pivotRow[colNum] * factor)) % base
+                matrix_[rowNum][colNum] = Mod(elem - pivotRow[colNum] * factor, base)
 
         pivotRowNum += 1
 

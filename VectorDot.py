@@ -1,4 +1,5 @@
 import numpy as np
+from sympy import Symbol
 
 from Matrix import FloatMatrix, Matrix
 
@@ -6,7 +7,7 @@ from Matrix import FloatMatrix, Matrix
 def VectorDot(
     matrixA: Matrix | FloatMatrix | np.ndarray,
     matrixB: Matrix | FloatMatrix | np.ndarray,
-) -> int:
+) -> Symbol:
 
     if isinstance(matrixA, np.ndarray):
 
@@ -61,10 +62,6 @@ def VectorDot(
 
         matrixB_ = matrixB_.T
 
-    dotProduct = 0
-
-    for elemA, elemB in zip(matrixA_[0], matrixB_[0]):
-
-        dotProduct += elemA * elemB
+    dotProduct = sum(a * b for a, b in zip(matrixA_[0], matrixB_[0]))
 
     return dotProduct
