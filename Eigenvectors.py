@@ -239,7 +239,9 @@ def GetEigenvalues(A: Union[FloatMatrix, Matrix], verbose: bool = False) -> tupl
     return realEigenvalues, complexEigenvalues
 
 
-def GetEigenvectors(A: Union[FloatMatrix, Matrix], verbose: bool = False) -> None:
+def GetEigenvectors(
+    A: Union[FloatMatrix, Matrix], makeUnit: bool = True, verbose: bool = False
+) -> None:
     """
     Compute and display the eigenvectors associated with each eigenvalue of a matrix.
 
@@ -247,6 +249,8 @@ def GetEigenvectors(A: Union[FloatMatrix, Matrix], verbose: bool = False) -> Non
     ----------
     A : Union[FloatMatrix, Matrix]
         The input square matrix for which to compute eigenvectors.
+    makeUnit : bool, optional
+        If True, normalizes the eigenvectors to unit length. Default is True.
     verbose : bool, optional
         If True, prints detailed computation steps. Default is False.
 
@@ -346,7 +350,7 @@ def GetEigenvectors(A: Union[FloatMatrix, Matrix], verbose: bool = False) -> Non
         if verbose:
 
             print(f"RREF of Augmented Eigenvector Matrix:")
-            pprint(augmentedEigenvectorEquation)
+            pprint(rowReducedEigenvectorMatrix)
             print()
 
 
