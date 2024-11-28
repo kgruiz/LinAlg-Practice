@@ -7,7 +7,9 @@ from Matrix import FloatMatrix, Matrix
 
 
 def GetPivotColumns(
-    matrix: Matrix | FloatMatrix | np.ndarray, numAugmented: int = 0
+    matrix: Matrix | FloatMatrix | np.ndarray,
+    numAugmented: int = 0,
+    tolerance: float = 1e-9,
 ) -> list:
     """
     Calculate which columns are pivot columns in the matrix.
@@ -54,7 +56,7 @@ def GetPivotColumns(
 
         for rowNum, elem in enumerate(matrix_[:, colIndex]):
 
-            if elem != 0:
+            if abs(elem) > tolerance:
 
                 numNonZero += 1
 
@@ -92,7 +94,9 @@ def GetPivotColumns(
 
 
 def GetFreeVariables(
-    matrix: Matrix | FloatMatrix | np.ndarray, numAugmented: int = 0
+    matrix: Matrix | FloatMatrix | np.ndarray,
+    numAugmented: int = 0,
+    tolerance: float = 1e-9,
 ) -> list:
     """
     Calculate which columns are free variables in the matrix.
@@ -128,7 +132,7 @@ def GetFreeVariables(
             f"Invalid augmented column count: {numAugmented}, expected: {originalNumAugmented}"
         )
 
-    pivotColumns = GetPivotColumns(matrix_, numAugmented)
+    pivotColumns = GetPivotColumns(matrix_, numAugmented, tolerance)
     freeVariables = [
         i for i in range(matrix_.numCols - numAugmented) if i not in pivotColumns
     ]
@@ -136,7 +140,9 @@ def GetFreeVariables(
 
 
 def RREF(
-    matrix: Matrix | FloatMatrix | np.ndarray, augmentedColCount: int = 0
+    matrix: Matrix | FloatMatrix | np.ndarray,
+    augmentedColCount: int = 0,
+    tolerance: float = 1e-9,
 ) -> FloatMatrix:
     """
     Compute the Reduced Row Echelon Form (RREF) of a matrix.
@@ -202,7 +208,7 @@ def RREF(
             firstNonZero = None
             for elem in row:
 
-                if elem != 0:
+                if abs(elem) > tolerance:
 
                     firstNonZero = elem
                     break
@@ -248,7 +254,7 @@ def RREF(
             firstNonZero = None
             for elem in row:
 
-                if elem != 0:
+                if abs(elem) > tolerance:
 
                     firstNonZero = elem
                     break
@@ -287,14 +293,13 @@ def RREF(
 
             for colNum, elem in enumerate(row):
 
-                if elem == -0:
+                if abs(elem) < tolerance:
 
-                    matrix_[rowNum][colNum] = +0
+                    matrix_[rowNum][colNum] = 0
 
         return matrix_
 
     def OrderRows(matrix: FloatMatrix) -> FloatMatrix:
-
         """
         Order the rows of the matrix based on the position of the first non-zero element in each row.
 
@@ -337,9 +342,13 @@ def RREF(
 
         for i, elem in enumerate(pivotRow):
 
-            if elem != 0:
+            if abs(elem - 1) < tolerance:
 
                 assert elem == 1 or elem == sympy.Float(1)
+                firstNonZeroIndex = i
+                break
+            if abs(elem) > tolerance:
+
                 firstNonZeroIndex = i
                 break
         if (
@@ -357,7 +366,7 @@ def RREF(
             if rowNum == pivotRowNum:
 
                 continue
-            if row[firstNonZeroIndex] == 0:
+            if abs(row[firstNonZeroIndex]) < tolerance:
 
                 continue
 

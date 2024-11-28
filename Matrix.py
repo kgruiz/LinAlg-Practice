@@ -268,9 +268,13 @@ def MatrixString(matrix, numAugmented=0):
                 displayVal = pretty(val)
             else:
 
-                displayVal = f"{val:.2f}" if isinstance(val, float) else str(val)
+                displayVal = f"{val:.2f}" if isinstance(val, (float, int)) else str(val)
             displayRow.append(displayVal)
         displayVals.append(displayRow)
+
+    if len(displayVals) == 0:
+
+        return "| |"
 
     for col in range(matrix.shape[1]):
 
@@ -575,7 +579,7 @@ def FloatMatrixString(matrix: np.ndarray, numAugmented: int) -> str:
                 displayVal = pretty(val)
             else:
 
-                displayVal = f"{val:.2f}" if isinstance(val, float) else str(val)
+                displayVal = f"{val:.2f}" if isinstance(val, (float, int)) else str(val)
             displayRow.append(displayVal)
         displayVals.append(displayRow)
 

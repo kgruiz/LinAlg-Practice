@@ -1,4 +1,5 @@
 from collections import defaultdict
+from math import factorial
 from typing import List
 
 import numpy as np
@@ -113,11 +114,10 @@ class Eigenvalue:
         """
         if self.complex:
 
-            valueStr = pretty(self.value.round(3))
-
+            valueStr = pretty(round(self.value, 2))
         else:
 
-            valueStr = pretty(self.value)
+            valueStr = pretty(round(self.value, 2))
 
         if self.index is not None:
 
@@ -127,7 +127,7 @@ class Eigenvalue:
             lambdaStr = pretty(Symbol(f"{lamda}"))
 
         return (
-            f"{lambdaStr}: {valueStr} ({pretty(Symbol("m_a"))} = {self.multiplicity})"
+            f"{lambdaStr}: {valueStr} ({pretty(Symbol('m_a'))} = {self.multiplicity})"
         )
 
     def __repr__(self) -> str:
@@ -159,7 +159,7 @@ class Eigenvector:
 
     def __str__(self) -> str:
 
-        return f"{self.eigenvalue}:\n({pretty(Symbol(f"m(g)"))} = {self.geomMultiplicity})\n{self.vector}"
+        return f"{self.eigenvalue}:\n({pretty(Symbol('m(g)'))} = {self.geomMultiplicity})\n{self.vector}"
 
     def __repr__(self) -> str:
 
@@ -173,7 +173,9 @@ def GetVectorColNum(variable: Symbol) -> int:
     return colNum
 
 
-def GetEigenvalues(A: Union[FloatMatrix, Matrix], verbose: bool = False) -> tuple:
+def GetEigenvalues(
+    A: Union[FloatMatrix, Matrix], verbose: bool = False, tolerance: float = 1e-9
+) -> tuple:
     """
     Calculate the real and complex eigenvalues of a square matrix.
 
@@ -183,6 +185,8 @@ def GetEigenvalues(A: Union[FloatMatrix, Matrix], verbose: bool = False) -> tupl
         The input square matrix for which to compute eigenvalues.
     verbose : bool, optional
         If True, prints detailed computation steps. Default is False.
+    tolerance : float, optional
+        The tolerance for numerical comparisons. Default is 1e-9.
 
     Returns
     -------
@@ -235,7 +239,7 @@ def GetEigenvalues(A: Union[FloatMatrix, Matrix], verbose: bool = False) -> tupl
         print(
             f"Characteristic Matrix ({pretty(Symbol('A') - lamda * Symbol(f'I_{A.numRows}'))}):"
         )
-        pprint(characteristicMatrix)
+        print(characteristicMatrix)
         print()
 
     characteristicEquation = simplify(Determinat(matrix=characteristicMatrix))
@@ -243,20 +247,30 @@ def GetEigenvalues(A: Union[FloatMatrix, Matrix], verbose: bool = False) -> tupl
     if verbose:
 
         print("Characteristic Equation:")
-        pprint(characteristicEquation)
+        print(pretty(characteristicEquation))
         print()
 
     if verbose:
 
         print("Factored Characteristic Equation:")
-        pprint(sympy.factor(characteristicEquation))
+        print(pretty(sympy.factor(characteristicEquation)))
         print()
 
     characteristicPoly = Poly(characteristicEquation)
 
+    if verbose:
+
+        print(characteristicPoly)
+        print()
+
     eigenValuesRaw = characteristicPoly.all_roots()
 
     realEigenvaluesRaw = characteristicPoly.real_roots()
+
+    if verbose:
+
+        print(realEigenvaluesRaw)
+        print()
 
     realEigenvalues = OrderedSet()
     complexEigenvalues = OrderedSet()
@@ -268,8 +282,6 @@ def GetEigenvalues(A: Union[FloatMatrix, Matrix], verbose: bool = False) -> tupl
 
         if eigenValueRaw not in realEigenvaluesRaw:
 
-            eigenValueRaw = eigenValueRaw.round(2)
-
             complexEigenvalue = Eigenvalue(
                 value=eigenValueRaw, multiplicity=eigenValuesRaw.count(eigenValueRaw)
             )
@@ -280,8 +292,6 @@ def GetEigenvalues(A: Union[FloatMatrix, Matrix], verbose: bool = False) -> tupl
                 addedRawComplexEigenvalues.add(eigenValueRaw)
 
         else:
-
-            eigenValueRaw = eigenValueRaw.round(2)
 
             realEigenvalue = Eigenvalue(
                 value=eigenValueRaw, multiplicity=eigenValuesRaw.count(eigenValueRaw)
@@ -343,7 +353,10 @@ def GetEigenvalues(A: Union[FloatMatrix, Matrix], verbose: bool = False) -> tupl
 
 
 def GetEigenvectors(
-    A: Union[FloatMatrix, Matrix], makeUnit: bool = True, verbose: bool = False
+    A: Union[FloatMatrix, Matrix],
+    makeUnit: bool = True,
+    verbose: bool = False,
+    tolerance: float = 1e-9,
 ) -> None:
     """
     Compute and display the eigenvectors associated with each eigenvalue of a matrix.
@@ -356,6 +369,8 @@ def GetEigenvectors(
         If True, normalizes the eigenvectors to unit length. Default is True.
     verbose : bool, optional
         If True, prints detailed computation steps. Default is False.
+    tolerance : float, optional
+        The tolerance for numerical comparisons. Default is 1e-9.
 
     Returns
     -------
@@ -430,7 +445,7 @@ def GetEigenvectors(
             print(
                 f"Eigenvector Equation Matrix ({pretty(Symbol('A') - lamda * Symbol(f'I_{A.numRows}'))}):"
             )
-            pprint(eigenvectorEquationMatrix)
+            print(eigenvectorEquationMatrix)
             print()
 
         zeroVector = Matrix(np.zeros((A.numRows, 1)))
@@ -446,24 +461,26 @@ def GetEigenvectors(
             print(
                 f"Augmented Eigenvector Matrix (({pretty(Symbol('A') - lamda * Symbol(f'I_{A.numRows}'))}){Bold(text="v")} = {Bold(text="0")}):"
             )
-            pprint(augmentedEigenvectorEquation)
+            print(augmentedEigenvectorEquation)
             print()
 
         rowReducedEigenvectorMatrix = RREF(
-            matrix=augmentedEigenvectorEquation, augmentedColCount=1
+            matrix=augmentedEigenvectorEquation,
+            augmentedColCount=1,
+            tolerance=tolerance,
         )
 
         if verbose:
 
             print(f"RREF of Augmented Eigenvector Matrix:")
-            pprint(rowReducedEigenvectorMatrix)
+            print(rowReducedEigenvectorMatrix)
             print()
 
         pivotColIndices = GetPivotColumns(
-            matrix=rowReducedEigenvectorMatrix, numAugmented=1
+            matrix=rowReducedEigenvectorMatrix, numAugmented=1, tolerance=tolerance
         )
         freeVarIndices = GetFreeVariables(
-            matrix=rowReducedEigenvectorMatrix, numAugmented=1
+            matrix=rowReducedEigenvectorMatrix, numAugmented=1, tolerance=tolerance
         )
 
         pivotVars = []
@@ -539,7 +556,7 @@ def GetEigenvectors(
 
                 for rowNum, elem in enumerate(rowReducedEigenvectorMatrix[:, colIndex]):
 
-                    if elem != 0:
+                    if abs(elem) > tolerance:
 
                         if firstNonZeroRow is not None:
 
@@ -689,13 +706,15 @@ def GetEigenvectors(
 
             for coefficient, variable in eqFreeVars:
 
-                if coefficient < 0:
+                if abs(coefficient) > tolerance:
 
-                    isolatedEquationRHS -= coefficient * variable
+                    if coefficient < 0:
 
-                else:
+                        isolatedEquationRHS -= coefficient * variable
 
-                    isolatedEquationRHS += coefficient * variable
+                    else:
+
+                        isolatedEquationRHS += coefficient * variable
 
             isolatedEquation = Eq(
                 isolatedEquationLHS, isolatedEquationRHS, evaluate=False

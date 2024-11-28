@@ -1,6 +1,7 @@
 from typing import Union
 
 import numpy as np
+from tqdm import tqdm
 
 from Matrix import Base2Matrix, FloatMatrix, Matrix
 from MatrixAdd import MatrixAdd
@@ -10,7 +11,10 @@ from UnitVector import UnitVector
 from VectorDot import VectorDot
 
 
-def Determinat(matrix: Union[Base2Matrix, np.ndarray], iteration: int = 0) -> float:
+def Determinat(
+    matrix: Union[Base2Matrix, np.ndarray],
+    iteration: int = 0,
+) -> float:
     """
     Calculate the determinant of a square matrix.
 
@@ -80,7 +84,12 @@ def Determinat(matrix: Union[Base2Matrix, np.ndarray], iteration: int = 0) -> fl
             determinant += (
                 alternatingSign
                 * matrix_[0][excludeCol]
-                * (Determinat(matrix=subMatrix, iteration=(iteration + 1)))
+                * (
+                    Determinat(
+                        matrix=subMatrix,
+                        iteration=(iteration + 1),
+                    )
+                )
             )
 
         return determinant

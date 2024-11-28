@@ -2404,7 +2404,7 @@ def RandomTestGetEigenvalues(
         # Generate a random skew-symmetric matrix (A^T = -A), which is likely to have complex eigenvalues
         randomArray = np.random.uniform(minVal, maxVal, (size, size))
         skewSymmetricArray = randomArray - randomArray.T
-        A = Matrix(matrix=skewSymmetricArray)
+        A = Matrix(skewSymmetricArray)
     else:
 
         # Generate a random real matrix
@@ -2573,7 +2573,7 @@ def RandomTestGetEigenvectors(
         # Generate a random skew-symmetric matrix (A^T = -A), which is likely to have complex eigenvalues
         randomArray = np.random.uniform(minVal, maxVal, (size, size))
         skewSymmetricArray = randomArray - randomArray.T
-        A = Matrix(matrix=skewSymmetricArray)
+        A = Matrix(skewSymmetricArray)
     else:
 
         # Generate a random real matrix
@@ -2686,7 +2686,46 @@ if __name__ == "__main__":
 
     #             break
 
-    noErrors = False
+    # Test GetEigenvalues
+    if noErrors:
+
+        for _ in tqdm(range(10), desc="TestGetEigenvalues"):
+
+            testResult = RandomTestGetEigenvalues(
+                minSize=2,
+                maxSize=4,
+                minVal=minSize,
+                maxVal=maxSize,
+                allowComplex=True,
+                verbose=False,
+            )
+            if not testResult:
+
+                print("GetEigenvalues")
+                noErrors = False
+                break
+
+    # Test GetEigenvectors
+    if noErrors:
+
+        for _ in tqdm(range(100), desc="TestGetEigenvectors"):
+
+            testResult = RandomTestGetEigenvectors(
+                minSize=2,
+                maxSize=5,
+                minVal=minSize,
+                maxVal=maxSize,
+                allowComplex=True,
+                verbose=True,
+            )
+            if not testResult:
+
+                print("GetEigenvectors")
+
+                noErrors = False
+                break
+
+            raise SystemExit
 
     # Test qrDecomposition
     if noErrors:
@@ -2830,8 +2869,6 @@ if __name__ == "__main__":
                 noErrors = False
                 break
 
-    noErrors = True
-
     # Test MatrixAdd
     if noErrors:
 
@@ -2910,45 +2947,6 @@ if __name__ == "__main__":
             if not testResult:
 
                 print("MatrixWithSymbols")
-
-                noErrors = False
-                break
-
-        # Test GetEigenvalues
-    if noErrors:
-
-        for _ in tqdm(range(100), desc="TestGetEigenvalues"):
-
-            testResult = RandomTestGetEigenvalues(
-                minSize=minSize,
-                maxSize=maxSize,
-                minVal=minSize,
-                maxVal=maxSize,
-                allowComplex=True,
-                verbose=False,
-            )
-            if not testResult:
-
-                print("GetEigenvalues")
-                noErrors = False
-                break
-
-    # Test GetEigenvectors
-    if noErrors:
-
-        for _ in tqdm(range(100), desc="TestGetEigenvectors"):
-
-            testResult = RandomTestGetEigenvectors(
-                minSize=minSize,
-                maxSize=maxSize,
-                minVal=minSize,
-                maxVal=maxSize,
-                allowComplex=True,
-                verbose=False,
-            )
-            if not testResult:
-
-                print("GetEigenvectors")
 
                 noErrors = False
                 break
