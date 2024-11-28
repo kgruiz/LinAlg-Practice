@@ -127,7 +127,7 @@ class Eigenvalue:
             lambdaStr = pretty(Symbol(f"{lamda}"))
 
         return (
-            f"{lambdaStr}: {valueStr} ({pretty(Symbol('m_a'))} = {self.multiplicity})"
+            f"{lambdaStr}: {valueStr} ({pretty(Symbol("m_a"))} = {self.multiplicity})"
         )
 
     def __repr__(self) -> str:
@@ -159,7 +159,7 @@ class Eigenvector:
 
     def __str__(self) -> str:
 
-        return f"{self.eigenvalue}:\n{self.vector}"
+        return f"{self.eigenvalue}:\n({pretty(Symbol(f"m(g)"))} = {self.geomMultiplicity})\n{self.vector}"
 
     def __repr__(self) -> str:
 
@@ -818,7 +818,7 @@ def GetEigenvectors(
                 Eigenvector(
                     eigenvalue=eigenValue,
                     vector=FloatMatrix(eigenVector),
-                    geomMultiplicity=len(freeVarIndices),
+                    geomMultiplicity=1,
                     algMultiplicity=eigenValue.multiplicity,
                 )
             )
@@ -945,7 +945,7 @@ def GetEigenvectors(
                     Eigenvector(
                         eigenvalue=eigenValue,
                         vector=FloatMatrix(eigenVector),
-                        geomMultiplicity=len(freeVarIndices),
+                        geomMultiplicity=1,
                         algMultiplicity=eigenValue.multiplicity,
                     )
                 )
@@ -975,7 +975,6 @@ def GetEigenvectors(
     return allEigenvectors
 
 
-# A = FloatMatrix(np.array([[1, 2], [4, 3]]))
 # A = FloatMatrix(np.array([[5, 1, 5, 1], [0, 4, 3, 1], [0, 2, 1, 4], [5, 5, 6, 1]]))
 # A = FloatMatrix(np.array([[1, 2, 1], [0, 3, 0], [0, 0, 2]]))
 A = FloatMatrix(np.array([[4, 0, 0], [0, 4, 0], [0, 0, 5]]))
