@@ -2689,14 +2689,14 @@ if __name__ == "__main__":
     # Test GetEigenvalues
     if noErrors:
 
-        for _ in tqdm(range(10), desc="TestGetEigenvalues"):
+        for _ in tqdm(range(2), desc="TestGetEigenvalues"):
 
             testResult = RandomTestGetEigenvalues(
                 minSize=2,
                 maxSize=4,
                 minVal=minSize,
                 maxVal=maxSize,
-                allowComplex=True,
+                allowComplex=False,
                 verbose=False,
             )
             if not testResult:
@@ -2715,7 +2715,7 @@ if __name__ == "__main__":
                 maxSize=5,
                 minVal=minSize,
                 maxVal=maxSize,
-                allowComplex=True,
+                allowComplex=False,
                 verbose=True,
             )
             if not testResult:

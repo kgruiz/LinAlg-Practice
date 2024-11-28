@@ -265,10 +265,23 @@ def MatrixString(matrix, numAugmented=0):
 
             if isinstance(val, Basic):
 
-                displayVal = pretty(val)
+                try:
+
+                    displayVal = pretty(val.round(2))
+
+                except:
+
+                    displayVal = pretty(val)
             else:
 
-                displayVal = f"{val:.2f}" if isinstance(val, (float, int)) else str(val)
+                try:
+
+                    displayVal = str(round(val, 2))
+
+                except:
+
+                    displayVal = str(val)
+
             displayRow.append(displayVal)
         displayVals.append(displayRow)
 
@@ -576,10 +589,22 @@ def FloatMatrixString(matrix: np.ndarray, numAugmented: int) -> str:
 
             if isinstance(val, Basic):
 
-                displayVal = pretty(val)
+                try:
+
+                    displayVal = pretty(val.round(2))
+
+                except:
+
+                    displayVal = pretty(val)
             else:
 
-                displayVal = f"{val:.2f}" if isinstance(val, (float, int)) else str(val)
+                try:
+
+                    displayVal = str(round(val, 2))
+
+                except:
+
+                    displayVal = str(val)
             displayRow.append(displayVal)
         displayVals.append(displayRow)
 

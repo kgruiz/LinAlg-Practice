@@ -258,19 +258,9 @@ def GetEigenvalues(
 
     characteristicPoly = Poly(characteristicEquation)
 
-    if verbose:
-
-        print(characteristicPoly)
-        print()
-
     eigenValuesRaw = characteristicPoly.all_roots()
 
     realEigenvaluesRaw = characteristicPoly.real_roots()
-
-    if verbose:
-
-        print(realEigenvaluesRaw)
-        print()
 
     realEigenvalues = OrderedSet()
     complexEigenvalues = OrderedSet()
@@ -303,14 +293,6 @@ def GetEigenvalues(
                 addedRawRealEigenvalues.add(eigenValueRaw)
 
     realEigenvalues = OrderedSet(sorted(realEigenvalues, key=lambda x: x.value))
-
-    if verbose:
-
-        for a in complexEigenvalues:
-
-            print(f"a: {a}")
-
-        print()
 
     complexEigenvalues = sorted(
         complexEigenvalues, key=lambda x: (re(x.value), im(x.value))
@@ -708,13 +690,7 @@ def GetEigenvectors(
 
                 if abs(coefficient) > tolerance:
 
-                    if coefficient < 0:
-
-                        isolatedEquationRHS -= coefficient * variable
-
-                    else:
-
-                        isolatedEquationRHS += coefficient * variable
+                    isolatedEquationRHS += -coefficient * variable
 
             isolatedEquation = Eq(
                 isolatedEquationLHS, isolatedEquationRHS, evaluate=False
