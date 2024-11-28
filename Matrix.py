@@ -33,6 +33,14 @@ class Matrix:
         if len(args) == 2:
 
             rows, cols = args
+            if rows == 0:
+
+                rows = 1
+
+            if cols == 0:
+
+                cols = 1
+
             self.matrix = np.array(
                 [
                     [Symbol(f"a{row}{col}") for col in range(cols)]
@@ -43,8 +51,8 @@ class Matrix:
             self.numRows = rows
             self.numCols = cols
 
-        elif len(args) == 1 and isinstance(args[0], np.ndarray):
-            self.matrix = args[0].astype(object).copy()
+        elif len(args) == 1 and isinstance(args[0], (np.ndarray, list)):
+            self.matrix = np.array(args[0], dtype=object).copy()
             self.numRows, self.numCols = self.matrix.shape
 
         elif len(args) == 1 and isinstance(args[0], Matrix):
@@ -74,7 +82,17 @@ class Matrix:
             self.numCols = self.matrix.shape[1]
 
         elif len(args) >= 2 and all(isinstance(arg, int) for arg in args[:2]):
+
             numRows, numCols = args[0], args[1]
+
+            if numRows == 0:
+
+                numRows = 1
+
+            if numCols == 0:
+
+                numCols = 1
+
             minVal = args[2] if len(args) > 2 else -100
             maxVal = args[3] if len(args) > 3 else 100
 
@@ -159,8 +177,12 @@ class Matrix:
         ValueError
             If `numAugmented` is negative or exceeds the number of columns minus one.
         """
-        if numAugmented < 0 or numAugmented > self.numCols - 1:
 
+        if (numAugmented < 0 or numAugmented > self.numCols - 1) and (
+            numAugmented != 0
+        ):
+
+            print(self.matrix)
             raise ValueError("numAugmented must be between 0 and numCols - 1.")
         self.numAugmented = numAugmented
 
@@ -205,9 +227,16 @@ class Matrix:
 
         else:
 
-            raise AttributeError(
-                f"'{self.__class__.__name__}' object has no attribute '{attr}'"
-            )
+            try:
+
+                return getattr(self.matrix, attr)
+
+            except:
+
+                print(self.matrix)
+                raise AttributeError(
+                    f"'{self.__class__.__name__}' object has no attribute '{attr}'"
+                )
 
 
 def MatrixString(matrix, numAugmented=0):
@@ -300,6 +329,13 @@ class FloatMatrix:
         if len(args) == 2 and all(isinstance(arg, int) for arg in args):
 
             rows, cols = args
+            if rows == 0:
+
+                rows = 1
+
+            if cols == 0:
+
+                cols = 1
             self.matrix = np.array(
                 [
                     [Symbol(f"a{row}{col}") for col in range(cols)]
@@ -310,53 +346,62 @@ class FloatMatrix:
             self.numRows = rows
             self.numCols = cols
 
-        elif len(args) == 1:
+        elif len(args) == 1 and isinstance(args[0], (np.ndarray, list)):
+            if isinstance(args[0], list):
 
-            if isinstance(args[0], np.ndarray):
+                args[0] = np.array(args[0])
+            if len(args[0].shape) == 1:
 
-                if len(args[0].shape) == 1:
+                # If it's a 1D array, reshape it to a column matrix
+                self.matrix = np.reshape(
+                    args[0], newshape=(args[0].shape[0], 1)
+                ).astype(object)
+            else:
 
-                    # If it's a 1D array, reshape it to a column matrix
-                    self.matrix = np.reshape(
-                        args[0], newshape=(args[0].shape[0], 1)
-                    ).astype(object)
-                else:
+                # Copying the matrix and ensuring dtype is float
+                self.matrix = args[0].astype(object).copy()
+            self.numRows = self.matrix.shape[0]
+            self.numCols = self.matrix.shape[1]
 
-                    # Copying the matrix and ensuring dtype is float
-                    self.matrix = args[0].astype(object).copy()
+        elif isinstance(args[0], FloatMatrix):
+            # Copy constructor from FloatMatrix
+            self.matrix = args[0].matrix.copy()
+            self.numRows = args[0].numRows
+            self.numCols = args[0].numCols
+            self.numAugmented = args[0].numAugmented
 
-                self.numRows = self.matrix.shape[0]
-                self.numCols = self.matrix.shape[1]
+        elif isinstance(args[0], Matrix):
+            # Copy constructor from Matrix (assuming Matrix has a matrix attribute)
+            self.matrix = args[0].matrix.astype(object).copy()
+            self.numRows = args[0].numRows
+            self.numCols = args[0].numCols
+            self.numAugmented = args[0].numAugmented
 
-            elif isinstance(args[0], FloatMatrix):
-                # Copy constructor from FloatMatrix
-                self.matrix = args[0].matrix.copy()
-                self.numRows = args[0].numRows
-                self.numCols = args[0].numCols
-                self.numAugmented = args[0].numAugmented
+        elif isinstance(args[0], Symbol):
+            self.matrix = np.array([[args[0]]], dtype=object)
+            self.numRows = 1
+            self.numCols = 1
 
-            elif isinstance(args[0], Matrix):
-                # Copy constructor from Matrix (assuming Matrix has a matrix attribute)
-                self.matrix = args[0].matrix.astype(object).copy()
-                self.numRows = args[0].numRows
-                self.numCols = args[0].numCols
-                self.numAugmented = args[0].numAugmented
-
-            elif isinstance(args[0], Symbol):
-                self.matrix = np.array([[args[0]]], dtype=object)
-                self.numRows = 1
-                self.numCols = 1
-
-            elif isinstance(args[0], (list, tuple)) and all(
-                isinstance(el, Symbol) for el in args[0]
-            ):
-                self.matrix = np.array(args[0], dtype=object).reshape(-1, 1)
-                self.numRows = self.matrix.shape[0]
-                self.numCols = self.matrix.shape[1]
+        elif isinstance(args[0], (list, tuple)) and all(
+            isinstance(el, Symbol) for el in args[0]
+        ):
+            self.matrix = np.array(args[0], dtype=object).reshape(-1, 1)
+            self.numRows = self.matrix.shape[0]
+            self.numCols = self.matrix.shape[1]
 
         elif len(args) >= 2 and all(isinstance(arg, int) for arg in args[:2]):
 
             numRows, numCols = args[0], args[1]
+
+            numRows, numCols = args[0], args[1]
+
+            if numRows == 0:
+
+                numRows = 1
+
+            if numCols == 0:
+
+                numCols = 1
 
             minVal = args[2] if len(args) > 2 else -100
             maxVal = args[3] if len(args) > 3 else 100
@@ -440,8 +485,11 @@ class FloatMatrix:
         ValueError
             If `numAugmented` is negative or exceeds the number of columns minus one.
         """
-        if numAugmented < 0 or numAugmented > self.numCols - 1:
+        if (numAugmented < 0 or numAugmented > self.numCols - 1) and (
+            numAugmented != 0
+        ):
 
+            print(self.matrix)
             raise ValueError("numAugmented must be between 0 and numCols - 1.")
         self.numAugmented = numAugmented
 
@@ -486,9 +534,16 @@ class FloatMatrix:
 
         else:
 
-            raise AttributeError(
-                f"'{self.__class__.__name__}' object has no attribute '{attr}'"
-            )
+            try:
+
+                return getattr(self.matrix, attr)
+
+            except:
+
+                print(self.matrix)
+                raise AttributeError(
+                    f"'{self.__class__.__name__}' object has no attribute '{attr}'"
+                )
 
 
 def FloatMatrixString(matrix: np.ndarray, numAugmented: int) -> str:
@@ -523,6 +578,10 @@ def FloatMatrixString(matrix: np.ndarray, numAugmented: int) -> str:
                 displayVal = f"{val:.2f}" if isinstance(val, float) else str(val)
             displayRow.append(displayVal)
         displayVals.append(displayRow)
+
+    if len(displayVals) == 0:
+
+        return "| |"
 
     for col in range(matrix.shape[1]):
 
@@ -696,6 +755,13 @@ class Base2Matrix:
         if len(args) == 2:
 
             rows, cols = args
+            if rows == 0:
+
+                rows = 1
+
+            if cols == 0:
+
+                cols = 1
             self.matrix = np.array(
                 [
                     [Symbol(f"a{row}{col}") % 2 for col in range(cols)]
@@ -706,8 +772,8 @@ class Base2Matrix:
             self.numRows = rows
             self.numCols = cols
 
-        elif len(args) == 1 and isinstance(args[0], np.ndarray):
-            self.matrix = args[0].astype(object).copy()
+        elif len(args) == 1 and isinstance(args[0], (np.ndarray, list)):
+            self.matrix = np.array(args[0], dtype=object).copy()
             self.numRows, self.numCols = self.matrix.shape
 
         elif len(args) == 1 and isinstance(args[0], Base2Matrix):
@@ -809,8 +875,11 @@ class Base2Matrix:
         numAugmented : int
             The number of augmented columns.
         """
-        if numAugmented < 0 or numAugmented > self.numCols - 1:
+        if (numAugmented < 0 or numAugmented > self.numCols - 1) and (
+            numAugmented != 0
+        ):
 
+            print(self.matrix)
             raise ValueError("numAugmented must be between 0 and numCols - 1.")
         self.numAugmented = numAugmented
 
@@ -851,9 +920,16 @@ class Base2Matrix:
 
         else:
 
-            raise AttributeError(
-                f"'{self.__class__.__name__}' object has no attribute '{attr}'"
-            )
+            try:
+
+                return getattr(self.matrix, attr)
+
+            except:
+
+                print(self.matrix)
+                raise AttributeError(
+                    f"'{self.__class__.__name__}' object has no attribute '{attr}'"
+                )
 
 
 def EnsureNoTwo(matrix: Union[Base2Matrix, np.ndarray]) -> None:
@@ -884,11 +960,14 @@ def EnsureNoTwo(matrix: Union[Base2Matrix, np.ndarray]) -> None:
             elem = matrix_[row, col]
             if isinstance(elem, (int, float)) and elem == 2:
 
+                print(matrix_)
                 raise Exception(f"TWO HAPPENS {row}|{col} == {elem}")
 
         for col in range(matrix_.shape[1]):
 
             elem = matrix_[row, col]
             if isinstance(elem, (int, float)) and elem == 2:
+
+                print(matrix_)
 
                 raise Exception(f"TWO HAPPENS {row}|{col} == {elem}")

@@ -57,6 +57,8 @@ def Inverse(matrix: Matrix | FloatMatrix | np.ndarray) -> FloatMatrix | None:
 
     augmentedMatrix = MatrixAppend(matrixA=matrix_, matrixB=idn, horizontalStack=True)
 
+    augmentedMatrix.SetNumAugmented(matrix_.numRows)
+
     augmentedRREF = RREF(matrix=augmentedMatrix, augmentedColCount=matrix_.numRows)
 
     InverseMatrix = FloatMatrix(augmentedRREF[:, matrix_.numCols :])

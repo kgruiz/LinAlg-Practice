@@ -973,10 +973,3 @@ def GetEigenvectors(
         print(f"{"="*75}")
 
     return allEigenvectors
-
-
-# A = FloatMatrix(np.array([[5, 1, 5, 1], [0, 4, 3, 1], [0, 2, 1, 4], [5, 5, 6, 1]]))
-# A = FloatMatrix(np.array([[1, 2, 1], [0, 3, 0], [0, 0, 2]]))
-A = FloatMatrix(np.array([[4, 0, 0], [0, 4, 0], [0, 0, 5]]))
-
-eigenVectors = GetEigenvectors(A=A, verbose=True)

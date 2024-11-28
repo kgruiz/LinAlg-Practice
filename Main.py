@@ -4,6 +4,7 @@ import traceback
 
 import matplotlib.pyplot as plt
 import numpy as np
+import sympy
 from sympy import Matrix as symMatrix
 from sympy import symbols
 from tqdm import tqdm
@@ -11,6 +12,7 @@ from tqdm import tqdm
 from Base2RREF import Base2RREF
 from Basis import Basis
 from Determinat import Determinat
+from Eigenvectors import GetEigenvalues, GetEigenvectors
 from GramSchmidt import GramSchmidt
 from Inverse import Inverse
 from Matrix import FloatMatrix, Matrix
@@ -460,7 +462,7 @@ def TestMatrixAdd(
 
         print(f"{arows=}\n{acols=}\n{brows=}\n{bcols=}\n{min_=}\n{max_=}")
         print(f"C:\n{c}")
-        print(f"D:\n{d}")
+        print(f"Da:\n{d}")
         return False
 
     else:
@@ -585,7 +587,7 @@ def TestMatrixSubtract(
 
         print(f"{arows=}\n{acols=}\n{brows=}\n{bcols=}\n{min_=}\n{max_=}")
         print(f"C:\n{c}")
-        print(f"D:\n{d}")
+        print(f"De:\n{d}")
         return False
 
     else:
@@ -2274,6 +2276,319 @@ def TestMatrixWithSymbols(verbose: bool = False) -> bool:
         return False
 
 
+# --- TestGetEigenvalues ---
+def TestGetEigenvalues(
+    size: int = 4,
+    min_: int = -10,
+    max_: int = 10,
+    verbose: bool = False,
+) -> bool:
+    """
+    Tests the GetEigenvalues function by comparing its output to numpy's eigenvalues.
+
+    Args:
+        size (int): Size of the square matrix.
+        min_ (int): Minimum value for matrix elements.
+        max_ (int): Maximum value for matrix elements.
+        verbose (bool): If True, prints the matrix and results.
+
+    Returns:
+        bool: True if the eigenvalues match (within tolerance), False otherwise.
+    """
+    # Generate a random matrix
+    A = Matrix(size, size, min_, max_)
+
+    if verbose:
+
+        print(f"A:\n{A}")
+
+    # Get eigenvalues using my function
+    realEigenvalues, complexEigenvalues = GetEigenvalues(A, verbose=verbose)
+
+    # Extract eigenvalues into a list
+    myEigenvalues = []
+    for eigenvalue in realEigenvalues:
+
+        value = eigenvalue.value
+        # Try to convert to float
+        try:
+
+            numericalValue = float(sympy.N(value))
+        except:
+
+            numericalValue = float(value)
+        multiplicity = eigenvalue.multiplicity
+        myEigenvalues.extend([numericalValue] * multiplicity)
+
+    for eigenvalue in complexEigenvalues:
+
+        value = eigenvalue.value
+        # Try to convert to complex
+        try:
+
+            numericalValue = complex(sympy.N(value))
+        except:
+
+            numericalValue = complex(value)
+        multiplicity = eigenvalue.multiplicity
+        myEigenvalues.extend([numericalValue] * multiplicity)
+
+    # Get numpy eigenvalues
+    numpyEigenvalues = np.linalg.eigvals(A.matrix.astype(float))
+
+    # Now compare the eigenvalues
+    # Sort both lists
+    myEigenvaluesSorted = sorted(myEigenvalues, key=lambda x: (np.real(x), np.imag(x)))
+    numpyEigenvaluesSorted = sorted(
+        numpyEigenvalues, key=lambda x: (np.real(x), np.imag(x))
+    )
+
+    correct = True
+    tolerance = 1e-5
+
+    for myVal, npVal in zip(myEigenvaluesSorted, numpyEigenvaluesSorted):
+
+        if abs(myVal - npVal) > tolerance:
+
+            correct = False
+            if verbose:
+
+                print(f"Eigenvalues do not match: my {myVal}, numpy {npVal}")
+            break
+
+    if not correct:
+
+        if verbose:
+
+            print(f"A:\n{A}")
+            print(f"My eigenvalues: {myEigenvaluesSorted}")
+            print(f"Numpy eigenvalues: {numpyEigenvaluesSorted}")
+        return False
+
+    else:
+
+        if verbose:
+
+            print("Eigenvalues match within tolerance.")
+        return True
+
+
+# --- RandomTestGetEigenvalues ---
+def RandomTestGetEigenvalues(
+    minSize: int = 2,
+    maxSize: int = 10,
+    minVal: int = -10,
+    maxVal: int = 10,
+    allowComplex: bool = True,
+    verbose: bool = False,
+) -> bool:
+    """
+    Generates random square matrices to test the TestGetEigenvalues function.
+    Can generate matrices that are more likely to have complex eigenvalues.
+
+    Args:
+        minSize (int): Minimum size for the matrix dimensions.
+        maxSize (int): Maximum size for the matrix dimensions.
+        minVal (int): Minimum value for matrix elements.
+        maxVal (int): Maximum value for matrix elements.
+        allowComplex (bool): If True, allows the generation of matrices that may have complex eigenvalues.
+        verbose (bool): If True, prints the testing details.
+
+    Returns:
+        bool: Result of the TestGetEigenvalues function.
+    """
+    size = random.randint(minSize, maxSize)
+
+    if allowComplex and random.choice([True, False]):
+
+        # Generate a random skew-symmetric matrix (A^T = -A), which is likely to have complex eigenvalues
+        randomArray = np.random.uniform(minVal, maxVal, (size, size))
+        skewSymmetricArray = randomArray - randomArray.T
+        A = Matrix(matrix=skewSymmetricArray)
+    else:
+
+        # Generate a random real matrix
+        A = Matrix(size, size, minVal, maxVal)
+
+    testResult = TestGetEigenvalues(
+        size=size,
+        min_=minVal,
+        max_=maxVal,
+        verbose=verbose,
+    )
+
+    return testResult
+
+
+# --- TestGetEigenvectors ---
+def TestGetEigenvectors(
+    size: int = 4,
+    min_: int = -10,
+    max_: int = 10,
+    verbose: bool = False,
+) -> bool:
+    """
+    Tests the GetEigenvectors function by comparing its output to numpy's eigenvectors.
+
+    Args:
+        size (int): Size of the square matrix.
+        min_ (int): Minimum value for matrix elements.
+        max_ (int): Maximum value for matrix elements.
+        verbose (bool): If True, prints the matrix and results.
+
+    Returns:
+        bool: True if the eigenvectors match (within tolerance), False otherwise.
+    """
+    # Generate a random matrix
+    A = Matrix(size, size, min_, max_)
+
+    if verbose:
+
+        print(f"A:\n{A}")
+
+    # Get eigenvectors using my function
+    myEigenvectors = GetEigenvectors(A, verbose=verbose)
+
+    # Extract eigenvalues and eigenvectors from my function
+    myEigenvalues = []
+    myEigenvectorsList = []
+    for eigenvector in myEigenvectors:
+
+        eigenvalue = eigenvector.eigenvalue.value
+        # Try to convert eigenvalue to float or complex
+        try:
+
+            numericalValue = float(sympy.N(eigenvalue))
+        except:
+
+            try:
+
+                numericalValue = complex(sympy.N(eigenvalue))
+            except:
+
+                numericalValue = complex(eigenvalue)
+        myEigenvalues.append(numericalValue)
+        vector = eigenvector.vector.matrix.flatten().astype(float)
+        # Normalize the vector
+        vectorNorm = np.linalg.norm(vector)
+        if vectorNorm != 0:
+
+            vector = vector / vectorNorm
+        myEigenvectorsList.append(vector)
+
+    # Get eigenvalues and eigenvectors using NumPy
+    numpyEigenvalues, numpyEigenvectors = np.linalg.eig(A.matrix.astype(float))
+
+    correct = True
+    tolerance = 1e-5
+
+    # Create lists of tuples (eigenvalue, eigenvector)
+    myEigenpairs = list(zip(myEigenvalues, myEigenvectorsList))
+    numpyEigenpairs = list(
+        zip(numpyEigenvalues, numpyEigenvectors.T)
+    )  # Columns are eigenvectors
+
+    # Sort both lists of eigenpairs by eigenvalue
+    myEigenpairsSorted = sorted(
+        myEigenpairs, key=lambda x: (np.real(x[0]), np.imag(x[0]))
+    )
+    numpyEigenpairsSorted = sorted(
+        numpyEigenpairs, key=lambda x: (np.real(x[0]), np.imag(x[0]))
+    )
+
+    # Compare each eigenpair
+    for (myVal, myVec), (npVal, npVec) in zip(
+        myEigenpairsSorted, numpyEigenpairsSorted
+    ):
+        # Compare eigenvalues
+        if abs(myVal - npVal) > tolerance:
+
+            correct = False
+            if verbose:
+
+                print(f"Eigenvalues do not match: my {myVal}, numpy {npVal}")
+            break
+        # Compare eigenvectors (up to a scalar multiple)
+        # Normalize numpy eigenvector
+        npVecNorm = np.linalg.norm(npVec)
+        if npVecNorm != 0:
+
+            npVec = npVec / npVecNorm
+        # Compute dot product
+        dotProduct = np.dot(myVec, npVec)
+        if abs(abs(dotProduct) - 1.0) > tolerance:
+
+            correct = False
+            if verbose:
+
+                print(f"Eigenvectors do not match for eigenvalue {myVal}")
+                print(f"My eigenvector: {myVec}")
+                print(f"Numpy eigenvector: {npVec}")
+                print(f"Dot product: {dotProduct}")
+            break
+
+    if not correct:
+
+        if verbose:
+
+            print(f"A:\n{A}")
+        return False
+
+    else:
+
+        if verbose:
+
+            print("Eigenvalues and eigenvectors match within tolerance.")
+        return True
+
+
+# --- RandomTestGetEigenvectors ---
+def RandomTestGetEigenvectors(
+    minSize: int = 2,
+    maxSize: int = 10,
+    minVal: int = -10,
+    maxVal: int = 10,
+    allowComplex: bool = True,
+    verbose: bool = False,
+) -> bool:
+    """
+    Generates random square matrices to test the TestGetEigenvectors function.
+    Can generate matrices that are more likely to have complex eigenvalues.
+
+    Args:
+        minSize (int): Minimum size for the matrix dimensions.
+        maxSize (int): Maximum size for the matrix dimensions.
+        minVal (int): Minimum value for matrix elements.
+        maxVal (int): Maximum value for matrix elements.
+        allowComplex (bool): If True, allows the generation of matrices that may have complex eigenvalues.
+        verbose (bool): If True, prints the testing details.
+
+    Returns:
+        bool: Result of the TestGetEigenvectors function.
+    """
+    size = random.randint(minSize, maxSize)
+
+    if allowComplex and random.choice([True, False]):
+
+        # Generate a random skew-symmetric matrix (A^T = -A), which is likely to have complex eigenvalues
+        randomArray = np.random.uniform(minVal, maxVal, (size, size))
+        skewSymmetricArray = randomArray - randomArray.T
+        A = Matrix(matrix=skewSymmetricArray)
+    else:
+
+        # Generate a random real matrix
+        A = Matrix(size, size, minVal, maxVal)
+
+    testResult = TestGetEigenvectors(
+        size=size,
+        min_=minVal,
+        max_=maxVal,
+        verbose=verbose,
+    )
+
+    return testResult
+
+
 # ============================
 # Utility Functions
 # ============================
@@ -2370,6 +2685,8 @@ if __name__ == "__main__":
     #             noErrors = False
 
     #             break
+
+    noErrors = False
 
     # Test qrDecomposition
     if noErrors:
@@ -2513,6 +2830,8 @@ if __name__ == "__main__":
                 noErrors = False
                 break
 
+    noErrors = True
+
     # Test MatrixAdd
     if noErrors:
 
@@ -2591,6 +2910,45 @@ if __name__ == "__main__":
             if not testResult:
 
                 print("MatrixWithSymbols")
+
+                noErrors = False
+                break
+
+        # Test GetEigenvalues
+    if noErrors:
+
+        for _ in tqdm(range(100), desc="TestGetEigenvalues"):
+
+            testResult = RandomTestGetEigenvalues(
+                minSize=minSize,
+                maxSize=maxSize,
+                minVal=minSize,
+                maxVal=maxSize,
+                allowComplex=True,
+                verbose=False,
+            )
+            if not testResult:
+
+                print("GetEigenvalues")
+                noErrors = False
+                break
+
+    # Test GetEigenvectors
+    if noErrors:
+
+        for _ in tqdm(range(100), desc="TestGetEigenvectors"):
+
+            testResult = RandomTestGetEigenvectors(
+                minSize=minSize,
+                maxSize=maxSize,
+                minVal=minSize,
+                maxVal=maxSize,
+                allowComplex=True,
+                verbose=False,
+            )
+            if not testResult:
+
+                print("GetEigenvectors")
 
                 noErrors = False
                 break
