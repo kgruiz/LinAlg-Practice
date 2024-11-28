@@ -1,5 +1,9 @@
+from collections import defaultdict
+from typing import List
+
 import numpy as np
 import sympy
+from ordered_set import OrderedSet
 from sympy import (
     Add,
     Basic,
@@ -155,11 +159,18 @@ class Eigenvector:
 
     def __str__(self) -> str:
 
-        return f"{self.eigenvalue}: {self.vector}"
+        return f"{self.eigenvalue}:\n{self.vector}"
 
     def __repr__(self) -> str:
 
         return self.__str__()
+
+
+def GetVectorColNum(variable: Symbol) -> int:
+
+    colNum = int(variable.name.split("_")[1])
+
+    return colNum
 
 
 def GetEigenvalues(A: Union[FloatMatrix, Matrix], verbose: bool = False) -> tuple:
@@ -188,6 +199,12 @@ def GetEigenvalues(A: Union[FloatMatrix, Matrix], verbose: bool = False) -> tupl
     if A.numRows != A.numCols:
 
         raise Exception("Matrix must be square")
+
+    if verbose:
+
+        print("\nComputing Eigenvalues")
+        print("-" * 75)
+        print()
 
     if verbose:
 
@@ -241,8 +258,11 @@ def GetEigenvalues(A: Union[FloatMatrix, Matrix], verbose: bool = False) -> tupl
 
     realEigenvaluesRaw = characteristicPoly.real_roots()
 
-    realEigenvalues = set()
-    complexEigenvalues = set()
+    realEigenvalues = OrderedSet()
+    complexEigenvalues = OrderedSet()
+
+    addedRawRealEigenvalues = set()
+    addedRawComplexEigenvalues = set()
 
     for eigenValueRaw in eigenValuesRaw:
 
@@ -254,7 +274,10 @@ def GetEigenvalues(A: Union[FloatMatrix, Matrix], verbose: bool = False) -> tupl
                 value=eigenValueRaw, multiplicity=eigenValuesRaw.count(eigenValueRaw)
             )
 
-            complexEigenvalues.add(complexEigenvalue)
+            if eigenValueRaw not in addedRawComplexEigenvalues:
+
+                complexEigenvalues.add(complexEigenvalue)
+                addedRawComplexEigenvalues.add(eigenValueRaw)
 
         else:
 
@@ -264,13 +287,20 @@ def GetEigenvalues(A: Union[FloatMatrix, Matrix], verbose: bool = False) -> tupl
                 value=eigenValueRaw, multiplicity=eigenValuesRaw.count(eigenValueRaw)
             )
 
-            realEigenvalues.add(realEigenvalue)
+            if eigenValueRaw not in addedRawRealEigenvalues:
 
-    realEigenvalues = set(sorted(realEigenvalues, key=lambda x: x.value))
+                realEigenvalues.add(realEigenvalue)
+                addedRawRealEigenvalues.add(eigenValueRaw)
 
-    for a in complexEigenvalues:
+    realEigenvalues = OrderedSet(sorted(realEigenvalues, key=lambda x: x.value))
 
-        print(f"a: {a}")
+    if verbose:
+
+        for a in complexEigenvalues:
+
+            print(f"a: {a}")
+
+        print()
 
     complexEigenvalues = sorted(
         complexEigenvalues, key=lambda x: (re(x.value), im(x.value))
@@ -292,6 +322,8 @@ def GetEigenvalues(A: Union[FloatMatrix, Matrix], verbose: bool = False) -> tupl
 
             print(f"  {eigenValue}")
 
+        print()
+
     if verbose and len(complexEigenvalues) > 0:
 
         print("Complex Eigenvalues:")
@@ -301,6 +333,11 @@ def GetEigenvalues(A: Union[FloatMatrix, Matrix], verbose: bool = False) -> tupl
             print(f"  {complexEigenvalue}")
 
         print()
+
+        if verbose:
+
+            print("=" * 75)
+            print()
 
     return realEigenvalues, complexEigenvalues
 
@@ -330,25 +367,19 @@ def GetEigenvectors(
     Exception
         If eigenvalues are not calculated before computing eigenvectors.
     """
-    if verbose:
-
-        print("\nComputing Eigenvalues")
-        print("-" * 75)
 
     realEigenvalues, complexEigenvalues = GetEigenvalues(A=A, verbose=verbose)
-
-    print()
 
     if len(complexEigenvalues) > 0:
 
         # TODO: handle complex eigenvalues
-        eigenValues = set(realEigenvalues).union(set(complexEigenvalues))
+        eigenValues = OrderedSet(realEigenvalues).union(OrderedSet(complexEigenvalues))
 
     else:
 
-        eigenValues = set(realEigenvalues)
+        eigenValues = OrderedSet(realEigenvalues)
 
-    eigenValues = set(realEigenvalues)
+    eigenValues = OrderedSet(realEigenvalues)
 
     idnMatrix = Idn(A.numRows)
 
@@ -369,7 +400,7 @@ def GetEigenvectors(
         print(idnMatrix)
         print()
 
-    print(realEigenvalues)
+    allEigenvectors = []
 
     for eigenValue in eigenValues:
 
@@ -386,7 +417,11 @@ def GetEigenvectors(
 
         if verbose:
 
-            pass
+            print(
+                f"{pretty(Symbol(f"{lamda}_{eigenValue.index}") * Symbol(f'I_{A.numRows}'))}:"
+            )
+            print(eigenIdn)
+            print()
 
         eigenvectorEquationMatrix = MatrixSubtract(matrixA=A, matrixB=eigenIdn)
 
@@ -431,135 +466,518 @@ def GetEigenvectors(
             matrix=rowReducedEigenvectorMatrix, numAugmented=1
         )
 
+        pivotVars = []
+        freeVars = []
+
+        for pivotVarCol in pivotColIndices:
+
+            pivotVars.append(Symbol(f"v_{pivotVarCol}"))
+
+        for freeVarCol in freeVarIndices:
+
+            freeVars.append(Symbol(f"v_{freeVarCol}"))
+
         if verbose:
 
-            pivotCols = "".join([f"{colIndex}, " for colIndex in pivotColIndices[:-1]])
+            pivotColsIndicesStr = "".join(
+                [f"{colIndex}, " for colIndex in pivotColIndices[:-1]]
+            )
+            pivotVarsStr = "".join(
+                [f"{pretty(pivotVar)}, " for pivotVar in pivotVars[:-1]]
+            )
 
             if len(pivotColIndices) > 0:
 
-                pivotCols += f"{pivotColIndices[-1]}"
+                pivotColsIndicesStr += f"{pivotColIndices[-1]}"
+                pivotVarsStr += f"{pretty(pivotVars[-1])}"
 
-            freeVars = "".join([f"{colIndex}, " for colIndex in freeVarIndices][:-1])
+            freeVarsIndicesStr = "".join(
+                [f"{colIndex}, " for colIndex in freeVarIndices][:-1]
+            )
+            freeVarsStr = "".join([f"{pretty(freeVar)}, " for freeVar in freeVars[:-1]])
 
             if len(freeVarIndices) > 0:
 
-                freeVars += f"{freeVarIndices[-1]}"
+                freeVarsIndicesStr += f"{freeVarIndices[-1]}"
+                freeVarsStr += f"{pretty(freeVars[-1])}"
 
             if len(pivotColIndices) == 1:
 
-                print(f"Pivot Column ({len(pivotColIndices)}): {pivotCols}")
+                print(f"Pivot Column ({len(pivotColIndices)}): {pivotColsIndicesStr}")
+                print(f"Pivot Variable ({len(pivotColIndices)}): {pivotVarsStr}\n")
 
             else:
 
-                print(f"Pivot Columns ({len(pivotColIndices)}): {pivotCols}")
+                print(f"Pivot Columns ({len(pivotColIndices)}): {pivotColsIndicesStr}")
+                print(f"Pivot Variables ({len(pivotColIndices)}): {pivotVarsStr}\n")
 
             if len(freeVarIndices) == 1:
 
-                print(f"Free Variable ({len(freeVarIndices)}): {freeVars}")
+                print(f"Free Column ({len(freeVarIndices)}): {freeVarsIndicesStr}")
+                print(f"Free Variable ({len(freeVarIndices)}): {freeVarsStr}")
 
             else:
 
-                print(f"Free Variables ({len(freeVarIndices)}): {freeVars}")
+                print(f"Free Columns ({len(freeVarIndices)}): {freeVarsIndicesStr}")
+                print(f"Free Variables ({len(freeVarIndices)}): {freeVarsStr}")
 
-            geomMultiplicity = len(freeVarIndices)
+            print()
 
-            eigenVectorElems = []
+        vectorElementEquations: List[Eq] = []
 
-            for colIndex in range(rowReducedEigenvectorMatrix.numCols - 1):
+        for colIndex in range(rowReducedEigenvectorMatrix.numCols - 1):
 
-                if colIndex in freeVarIndices:
+            if colIndex in freeVarIndices:
 
-                    eigenVectorElems.append(
-                        Eq(Symbol(f"v_{colIndex}"), 1, evaluate=False)
+                vectorElementEquations.append(
+                    Eq(Symbol(f"v_{colIndex}"), Symbol(f"v_{colIndex}"), evaluate=False)
+                )
+
+            elif colIndex in pivotColIndices:
+
+                firstNonZeroRow = None
+
+                for rowNum, elem in enumerate(rowReducedEigenvectorMatrix[:, colIndex]):
+
+                    if elem != 0:
+
+                        if firstNonZeroRow is not None:
+
+                            raise Exception(
+                                f"Invalid pivot column: {colIndex}. More than one non-zero element in column."
+                            )
+
+                        firstNonZeroRow = rowNum
+
+                if firstNonZeroRow is None:
+
+                    raise Exception(
+                        f"Invalid pivot column: {colIndex}. No non-zero elements in column."
                     )
 
-                elif colIndex in pivotColIndices:
+                rowValues = []
 
-                    firstNonZeroRow = None
+                for colNum, elem in enumerate(
+                    rowReducedEigenvectorMatrix[firstNonZeroRow, :]
+                ):
 
-                    for rowNum, elem in enumerate(
-                        rowReducedEigenvectorMatrix[:, colIndex]
-                    ):
+                    if elem != 0:
 
-                        if elem != 0:
+                        if len(rowValues) > 0 and colNum < colIndex:
 
-                            if firstNonZeroRow is not None:
+                            raise Exception(
+                                f"Invalid pivot column: {colIndex}. Not first non-zero element in row."
+                            )
 
-                                raise Exception(
-                                    f"Invalid pivot column: {colIndex}. More than one non-zero element in column."
-                                )
+                        rowValues.append((colNum, elem))
 
-                            firstNonZeroRow = rowNum
+                if len(rowValues) == 0:
 
-                    if firstNonZeroRow is None:
+                    raise Exception(
+                        f"Invalid pivot column: {colIndex}. No non-zero elements in row."
+                    )
 
-                        raise Exception(
-                            f"Invalid pivot column: {colIndex}. No non-zero elements in column."
-                        )
+                elif len(rowValues) == 1:
 
-                    rowValues = []
+                    vectorElementEquations.append(
+                        Eq(Symbol(f"v_{colIndex}"), 0, evaluate=False)
+                    )
 
-                    for colNum, elem in enumerate(
-                        rowReducedEigenvectorMatrix[firstNonZeroRow, :]
-                    ):
+                elif len(rowValues) == 2:
 
-                        if elem != 0:
+                    rowExpr = Add(
+                        rowValues[0][1] * Symbol(f"v_{rowValues[0][0]}"),
+                        rowValues[1][1] * Symbol(f"v_{rowValues[1][0]}"),
+                    )
 
-                            if len(rowValues) > 0 and colNum < colIndex:
+                    rowEq = Eq(rowExpr, 0)
 
-                                raise Exception(
-                                    f"Invalid pivot column: {colIndex}. Not first non-zero element in row."
-                                )
-
-                            rowValues.append((colNum, elem))
-
-                    if len(rowValues) == 0:
-
-                        raise Exception(
-                            f"Invalid pivot column: {colIndex}. No non-zero elements in row."
-                        )
-
-                    elif len(rowValues) == 1:
-
-                        eigenVectorElems.append(
-                            Eq(Symbol(f"v_{colIndex}"), 0, evaluate=False)
-                        )
-
-                    elif len(rowValues) == 2:
-
-                        rowEq = Add(
-                            rowValues[0][1] * Symbol(f"v_{rowValues[0][0]}"),
-                            rowValues[1][1] * Symbol(f"v_{rowValues[1][0]}"),
-                        )
-
-                        print(pretty(rowEq))
-
-                    else:
-
-                        rowEq = Add(
-                            rowValues[0][1] * Symbol(f"v_{rowValues[0][0]}"),
-                            rowValues[1][1] * Symbol(f"v_{rowValues[1][0]}"),
-                        )
-
-                        for rowValue in rowValues[2:]:
-
-                            rowEq += rowValue[1] * Symbol(f"v_{rowValues[1][0]}")
-
-                        print(pretty(rowEq))
+                    vectorElementEquations.append(rowEq)
 
                 else:
 
-                    raise Exception(f"Invalid column index: {colIndex}")
+                    rowExpr = Add(
+                        rowValues[0][1] * Symbol(f"v_{rowValues[0][0]}"),
+                        rowValues[1][1] * Symbol(f"v_{rowValues[1][0]}"),
+                    )
 
-            for elem in eigenVectorElems:
+                    for rowValue in rowValues[2:]:
 
-                print(f"{pretty(elem)}")
+                        rowExpr += rowValue[1] * Symbol(f"v_{rowValues[1][0]}")
 
-            raise SystemExit
+                    rowEq = Eq(rowExpr, 0)
+
+                    vectorElementEquations.append(rowEq)
+
+            else:
+
+                raise Exception(f"Invalid column index: {colIndex}")
+
+        if verbose:
+
+            print(f"Row Reducing Gives Equations:")
+
+            for equation in vectorElementEquations:
+
+                print(f"{pretty(equation)}")
+
+            print()
+
+        for eqNum, equation in enumerate(vectorElementEquations):
+
+            equation: Eq
+
+            terms: defaultdict = equation.lhs.as_coefficients_dict()
+
+            if len(terms) == 1:
+
+                variable = list(terms.keys())[0]
+                coefficient = list(terms.values())[0]
+
+                if coefficient != 1:
+
+                    raise Exception(
+                        f"Invalid pivot equation: {pretty(equation)}. Coefficient is not one."
+                    )
+
+                continue
+
+            if equation.rhs != 0:
+
+                raise Exception(
+                    f"Invalid equation: {pretty(equation)}. Should equal zero."
+                )
+
+            eqPivotVars = []
+            eqFreeVars = []
+
+            for variable, coefficient in terms.items():
+
+                if variable in pivotVars:
+
+                    eqPivotVars.append((coefficient, variable))
+
+                elif variable in freeVars:
+
+                    eqFreeVars.append((coefficient, variable))
+
+                else:
+
+                    raise Exception(f"Invalid variable: {pretty(variable)}")
+
+            if len(eqPivotVars) > 1:
+
+                raise Exception(
+                    f"Unexpectedly more than 1 pivot variable. Pivot variables:\n{pretty(eqPivotVars)}"
+                )
+
+            if len(eqPivotVars) == 0:
+
+                raise Exception(
+                    f"No pivot variables found in equation: {pretty(equation)}"
+                )
+
+            if eqPivotVars[0][0] < 0:
+
+                isolatedEquationLHS = -eqPivotVars[0][0] * eqPivotVars[0][1]
+
+            else:
+
+                isolatedEquationLHS = eqPivotVars[0][0] * eqPivotVars[0][1]
+
+            isolatedEquationRHS = Add(0, 0)
+
+            for coefficient, variable in eqFreeVars:
+
+                if coefficient < 0:
+
+                    isolatedEquationRHS -= coefficient * variable
+
+                else:
+
+                    isolatedEquationRHS += coefficient * variable
+
+            isolatedEquation = Eq(
+                isolatedEquationLHS, isolatedEquationRHS, evaluate=False
+            )
+
+            vectorElementEquations[eqNum] = isolatedEquation
+
+        if verbose:
+
+            print(f"Isolated Free Variables:")
+
+            for equation in vectorElementEquations:
+
+                print(f"{pretty(equation)}")
+
+            print()
+
+        if len(freeVarIndices) == 1:
+
+            eigenVector = np.empty(shape=(A.numCols,))
+
+            for colNum in range(A.numCols):
+
+                eigenVector[colNum] = -100
+
+                freeVar = freeVars[0]
+
+            colNum = GetVectorColNum(variable=freeVar)
+
+            eigenVector[colNum] = 1
+
+            for equation in vectorElementEquations:
+
+                leftTerms: defaultdict = equation.lhs.as_coefficients_dict()
+                rightTerms: defaultdict = equation.rhs.as_coefficients_dict()
+
+                if len(leftTerms) > 1:
+
+                    raise Exception(
+                        f"Invalid equation (more than one left variable): {pretty(equation)}"
+                    )
+
+                leftVariable, leftCoefficient = list(leftTerms.items())[0]
+
+                if len(rightTerms) == 1:
+
+                    rightVariable, rightCoefficient = list(rightTerms.items())[0]
+
+                    if rightVariable == 1:
+
+                        if rightCoefficient != 0:
+
+                            raise Exception(
+                                f"Invalid non-zero right hand side constant: {coefficient}"
+                            )
+
+                        colNum = GetVectorColNum(variable=leftVariable)
+
+                        eigenVector[colNum] = 0
+
+            for equation in vectorElementEquations:
+
+                leftTerms: defaultdict = equation.lhs.as_coefficients_dict()
+                rightTerms: defaultdict = equation.rhs.as_coefficients_dict()
+
+                leftVariable, leftCoefficient = list(leftTerms.items())[0]
+
+                if len(rightTerms) == 1:
+
+                    rightVariable, rightCoefficient = list(rightTerms.items())[0]
+
+                    if rightVariable == 1:
+
+                        continue
+
+                    rightVarCol = GetVectorColNum(variable=rightVariable)
+
+                    rightVarValue = eigenVector[rightVarCol]
+
+                    leftColNum = GetVectorColNum(variable=leftVariable)
+
+                    if leftCoefficient != 1:
+
+                        raise Exception(
+                            f"Invalid non-one left coefficient: {leftCoefficient}"
+                        )
+
+                    eigenVector[leftColNum] = rightCoefficient * rightVarValue
+
+            for equation in vectorElementEquations:
+
+                leftTerms: defaultdict = equation.lhs.as_coefficients_dict()
+                rightTerms: defaultdict = equation.rhs.as_coefficients_dict()
+
+                leftVariable, leftCoefficient = list(leftTerms.items())[0]
+
+                if len(rightTerms) > 1:
+
+                    rightVal = 0
+
+                    for variable, coefficient in rightTerms.items():
+
+                        rightVarCol = GetVectorColNum(variable=rightVariable)
+
+                        rightVarValue = eigenVector[rightVarCol]
+
+                        rightVal += rightCoefficient * rightVarValue
+
+                    leftColNum = GetVectorColNum(variable=leftVariable)
+
+                    if leftCoefficient != 1:
+
+                        raise Exception(
+                            f"Invalid non-one left coefficient: {leftCoefficient}"
+                        )
+
+                    eigenVector[leftColNum] = rightVal
+
+            allEigenvectors.append(
+                Eigenvector(
+                    eigenvalue=eigenValue,
+                    vector=FloatMatrix(eigenVector),
+                    geomMultiplicity=len(freeVarIndices),
+                    algMultiplicity=eigenValue.multiplicity,
+                )
+            )
+
+            if verbose:
+
+                print(f"Found Eigenvector:")
+                print(f"{"-"*25}")
+                print(allEigenvectors[-1])
+                print()
+
+                print(f"{"="*50}")
+
+        else:
+
+            for freeVar in freeVars:
+
+                eigenVector = np.empty(shape=(A.numCols,))
+
+                for colNum in range(A.numCols):
+
+                    eigenVector[colNum] = -100
+
+                colNum = GetVectorColNum(variable=freeVar)
+
+                eigenVector[colNum] = 1
+
+                for otherFreeVars in freeVars:
+
+                    if otherFreeVars != freeVar:
+
+                        colNum = GetVectorColNum(variable=otherFreeVars)
+
+                        eigenVector[colNum] = 0
+
+                for equation in vectorElementEquations:
+
+                    leftTerms: defaultdict = equation.lhs.as_coefficients_dict()
+                    rightTerms: defaultdict = equation.rhs.as_coefficients_dict()
+
+                    if len(leftTerms) > 1:
+
+                        raise Exception(
+                            f"Invalid equation (more than one left variable): {pretty(equation)}"
+                        )
+
+                    leftVariable, leftCoefficient = list(leftTerms.items())[0]
+
+                    if len(rightTerms) == 1:
+
+                        rightVariable, rightCoefficient = list(rightTerms.items())[0]
+
+                        if rightVariable == 1:
+
+                            if rightCoefficient != 0:
+
+                                raise Exception(
+                                    f"Invalid non-zero right hand side constant: {coefficient}"
+                                )
+
+                            colNum = GetVectorColNum(variable=leftVariable)
+
+                            eigenVector[colNum] = 0
+
+                for equation in vectorElementEquations:
+
+                    leftTerms: defaultdict = equation.lhs.as_coefficients_dict()
+                    rightTerms: defaultdict = equation.rhs.as_coefficients_dict()
+
+                    leftVariable, leftCoefficient = list(leftTerms.items())[0]
+
+                    if len(rightTerms) == 1:
+
+                        rightVariable, rightCoefficient = list(rightTerms.items())[0]
+
+                        if rightVariable == 1:
+
+                            continue
+
+                        rightVarCol = GetVectorColNum(variable=rightVariable)
+
+                        rightVarValue = eigenVector[rightVarCol]
+
+                        leftColNum = GetVectorColNum(variable=leftVariable)
+
+                        if leftCoefficient != 1:
+
+                            raise Exception(
+                                f"Invalid non-one left coefficient: {leftCoefficient}"
+                            )
+
+                        eigenVector[leftColNum] = rightCoefficient * rightVarValue
+
+                for equation in vectorElementEquations:
+
+                    leftTerms: defaultdict = equation.lhs.as_coefficients_dict()
+                    rightTerms: defaultdict = equation.rhs.as_coefficients_dict()
+
+                    leftVariable, leftCoefficient = list(leftTerms.items())[0]
+
+                    if len(rightTerms) > 1:
+
+                        rightVal = 0
+
+                        for variable, coefficient in rightTerms.items():
+
+                            rightVarCol = GetVectorColNum(variable=rightVariable)
+
+                            rightVarValue = eigenVector[rightVarCol]
+
+                            rightVal += rightCoefficient * rightVarValue
+
+                        leftColNum = GetVectorColNum(variable=leftVariable)
+
+                        if leftCoefficient != 1:
+
+                            raise Exception(
+                                f"Invalid non-one left coefficient: {leftCoefficient}"
+                            )
+
+                        eigenVector[leftColNum] = rightVal
+
+                allEigenvectors.append(
+                    Eigenvector(
+                        eigenvalue=eigenValue,
+                        vector=FloatMatrix(eigenVector),
+                        geomMultiplicity=len(freeVarIndices),
+                        algMultiplicity=eigenValue.multiplicity,
+                    )
+                )
+
+                if verbose:
+
+                    print(f"Found Eigenvector:")
+                    print(f"{"-"*25}")
+                    print(allEigenvectors[-1])
+                    print()
+
+                    print(f"{"="*50}")
+
+    if verbose:
+
+        print(f"\nAll Eigenvectors:")
+        print(f"{"-"*50}")
+
+        for eigenvector in allEigenvectors:
+
+            print(eigenvector)
+
+            print()
+
+        print(f"{"="*75}")
+
+    return allEigenvectors
 
 
 # A = FloatMatrix(np.array([[1, 2], [4, 3]]))
-A = FloatMatrix(np.array([[5, 4, 2, 1], [0, 1, 3, 5], [0, 0, 1, 4], [5, 2, 6, 1]]))
-
+# A = FloatMatrix(np.array([[5, 1, 5, 1], [0, 4, 3, 1], [0, 2, 1, 4], [5, 5, 6, 1]]))
+# A = FloatMatrix(np.array([[1, 2, 1], [0, 3, 0], [0, 0, 2]]))
+A = FloatMatrix(np.array([[4, 0, 0], [0, 4, 0], [0, 0, 5]]))
 
 eigenVectors = GetEigenvectors(A=A, verbose=True)
